@@ -13,6 +13,7 @@ import java.time.*;
 enum Status {
     AVAILABLE, CONFIRMED, CANCELED, COMPLETED;
 }
+
 public class Appointment {
     protected String patientID; 
     protected String doctorID;

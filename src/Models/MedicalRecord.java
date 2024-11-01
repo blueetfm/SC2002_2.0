@@ -13,6 +13,14 @@ public class MedicalRecord {
         record.put("Diagnosis", diagnosis);
         record.put("Medication", medication);
         record.put("Treatment", treatment);
+
+        // medicalHistory = [{
+        //     "diagnosis": xx,
+        //     "medication": xx,
+        //     "treatment": xx
+        // }, {
+        //     "diagnosis:"
+        // }]
     }
 
     public Map<String, String> getRecord(){
