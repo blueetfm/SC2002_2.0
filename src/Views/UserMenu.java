@@ -24,7 +24,7 @@ public class UserMenu implements Menu {
                     String storedHospitalID = userDetails[0].trim();
                     String storedPassword = userDetails[1].trim();
 
-                    if (hospitalID.equals(storedHospitalID) && password.equals(storedPassword)) {
+                    if (hospitalID.equalsIgnoreCase(storedHospitalID) && password.equalsIgnoreCase(storedPassword)) {
                         isAuthenticated = true;
                         break;
                     }
