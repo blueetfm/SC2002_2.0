@@ -35,7 +35,7 @@ public class Medication {
 		this.stock = stock;
 	}
 
-	public void setLowStockAlert(int threshold) {
+	public void setLowStockThreshold(int threshold) {
 		this.lowStockThreshold = threshold;
 	}
 
@@ -55,4 +55,12 @@ public class Medication {
 	public void replenish(int quantity) {
 		stock += quantity;
 	}
+
+	@Override
+    public String toString() {
+        return "Medicine: " + medicineName + 
+               " | Current Stock: " + stock + 
+               " | Low Stock Alert Level: " + lowStockThreshold +
+               (isLowStock() ? " (LOW STOCK!)" : "");
+    }
 }

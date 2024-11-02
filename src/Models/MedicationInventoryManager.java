@@ -1,9 +1,10 @@
 package Models;
 
-import java.util.HashMap;
 
 public interface MedicationInventoryManager {
-    private HashMap<String, Medication> medications;
-
-    public 
+    public void viewMedicationInventory();
+    public boolean prescribeMedication(String medication, int quantity);
+    public void submitReplenishRequest(String medication, int quantity);
+    public void displayReplenishRequests();
+    public boolean approveReplenishRequests(String medicineName);
 }
