@@ -39,7 +39,20 @@ public class Medication {
 		this.lowStockThreshold = threshold;
 	}
 
-	public boolean isLowStock(Medication medication) {
-		return medication.getStock() <= medication.getLowStockThreshold();
+	//other methods
+	public boolean isLowStock() {
+		return stock <= lowStockThreshold;
+	}
+
+	public boolean prescribe(int quantity) {
+		if (quantity <= stock) {
+			stock -= quantity;
+			return true;
+		}
+		return false;
+	}
+
+	public void replenish(int quantity) {
+		stock += quantity;
 	}
 }
