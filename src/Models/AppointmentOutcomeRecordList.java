@@ -7,11 +7,21 @@ public class AppointmentOutcomeRecordList {
         
     }
 
-    public void readAppointmentOutcomeRecord(){
+    public void readAppointmentOutcomeRecord(String appointmentID){
+        for (AppointmentOutcomeRecord AOR : appointmentOutcomeRecordList) {
+            if (AOR.getAppointmentID().equals(appointmentID)){
+
+            }
+        }
         
     }
 
-    public void updateAppointmentOutcomeRecord(){
+    public void updateAppointmentOutcomeRecord(String appointmentID){
+        for (AppointmentOutcomeRecord AOR : appointmentOutcomeRecordList) {
+            if (AOR.getAppointmentID().equals(appointmentID)){
+
+            }
+        }
         
     }
 

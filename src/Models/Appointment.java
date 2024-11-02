@@ -17,11 +17,11 @@ enum Status {
 public class Appointment {
     protected String patientID; 
     protected String doctorID;
-    protected Date date;
+    protected LocalDate date;
     protected LocalTime time;
     protected Status status;
 
-    public Appointment(String patientID, String doctorID, Date date, LocalTime time){
+    public Appointment(String patientID, String doctorID, LocalDate date, LocalTime time){
         this.patientID = patientID;
         this.doctorID = doctorID;
         this.date = date;
