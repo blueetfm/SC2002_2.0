@@ -3,6 +3,8 @@ import java.util.Scanner;
 import java.io.*;
 
 public class UserMenu implements Menu {
+    protected static String loggedInHospitalID;
+
     public void showMenu(){
         File csvFile = new File("data/User_List.csv");
         String line;
@@ -26,6 +28,7 @@ public class UserMenu implements Menu {
 
                     if (hospitalID.equalsIgnoreCase(storedHospitalID) && password.equalsIgnoreCase(storedPassword)) {
                         isAuthenticated = true;
+                        loggedInHospitalID = hospitalID;
                         break;
                     }
                 }
@@ -61,6 +64,11 @@ public class UserMenu implements Menu {
         }
         return;
 
+    }
+
+    // Method to get logged-in user's ID
+    public static String getLoggedInHospitalID() {
+        return loggedInHospitalID;
     }
     
 }

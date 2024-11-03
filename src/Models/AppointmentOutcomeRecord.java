@@ -16,9 +16,9 @@ enum Service {
     CONSULTATION, XRAY, BLOODTEST;
 }
 
-
 public class AppointmentOutcomeRecord {
     protected String appointmentID;
+    protected String hospitalID;
     protected LocalDate date;
     protected Service service;
     protected String medication;
@@ -26,8 +26,9 @@ public class AppointmentOutcomeRecord {
     protected String notes;
 
     // don't construct with the medication
-    public AppointmentOutcomeRecord(String appointmentID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
+    public AppointmentOutcomeRecord(String appointmentID, String hospitalID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
         this.appointmentID = appointmentID;
+        this.hospitalID = hospitalID;
         this.date = date;
         this.service = service;
         this.medication = medication;
@@ -45,9 +46,20 @@ public class AppointmentOutcomeRecord {
         this.notes = notes;
     }
 
+    // print details of AOR --> Single Responsibility Principle
+    public void printDetails() {
+        System.out.println("Date of Appointment: " + date.toString());
+        System.out.println("Service provided: " + service);
+        System.out.println("Prescribed Medication: " + medication);
+    }
+
     // getters
     public String getAppointmentID(){
         return this.appointmentID;
+    }
+
+    public String getHospitalID(){
+        return this.hospitalID;
     }
 
     public LocalDate getDate(){

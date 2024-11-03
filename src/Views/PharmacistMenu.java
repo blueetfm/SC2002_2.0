@@ -1,6 +1,7 @@
 package Views;
 
 import java.util.Scanner;
+import Models.*;
 
 public class PharmacistMenu implements Menu {
 	public void showMenu() {
@@ -17,6 +18,9 @@ public class PharmacistMenu implements Menu {
 			
 			switch (choice) {
 			case 1: 
+				System.out.print("Enter Appointment ID: ");
+				String appointmentID = sc.next();
+				AppointmentOutcomeRecordList.getInstance().readAppointmentOutcomeRecord(appointmentID);
 				break;
 			case 2: 
 				break;
