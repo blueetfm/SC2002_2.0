@@ -18,7 +18,7 @@ public class PharmacistMenu implements Menu {
 			
 			switch (choice) {
 			case 1: 
-				System.out.print("Enter Appointment ID: ");
+				System.out.print("Enter Appointment ID to view: ");
 				String appointmentID = sc.next();
 				AppointmentOutcomeRecordList.getInstance().readAppointmentOutcomeRecord(appointmentID);
 				break;

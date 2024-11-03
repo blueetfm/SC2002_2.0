@@ -1,18 +1,20 @@
 package Models;
 import java.time.LocalDate;
 import java.util.*;
+import enums.*;
 
 import Views.UserMenu;
 
 public class AppointmentOutcomeRecordList implements AppointmentOutcomeRecordManager {
     private static AppointmentOutcomeRecordList instance; // Singleton --> only one class/instance at any time
+    // https://www.geeksforgeeks.org/singleton-class-java/
     protected ArrayList<AppointmentOutcomeRecord> appointmentOutcomeRecordList;
 
     public AppointmentOutcomeRecordList(){
         this.appointmentOutcomeRecordList = new ArrayList<>();
     }
 
-    // Access the Singleton
+    // Static method to create instance of Singleton class
     public static AppointmentOutcomeRecordList getInstance() {
         if (instance == null) {
             instance = new AppointmentOutcomeRecordList();
@@ -22,8 +24,16 @@ public class AppointmentOutcomeRecordList implements AppointmentOutcomeRecordMan
 
     // CRUD
     public void createAppointmentOutcomeRecord(String appointmentID, String hospitalID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes) {
+        for (AppointmentOutcomeRecord AOR : appointmentOutcomeRecordList){
+            if (AOR.getAppointmentID().equals(appointmentID)) {
+                System.out.println("Appointment ID is already existing.");
+                return;
+            }
+        }
         AppointmentOutcomeRecord newRecord = new AppointmentOutcomeRecord(appointmentID, hospitalID, date, service, medication, prescriptionStatus, notes);
         appointmentOutcomeRecordList.add(newRecord);
+        System.out.println("Appointment successfully recorded!");
+        return;
     }
 
     public void readAppointmentOutcomeRecord(String appointmentID){
@@ -39,7 +49,6 @@ public class AppointmentOutcomeRecordList implements AppointmentOutcomeRecordMan
                 } else {
                     System.out.println("Access Denied. You can only view your own appointment records.");
                 }
-
             }
         }
 
@@ -68,4 +77,5 @@ public class AppointmentOutcomeRecordList implements AppointmentOutcomeRecordMan
         }
         
     }
+
 }

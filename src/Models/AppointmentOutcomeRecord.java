@@ -1,6 +1,7 @@
 package Models;
 import java.util.*;
 import java.time.*;
+import enums.*;
 
 // Date of Appointment
 // ● Type of service provided (e.g., consultation, X-ray, blood test etc).
@@ -8,13 +9,6 @@ import java.time.*;
 // - medication name
 // - status (default is pending)
 // ● Consultation notes 
-enum PrescriptionStatus {
-    DISPENSED, PENDING;
-}
-
-enum Service {
-    CONSULTATION, XRAY, BLOODTEST;
-}
 
 public class AppointmentOutcomeRecord {
     protected String appointmentID;

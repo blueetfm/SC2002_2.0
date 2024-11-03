@@ -1,6 +1,7 @@
 package Models;
 
 import java.time.LocalDate;
+import enums.*;
 
 public interface AppointmentOutcomeRecordManager {
     public void createAppointmentOutcomeRecord(String appointmentID, String hospitalID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes);
