@@ -34,6 +34,7 @@ public class PatientMenu implements Menu {
 			case 7: 
 				break;
 			case 8: 
+			
 				break;
 			case 9: 
 				System.out.println("Program terminating ….");
