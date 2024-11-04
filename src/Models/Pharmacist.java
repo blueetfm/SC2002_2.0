@@ -40,4 +40,7 @@ public class Pharmacist extends User {
 		return 0;
 	}
 
+	public int logout() {
+		return 0;
+	}
 }
