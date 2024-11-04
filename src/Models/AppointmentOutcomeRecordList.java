@@ -26,7 +26,7 @@ public class AppointmentOutcomeRecordList implements AppointmentOutcomeRecordMan
     public void createAppointmentOutcomeRecord(String appointmentID, String hospitalID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes) {
         for (AppointmentOutcomeRecord AOR : appointmentOutcomeRecordList){
             if (AOR.getAppointmentID().equals(appointmentID)) {
-                System.out.println("Appointment ID is already existing.");
+                System.out.println("Appointment ID already exists.");
                 return;
             }
         }
@@ -39,32 +39,41 @@ public class AppointmentOutcomeRecordList implements AppointmentOutcomeRecordMan
     public void readAppointmentOutcomeRecord(String appointmentID){
         String loggedInID = UserMenu.getLoggedInHospitalID(); // Get the logged-in user's ID
         boolean isPatient = loggedInID.startsWith("P") && (loggedInID.length() == 5);
-        boolean resultAOR = false; // to check if there is a valid appointmentID to match or not
 
         for (AppointmentOutcomeRecord AOR : appointmentOutcomeRecordList) {
             if (AOR.getAppointmentID().equals(appointmentID)){
-                resultAOR = true;
-                if (!isPatient || AOR.getHospitalID().equals(loggedInID)){
+                if (!isPatient || AOR.getPatientID().equals(loggedInID)){
                     AOR.printDetails();
+                    return;
                 } else {
                     System.out.println("Access Denied. You can only view your own appointment records.");
+                    return;
                 }
             }
         }
 
-        if (!resultAOR) {
-            System.out.println("No matching appointment ID.");
-        }
+        System.out.println("No matching appointment ID.");
+        
 
         return;
     }
 
     public void updateAppointmentOutcomeRecord(String appointmentID){
+        String loggedInID = UserMenu.getLoggedInHospitalID();
+        boolean isPatient = loggedInID.startsWith("P") && (loggedInID.length() == 5);
         for (AppointmentOutcomeRecord AOR : appointmentOutcomeRecordList) {
             if (AOR.getAppointmentID().equals(appointmentID)){
+                if (!isPatient || AOR.getPatientID().equals(loggedInID)){
+                    // insert
+                } else {
+                    System.out.println("Access Denied. You can only view your own appointment records.");
+                    return;
+                }
 
             }
         }
+
+        return;
     }
 
     

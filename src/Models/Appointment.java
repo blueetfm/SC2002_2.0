@@ -2,6 +2,7 @@ package Models;
 
 import java.util.*;
 import java.time.*;
+import enums.*;
 
 // Appointment details should include:
 // - Patient ID
@@ -10,24 +11,53 @@ import java.time.*;
 // - Date and time of appointment
 // - Appointment Outcome Record (for completed appointments) 
 
-enum Status {
-    AVAILABLE, CONFIRMED, CANCELED, COMPLETED;
-}
 
 public class Appointment {
+    protected String appointmentID;
     protected String patientID; 
     protected String doctorID;
     protected LocalDate date;
-    protected LocalTime time;
+    protected LocalTime timeSlot;
     protected Status status;
+    protected AppointmentOutcomeRecord outcomeRecord; 
 
-    public Appointment(String patientID, String doctorID, LocalDate date, LocalTime time){
+    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, LocalTime timeSlot){
+        this.appointmentID = appointmentID;
         this.patientID = patientID;
         this.doctorID = doctorID;
         this.date = date;
-        this.time = time;
+        this.timeSlot = timeSlot;
         this.status = Status.AVAILABLE;
     }
+
+    // setters
+    public void setAppointmentOutcomeRecord(AppointmentOutcomeRecord outcomeRecord){
+        this.outcomeRecord = outcomeRecord;
+        this.status = Status.COMPLETED;
+    }
+
+    public void printDetails() {
+        System.out.println("Date of Appointment: " + date.toString());
+
+    }
+
+    // getters
+    public String getAppointmentID(){
+        return this.appointmentID;
+    }
+
+    public String getPatientID(){
+        return this.patientID;
+    }
+
+    public Status getStatus(){
+        return this.status;
+    }
+
+    public AppointmentOutcomeRecord getOutcomeRecord(){
+        return this.outcomeRecord;
+    }
+
 
     // public boolean isAvailable(){
     //     return availability;

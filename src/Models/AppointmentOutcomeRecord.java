@@ -12,7 +12,7 @@ import enums.*;
 
 public class AppointmentOutcomeRecord {
     protected String appointmentID;
-    protected String hospitalID;
+    protected String patientID;
     protected LocalDate date;
     protected Service service;
     protected String medication;
@@ -20,9 +20,9 @@ public class AppointmentOutcomeRecord {
     protected String notes;
 
     // don't construct with the medication
-    public AppointmentOutcomeRecord(String appointmentID, String hospitalID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
+    public AppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
         this.appointmentID = appointmentID;
-        this.hospitalID = hospitalID;
+        this.patientID = patientID;
         this.date = date;
         this.service = service;
         this.medication = medication;
@@ -52,8 +52,8 @@ public class AppointmentOutcomeRecord {
         return this.appointmentID;
     }
 
-    public String getHospitalID(){
-        return this.hospitalID;
+    public String getPatientID(){
+        return this.patientID;
     }
 
     public LocalDate getDate(){
