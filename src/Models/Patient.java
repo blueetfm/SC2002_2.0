@@ -23,7 +23,6 @@ public class Patient extends User {
 	protected String email;
     protected String patientID;
     protected String bloodType;
-    protected List<MedicalRecord> medicalHistory;
 
     public Patient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String patientID, String bloodType, List<MedicalRecord> medicalHistory){
         super(hospitalID, password, role);
@@ -34,14 +33,10 @@ public class Patient extends User {
         this.email = email;
         this.patientID = patientID;
         this.bloodType = bloodType;
-        this.medicalHistory = medicalHistory;
     }
 
     public void viewMedicalRecord(){ 
-        for (MedicalRecord record : medicalHistory){
-            record.getRecord().forEach((key, value) -> System.out.println(key + " " + value));
-        }
-        return;
+        
     }
 
     // setters (only non-medical info)
