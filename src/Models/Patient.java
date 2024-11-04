@@ -34,10 +34,44 @@ public class Patient extends User {
         this.patientID = patientID;
         this.bloodType = bloodType;
     }
+    
+//	methods return 0 if no error, else returns 1
 
     public void viewMedicalRecord(){ 
         
     }
+    
+    public int updatePersonalInformation() {
+		return 0;
+	}
+	
+	public int viewAvailableAppointmentSlots() {
+		return 0;
+	}
+	
+	public int scheduleAppointment() {
+		return 0;
+	}
+	
+	public int rescheduleAppointment() {
+		return 0;
+	}
+	
+	public int cancelAppointment() {
+		return 0;
+	}
+	
+	public int viewScheduledAppointments() {
+		return 0;
+	}
+	
+	public int viewAppointmentOutcomeRecords() {
+		return 0;
+	}
+	
+	public int logout() {
+		return 0;
+	}
 
     // setters (only non-medical info)
     public void setPhoneNum(String phoneNum){
