@@ -15,13 +15,23 @@ import Views.PatientMenu;
 // treatments or blood type.. 
 
 
-public class Patient extends Person {
+public class Patient extends User {
+	protected String name;
+	protected LocalDate birthDate;
+	protected String gender;
+	protected String phoneNum;
+	protected String email;
     protected String patientID;
     protected String bloodType;
     protected List<MedicalRecord> medicalHistory;
 
-    public Patient(int hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String patientID, String bloodType, List<MedicalRecord> medicalHistory){
-        super(hospitalID, password, role, name, birthDate, gender, phoneNum, email);
+    public Patient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String patientID, String bloodType, List<MedicalRecord> medicalHistory){
+        super(hospitalID, password, role);
+        this.name = name;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.phoneNum = phoneNum;
+        this.email = email;
         this.patientID = patientID;
         this.bloodType = bloodType;
         this.medicalHistory = medicalHistory;
