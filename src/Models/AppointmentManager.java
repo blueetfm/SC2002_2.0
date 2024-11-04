@@ -6,6 +6,8 @@ import enums.*;
 
 // bigger manager of AppointmentOutcomeRecordManager?
 // acts as the controller that decides when and how to interact with AppointmentOutcomeRecordManager
+
+// BIG QUESTION: DO I NEED A INTERFACE FOR THIS? 
 public class AppointmentManager {
     private static AppointmentManager instance;
     private AppointmentList appointmentList;
