@@ -16,6 +16,22 @@ public class Staff {
         this.age = age;
     }
 
+    //validation methods:
+    private boolean isValidStaffID(String staffID) {
+        if (staffID == null || staffID.length() != 4) return false;
+        char prefix = staffID.charAt(0);
+        String numbers = staffID.substring(1);
+        
+        boolean validPrefix = prefix == 'D' || prefix == 'P' || prefix == 'A';
+        boolean validNumbers = numbers.matches("\\d{3}");
+        
+        return validPrefix && validNumbers;
+    }
+
+    public String toCSVString() {
+        return String.format("%s,%s,%s,%s,%d", staffID, name, role, gender, age);
+    }
+
 
     //getters and setters
     public String getStaffID() {
@@ -39,11 +55,20 @@ public class Staff {
     }
 
     public void setStaffID(String id) {
-        this.staffID = id;
+        if (id == null || id.trim().isEmpty()) {
+            throw new IllegalArgumentException("Staff ID cannot be empty");
+        }
+        if (!isValidStaffID(id)) {
+            throw new IllegalArgumentException("Invalid Staff ID format");
+        }
+        this.staffID = id.trim();
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
+        this.name = name.trim();
     }
 
     public void setRole(String role) {
@@ -55,6 +80,9 @@ public class Staff {
     }
 
     public void setAge(int age) {
+        if (age < 18 || age > 100) {
+            throw new IllegalArgumentException("Age must be between 18 and 100");
+        }
         this.age = age;
     }
 

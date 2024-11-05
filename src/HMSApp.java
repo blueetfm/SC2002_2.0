@@ -1,6 +1,5 @@
-import java.util.Scanner;
-import java.io.*;
 import Views.*;
+import java.util.Scanner;
 
 public class HMSApp{
     public static void main(String[] args) {
@@ -8,6 +7,7 @@ public class HMSApp{
 		Scanner sc = new Scanner(System.in);
 		
 		do {
+			System.out.println("===Welcome to HMS!===");
 			System.out.println("Perform the following methods:");
 			System.out.println("1: Log In");
 			System.out.println("2: Quit");
@@ -29,6 +29,5 @@ public class HMSApp{
 				System.out.println("Program terminating ….");
 			}
 		} while (choice != 1 || choice != 2);
-        return;
     }
 }

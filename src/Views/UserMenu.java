@@ -1,14 +1,15 @@
 package Views;
-import java.util.Scanner;
 import java.io.*;
+import java.util.Scanner;
 
 public class UserMenu implements Menu {
     protected static String loggedInHospitalID;
 
+    @Override
     public void showMenu(){
         File csvFile = new File("data/User_List.csv");
         String line;
-        boolean isAuthenticated = false;        
+        boolean isAuthenticated = false;
 
         try (BufferedReader fileReader = new BufferedReader(new FileReader(csvFile))) {
             Scanner sc = new Scanner(System.in);
@@ -62,8 +63,6 @@ public class UserMenu implements Menu {
         } catch (IOException e) {
             System.out.println("An error occurred while reading the file: " + e.getMessage());
         }
-        return;
-
     }
 
     // Method to get logged-in user's ID
