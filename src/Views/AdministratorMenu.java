@@ -103,53 +103,72 @@ public class AdministratorMenu implements Menu {
 						case 1:
 							//add med
 							System.out.println("Enter name of new medicine: ");
-							String newMedName = sc.nextLine();
 							sc.nextLine();
-
-							System.out.println("Enter stock: ");
-							int newMedStock = sc.nextInt();
-							sc.nextLine();
-
+							String newMedName = sc.nextLine().trim();
+							
+							if (newMedName.isEmpty()) {
+								System.out.println("Medicine name cannot be empty!");
+								break;
+							}
+							
+							System.out.println("Enter initial stock quantity: ");
+							int initialStock = sc.nextInt();
+							
 							System.out.println("Set low stock threshold: ");
-							int newMedThreshold = sc.nextInt();
-
-							inventory.addMedication(newMedName, newMedStock, newMedThreshold);
+							int threshold = sc.nextInt();
+							
+							inventory.addMedication(newMedName, initialStock, threshold);
+							System.out.println("\nUpdated Inventory:");
+							inventory.viewMedicationInventory();
 							break;
-						case 2:
-							//remove med
+						case 2: 
+							// Remove med
 							inventory.viewMedicationInventory();
 							System.out.println("Enter name of medicine to remove: ");
-							String removeMedName = sc.nextLine();
-							inventory.removeMedication(removeMedName);
-
-							System.out.println("===Updated Medication Inventory===");
-							inventory.viewMedicationInventory();
+							sc.nextLine();
+							String medToRemove = sc.nextLine().trim();
+							
+							if (medToRemove.isEmpty()) {
+								System.out.println("Medicine name cannot be empty!");
+								break;
+							}
+							
+							inventory.removeMedication(medToRemove);
 							break;
 						case 3:
 							//edit quantities
-							int medUpdateOption;
 							inventory.viewMedicationInventory();
 							System.out.println("Enter medication name to update: ");
-							String medToUpdate = sc.nextLine();
-							do { 
-								System.out.println("Perform the following: ");
-								System.out.println("1: Update current stock level");
-								System.out.println("2: Update low level threshold");
-								medUpdateOption = sc.nextInt();
-
-								switch(medUpdateOption) {
-									case 1:
-										System.out.println("Enter new stock level: ");
-										int newStock = sc.nextInt();
-										inventory.updateMedication(medToUpdate, newStock, null);
-										break;
-									case 2:
-										System.out.println("Enter new low stock threshold: ");
-										int newThreshold = sc.nextInt();
-										inventory.updateMedication(medToUpdate, null, newThreshold);
-										break;
-								}
-							} while (medUpdateOption < 3);
+							sc.nextLine();
+							String medToUpdate = sc.nextLine().trim();
+							
+							if (medToUpdate.isEmpty()) {
+								System.out.println("Medicine name cannot be empty!");
+								break;
+							}
+							
+							System.out.println("Perform the following:");
+							System.out.println("1: Update current stock level");
+							System.out.println("2: Update low level threshold");
+							int updateChoice = sc.nextInt();
+							
+							switch(updateChoice) {
+								case 1:
+									System.out.println("Enter new stock level: ");
+									int newStock = sc.nextInt();
+									inventory.updateMedication(medToUpdate, newStock, null);
+									break;
+								case 2:
+									System.out.println("Enter new low stock threshold: ");
+									int newThreshold = sc.nextInt();
+									inventory.updateMedication(medToUpdate, null, newThreshold);
+									break;
+								default:
+									System.out.println("Invalid choice!");
+							}
+							
+							System.out.println("\nUpdated Inventory:");
+							inventory.viewMedicationInventory();
 							break;
 						case 4:
 						System.out.println("Exiting to main menu...");

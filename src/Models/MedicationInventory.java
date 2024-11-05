@@ -84,12 +84,18 @@ public class MedicationInventory implements MedicationInventoryManager {
     }
     
     public void addMedication(String medicineName, int initialStock, int lowStockAlert) {
+        // Validate input
+        if (medicineName == null || medicineName.trim().isEmpty()) {
+            System.out.println("Medication name cannot be empty");
+            return;
+        }
+        
         String[] lines = readCSVLines(csvFilePath);
         
         // Check if medication already exists
         for (String line : lines) {
             String[] parts = line.split(",");
-            if (parts.length > 0 && parts[0].trim().equals(medicineName)) {
+            if (parts.length > 0 && parts[0].trim().equalsIgnoreCase(medicineName.trim())) {
                 System.out.println("Medication already exists: " + medicineName);
                 return;
             }
@@ -100,10 +106,10 @@ public class MedicationInventory implements MedicationInventoryManager {
         for (String line : lines) {
             newContent.append(line).append("\n");
         }
-        newContent.append(String.format("%s,%d,%d", medicineName, initialStock, lowStockAlert));
+        newContent.append(String.format("%s,%d,%d", medicineName.trim(), initialStock, lowStockAlert));
         
         writeCSVLines(newContent.toString().split("\n"), csvFilePath);
-        System.out.println("Added new medication: " + medicineName);
+        System.out.println("Successfully added new medication: " + medicineName);
     }
 
     public void removeMedication(String medicineName) {
@@ -124,16 +130,8 @@ public class MedicationInventory implements MedicationInventoryManager {
         if (found) {
             writeCSVLines(newContent.toString().split("\n"), csvFilePath);
             System.out.println("Removed medication: " + medicineName);
-            
-            // Also remove any pending replenishment requests for this medication
-            String[] requestLines = readCSVLines(requestsFilePath);
-            StringBuilder newRequests = new StringBuilder(requestLines[0]); // Keep header
-            for (int i = 1; i < requestLines.length; i++) {
-                if (!requestLines[i].startsWith(medicineName + ",")) {
-                    newRequests.append("\n").append(requestLines[i]);
-                }
-            }
-            writeCSVLines(newRequests.toString().split("\n"), requestsFilePath);
+            System.out.println("\n===Updated Inventory===");
+            viewMedicationInventory();
         } else {
             System.out.println("Medication not found: " + medicineName);
         }
