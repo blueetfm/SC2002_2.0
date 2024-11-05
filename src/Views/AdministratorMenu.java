@@ -10,6 +10,7 @@ public class AdministratorMenu implements Menu {
 	public void showMenu() {
 		int choice;
 		int manageStaffOption;
+		int inventoryOption;
 		//initialise staff list
         StaffList staffList = new StaffList("data(testCopy)/Staff_List.csv");
 		//initialise medication inventory
@@ -89,6 +90,72 @@ public class AdministratorMenu implements Menu {
 			case 3: 
 				//view and manage medication inventory
 				inventory.viewMedicationInventory();
+				do { 
+					System.out.println("Perform the following actions: ");
+					System.out.println("1: Add new medication to inventory");
+					System.out.println("2: Remove medication from inventory");
+					System.out.println("3: Edit inventory quantities");
+					System.out.println("4: Exit to main menu");
+					System.out.println("Enter your choice (1-4): ");
+					inventoryOption = sc.nextInt();
+
+					switch(inventoryOption) {
+						case 1:
+							//add med
+							System.out.println("Enter name of new medicine: ");
+							String newMedName = sc.nextLine();
+							sc.nextLine();
+
+							System.out.println("Enter stock: ");
+							int newMedStock = sc.nextInt();
+							sc.nextLine();
+
+							System.out.println("Set low stock threshold: ");
+							int newMedThreshold = sc.nextInt();
+
+							inventory.addMedication(newMedName, newMedStock, newMedThreshold);
+							break;
+						case 2:
+							//remove med
+							inventory.viewMedicationInventory();
+							System.out.println("Enter name of medicine to remove: ");
+							String removeMedName = sc.nextLine();
+							inventory.removeMedication(removeMedName);
+
+							System.out.println("===Updated Medication Inventory===");
+							inventory.viewMedicationInventory();
+							break;
+						case 3:
+							//edit quantities
+							int medUpdateOption;
+							inventory.viewMedicationInventory();
+							System.out.println("Enter medication name to update: ");
+							String medToUpdate = sc.nextLine();
+							do { 
+								System.out.println("Perform the following: ");
+								System.out.println("1: Update current stock level");
+								System.out.println("2: Update low level threshold");
+								medUpdateOption = sc.nextInt();
+
+								switch(medUpdateOption) {
+									case 1:
+										System.out.println("Enter new stock level: ");
+										int newStock = sc.nextInt();
+										inventory.updateMedication(medToUpdate, newStock, null);
+										break;
+									case 2:
+										System.out.println("Enter new low stock threshold: ");
+										int newThreshold = sc.nextInt();
+										inventory.updateMedication(medToUpdate, null, newThreshold);
+										break;
+								}
+							} while (medUpdateOption < 3);
+							break;
+						case 4:
+						System.out.println("Exiting to main menu...");
+						break;
+					}
+				} while (inventoryOption < 4);
 				break;
 			case 4: 
 				//Approve Replenishment Requests

@@ -14,11 +14,17 @@ import java.util.Set;
 
 
 public class StaffList implements StaffManager {
+    //staff list csv 
     private String csvFilePath;
     private static final String CSV_HEADER = "Staff ID,Name,Role,Gender,Age";
+
+    //user list csv
+    private String userListPath;
+    private static final String USER_CSV_HEADER = "Hospital ID,Password";
     
     public StaffList(String csvFilePath) {
         this.csvFilePath = csvFilePath;
+        this.userListPath = csvFilePath.replace("Staff_List.csv", "User_list.csv");
         File file = new File(csvFilePath);
         if (!file.exists()) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFilePath))) {
@@ -30,6 +36,7 @@ public class StaffList implements StaffManager {
         }
     }
 
+    //handles staff-list csv operations
     private synchronized List<Staff> readAllStaff() {
         List<Staff> staffList = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(csvFilePath))) {
@@ -70,10 +77,45 @@ public class StaffList implements StaffManager {
         }
     }
 
+    //handles user list csv operations
+    private synchronized List<String[]> readUserList() {
+        List<String[]> userList = new ArrayList<>();
+        try (BufferedReader reader = new BufferedReader(new FileReader(userListPath))) {
+            String line;
+            boolean firstLine = true;
+            while ((line = reader.readLine()) != null) {
+                if (firstLine) {
+                    firstLine = false;
+                    continue;
+                }
+                String[] parts = line.split(",");
+                if (parts.length == 2) {
+                    userList.add(new String[]{parts[0].trim(), parts[1].trim()});
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading User list CSV file: " + e.getMessage());
+        }
+        return userList;
+    }
+
+    private synchronized void writeUserList(List<String[]> userList) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(userListPath))) {
+            writer.write(USER_CSV_HEADER);
+            writer.newLine();
+            for (String[] user : userList) {
+                writer.write(String.format("%s,%s", user[0], user[1]));
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.err.println("Error writing to User list CSV file: " + e.getMessage());
+        }
+    }
+
     @Override
     public synchronized void addStaff(String StaffID, String password, String name, String role, String gender, int age) {
+        // First check if staff exists in Staff_List
         List<Staff> staffList = readAllStaff();
-        
         boolean exists = staffList.stream()
             .anyMatch(s -> s.getStaffID().equals(StaffID));
         
@@ -82,19 +124,35 @@ public class StaffList implements StaffManager {
             return;
         }
 
+        // Add to Staff_List
         staffList.add(new Staff(StaffID, name, role, gender, age));
         writeAllStaff(staffList);
-        System.out.println("Staff " + StaffID + " has been added to the system with default password:" + password);
+
+        // Add to User_list
+        List<String[]> userList = readUserList();
+        userList.add(new String[]{StaffID, password});
+        writeUserList(userList);
+
+        System.out.println("Staff " + StaffID + " has been added to the system with default password: " + password);
     }
 
     @Override
     public synchronized void removeStaff(String StaffID) {
+        // Remove from Staff_List
         List<Staff> staffList = readAllStaff();
         boolean removed = staffList.removeIf(staff -> staff.getStaffID().equals(StaffID));
         
         if (removed) {
             writeAllStaff(staffList);
-            System.out.println("Staff " + StaffID + " has been removed.");
+            
+            // Remove from User_list
+            List<String[]> userList = readUserList();
+            boolean userRemoved = userList.removeIf(user -> user[0].equals(StaffID));
+            if (userRemoved) {
+                writeUserList(userList);
+            }
+            
+            System.out.println("Staff " + StaffID + " has been removed from both Staff and User lists.");
         } else {
             System.out.println("Staff not found: " + StaffID);
         }

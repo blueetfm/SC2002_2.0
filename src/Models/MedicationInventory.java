@@ -82,6 +82,94 @@ public class MedicationInventory implements MedicationInventoryManager {
             }
         }
     }
+    
+    public void addMedication(String medicineName, int initialStock, int lowStockAlert) {
+        String[] lines = readCSVLines(csvFilePath);
+        
+        // Check if medication already exists
+        for (String line : lines) {
+            String[] parts = line.split(",");
+            if (parts.length > 0 && parts[0].trim().equals(medicineName)) {
+                System.out.println("Medication already exists: " + medicineName);
+                return;
+            }
+        }
+        
+        // Add new medication
+        StringBuilder newContent = new StringBuilder();
+        for (String line : lines) {
+            newContent.append(line).append("\n");
+        }
+        newContent.append(String.format("%s,%d,%d", medicineName, initialStock, lowStockAlert));
+        
+        writeCSVLines(newContent.toString().split("\n"), csvFilePath);
+        System.out.println("Added new medication: " + medicineName);
+    }
+
+    public void removeMedication(String medicineName) {
+        String[] lines = readCSVLines(csvFilePath);
+        boolean found = false;
+        StringBuilder newContent = new StringBuilder(lines[0]); // Keep header
+        
+        // Rebuild file content without the medication to remove
+        for (int i = 1; i < lines.length; i++) {
+            String[] parts = lines[i].split(",");
+            if (!parts[0].trim().equals(medicineName)) {
+                newContent.append("\n").append(lines[i]);
+            } else {
+                found = true;
+            }
+        }
+        
+        if (found) {
+            writeCSVLines(newContent.toString().split("\n"), csvFilePath);
+            System.out.println("Removed medication: " + medicineName);
+            
+            // Also remove any pending replenishment requests for this medication
+            String[] requestLines = readCSVLines(requestsFilePath);
+            StringBuilder newRequests = new StringBuilder(requestLines[0]); // Keep header
+            for (int i = 1; i < requestLines.length; i++) {
+                if (!requestLines[i].startsWith(medicineName + ",")) {
+                    newRequests.append("\n").append(requestLines[i]);
+                }
+            }
+            writeCSVLines(newRequests.toString().split("\n"), requestsFilePath);
+        } else {
+            System.out.println("Medication not found: " + medicineName);
+        }
+    }
+
+    public void updateMedication(String medicineName, Integer newStock, Integer newLowStockAlert) {
+        String[] lines = readCSVLines(csvFilePath);
+        boolean found = false;
+        StringBuilder newContent = new StringBuilder(lines[0]); // Keep header
+        
+        for (int i = 1; i < lines.length; i++) {
+            String[] parts = lines[i].split(",");
+            if (parts[0].trim().equals(medicineName)) {
+                // Get current values
+                int currentStock = Integer.parseInt(parts[1]);
+                int currentLowStock = Integer.parseInt(parts[2]);
+                
+                // Update with new values if provided, otherwise keep current values
+                int updatedStock = (newStock != null) ? newStock : currentStock;
+                int updatedLowStock = (newLowStockAlert != null) ? newLowStockAlert : currentLowStock;
+                
+                Medication updatedMed = new Medication(medicineName, updatedStock, updatedLowStock);
+                newContent.append("\n").append(updatedMed.toCSVString());
+                found = true;
+            } else {
+                newContent.append("\n").append(lines[i]);
+            }
+        }
+        
+        if (found) {
+            writeCSVLines(newContent.toString().split("\n"), csvFilePath);
+            System.out.println("Updated quantities for medication: " + medicineName);
+        } else {
+            System.out.println("Medication not found: " + medicineName);
+        }
+    }
 
     @Override
     public boolean prescribeMedication(String medicationName, int quantity) {
