@@ -1,45 +1,67 @@
 package Models;
 
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.*;
 
 public class MedicationInventory implements MedicationInventoryManager {
-    public Map<String, Medication> medications;
-    public Map<String, Integer> requests;
 
-    public MedicationInventory() {
-        this.medications = new HashMap<>();
-        this.requests = new HashMap<>();
+    private String csvFilePath;
+    private String requestsFilePath;
+    private static final String CSV_HEADER = "Medicine Name,Initial Stock,Low Stock Level Alert";
+    private static final String REQUESTS_HEADER = "Medicine Name,Requested Quantity";
+
+    public MedicationInventory(String medicationCsvPath, String requestsCsvPath) {
+        this.csvFilePath = medicationCsvPath;
+        this.requestsFilePath = requestsCsvPath;
+        initializeFiles();
     }
 
-    public void loadMedicineCSV(String filePath) {
-        try (Scanner scanner = new Scanner(new File(filePath))) {
-            // Skip header
-            if (scanner.hasNextLine()) {
-                scanner.nextLine();
+    private void initializeFiles() {
+        // Initialize inventory file
+        File inventoryFile = new File(csvFilePath);
+        if (!inventoryFile.exists()) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(csvFilePath))) {
+                writer.write(CSV_HEADER);
+                writer.newLine();
+                writer.write("Paracetamol,100,20");
+                writer.newLine();
+                writer.write("Ibuprofen,50,10");
+                writer.newLine();
+                writer.write("Amoxicillin,75,15");
+            } catch (IOException e) {
+                System.err.println("Error initializing inventory file: " + e.getMessage());
             }
-            
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String[] parts = line.split(",");
-                
-                try {
-                    if (parts.length == 3) {
-                        String name = parts[0].trim();
-                        int initialStock = Integer.parseInt(parts[1].trim());
-                        int lowStockLevel = Integer.parseInt(parts[2].trim());
-                        
-                        medications.put(name, new Medication(name, initialStock, lowStockLevel));
-                    }
-                } catch (NumberFormatException e) {
-                    System.err.println("Error parsing number in line: " + line);
-                }
+        }
+
+        // Initialize requests file
+        File requestsFile = new File(requestsFilePath);
+        if (!requestsFile.exists()) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(requestsFilePath))) {
+                writer.write(REQUESTS_HEADER);
+                writer.newLine();
+            } catch (IOException e) {
+                System.err.println("Error initializing requests file: " + e.getMessage());
             }
-        } catch (FileNotFoundException e) {
-            System.err.println("CSV file not found: " + e.getMessage());
+        }
+    }
+
+    private String[] readCSVLines(String filePath) {
+        try {
+            return Files.readAllLines(Paths.get(filePath)).toArray(new String[0]);
+        } catch (IOException e) {
+            System.err.println("Error reading CSV file: " + e.getMessage());
+            return new String[0];
+        }
+    }
+
+    private void writeCSVLines(String[] lines, String filePath) {
+        try {
+            Files.write(Paths.get(filePath), String.join("\n", lines).getBytes());
+        } catch (IOException e) {
+            System.err.println("Error writing to CSV file: " + e.getMessage());
         }
     }
     
@@ -47,75 +69,154 @@ public class MedicationInventory implements MedicationInventoryManager {
     public void viewMedicationInventory() {
         System.out.println("\nCurrent Inventory");
         System.out.println("--------------------");
-        for (Medication med : medications.values()) {
-            System.out.println(med);
-        }        
+        String[] lines = readCSVLines(csvFilePath);
+        for (int i = 1; i < lines.length; i++) {
+            String[] parts = lines[i].split(",");
+            if (parts.length == 3) {
+                Medication med = new Medication(
+                    parts[0].trim(),
+                    Integer.parseInt(parts[1].trim()),
+                    Integer.parseInt(parts[2].trim())
+                );
+                System.out.println(med);
+            }
+        }
     }
 
     @Override
     public boolean prescribeMedication(String medicationName, int quantity) {
-        Medication medication = medications.get(medicationName);
-        if (medication == null) {
-            System.out.println("Medication not found: " + medicationName);
-            return false;
-        }
-        else {
-            boolean prescribed = medication.prescribe(quantity);
-            if (prescribed) {
-                System.out.println("Prescribed " + quantity + " units of " + medicationName);
-                if (medication.isLowStock()) {
-                    System.out.println("Warning: " + medicationName + " is now low in stock!");
+        String[] lines = readCSVLines(csvFilePath);
+        boolean prescribed = false;
+        
+        for (int i = 1; i < lines.length; i++) {
+            String[] parts = lines[i].split(",");
+            if (parts[0].trim().equals(medicationName)) {
+                Medication med = new Medication(
+                    parts[0].trim(),
+                    Integer.parseInt(parts[1].trim()),
+                    Integer.parseInt(parts[2].trim())
+                );
+                
+                prescribed = med.prescribe(quantity);
+                if (prescribed) {
+                    lines[i] = med.toCSVString();
+                    writeCSVLines(lines, csvFilePath);
+                    System.out.println("Prescribed " + quantity + " units of " + medicationName);
+                    if (med.isLowStock()) {
+                        System.out.println("Warning: " + medicationName + " is now low in stock!");
+                    }
+                } else {
+                    System.out.println("Insufficient stock for prescription");
                 }
-            } else {
-                System.out.println("Insufficient stock for prescription");
+                return prescribed;
             }
-            return prescribed;
         }
+        
+        System.out.println("Medication not found: " + medicationName);
+        return false;
     }
 
     @Override
     public void submitReplenishRequest(String medicationName, int quantity) {
-        Medication medication = medications.get(medicationName);
-        if (medication == null) {
+        String[] inventoryLines = readCSVLines(csvFilePath);
+        boolean medicationExists = false;
+        
+        for (int i = 1; i < inventoryLines.length; i++) {
+            if (inventoryLines[i].startsWith(medicationName + ",")) {
+                medicationExists = true;
+                break;
+            }
+        }
+        
+        if (!medicationExists) {
             System.out.println("Medication not found: " + medicationName);
             return;
         }
 
-        requests.put(medicationName, quantity);
-        System.out.println("Replenish request submitted to administrator. ");
+        String[] requestLines = readCSVLines(requestsFilePath);
+        boolean updated = false;
+        StringBuilder newContent = new StringBuilder(requestLines[0]);
+
+        for (int i = 1; i < requestLines.length; i++) {
+            String[] parts = requestLines[i].split(",");
+            if (parts[0].equals(medicationName)) {
+                newContent.append("\n").append(medicationName).append(",").append(quantity);
+                updated = true;
+            } else {
+                newContent.append("\n").append(requestLines[i]);
+            }
+        }
+
+        if (!updated) {
+            newContent.append("\n").append(medicationName).append(",").append(quantity);
+        }
+
+        writeCSVLines(newContent.toString().split("\n"), requestsFilePath);
+        System.out.println("Replenish request submitted to administrator.");
     }
 
     @Override
     public void displayReplenishRequests() {
         System.out.println("\nReplenishment Requests:");
         System.out.println("----------------------");
-        for (Map.Entry<String, Integer> request : requests.entrySet()) {
-            System.out.print(request.getKey() + ": ");
-            System.out.println(request.getValue());
+        String[] lines = readCSVLines(requestsFilePath);
+        for (int i = 1; i < lines.length; i++) {
+            String[] parts = lines[i].split(",");
+            if (parts.length == 2) {
+                System.out.println(parts[0] + ": " + parts[1]);
+            }
         }
     }
 
     @Override
     public boolean approveReplenishRequests(String medicineName) {
-        if (!requests.containsKey(medicineName)) {
+        String[] requestLines = readCSVLines(requestsFilePath);
+        String[] inventoryLines = readCSVLines(csvFilePath);
+        boolean requestFound = false;
+        int requestedQuantity = 0;
+
+        // Find and remove request
+        StringBuilder newRequests = new StringBuilder(requestLines[0]);
+        for (int i = 1; i < requestLines.length; i++) {
+            String[] parts = requestLines[i].split(",");
+            if (parts[0].equals(medicineName)) {
+                requestFound = true;
+                requestedQuantity = Integer.parseInt(parts[1]);
+            } else {
+                newRequests.append("\n").append(requestLines[i]);
+            }
+        }
+
+        if (!requestFound) {
             System.out.println("No replenish request found for: " + medicineName);
             return false;
         }
 
-        Medication medication = medications.get(medicineName);
-        int requestedQuantity = requests.get(medicineName);
+        // Update inventory
+        boolean updated = false;
+        for (int i = 1; i < inventoryLines.length; i++) {
+            String[] parts = inventoryLines[i].split(",");
+            if (parts[0].equals(medicineName)) {
+                int currentStock = Integer.parseInt(parts[1]);
+                int lowStockLevel = Integer.parseInt(parts[2]);
+                Medication med = new Medication(medicineName, currentStock, lowStockLevel);
+                med.replenish(requestedQuantity);
+                inventoryLines[i] = med.toCSVString();
+                updated = true;
+                break;
+            }
+        }
 
-        if (medication == null) {
+        if (!updated) {
             System.out.println("Medication no longer exists in inventory");
             return false;
         }
 
-        medication.replenish(requestedQuantity);
-        requests.remove(medicineName);
+        // save changes to files
+        writeCSVLines(newRequests.toString().split("\n"), requestsFilePath);
+        writeCSVLines(inventoryLines, csvFilePath);
 
         System.out.println("Approved replenishment of " + requestedQuantity + " units for " + medicineName);
-        System.out.println("New stock level: " + medication.getStock());
-
-        return true;    
+        return true;
     }
 }
