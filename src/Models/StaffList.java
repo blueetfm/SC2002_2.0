@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Scanner;
 import java.util.Set;
 
 
@@ -98,7 +99,7 @@ public class StaffList implements StaffManager {
             System.out.println("Staff not found: " + StaffID);
         }
     }
-    
+
     public synchronized void updateStaff(String staffID, String name, String role, String gender, int age) {
         List<Staff> staffList = readAllStaff();
         boolean updated = false;
@@ -117,6 +118,99 @@ public class StaffList implements StaffManager {
         } else {
             System.out.println("Staff not found: " + staffID);
         }
+    }
+
+    public void updateStaffDetails() {
+        Scanner scanner = new Scanner(System.in);
+        
+        System.out.println("Staff List");
+        System.out.println("--------------------");
+        List<Staff> staffList = readAllStaff();
+        Set<String> printed = new HashSet<>();
+        for (Staff staff : staffList) {
+            if (!printed.contains(staff.getStaffID())) {
+                System.out.printf("ID: %s, Name: %s, Role: %s, Gender: %s, Age: %d%n",
+                    staff.getStaffID(),
+                    staff.getName(),
+                    staff.getRole(),
+                    staff.getGender(),
+                    staff.getAge());
+                printed.add(staff.getStaffID());
+            }
+        }
+        
+        // Ask for staff ID to update
+        System.out.print("\nEnter Staff ID to update: ");
+        String staffId = scanner.nextLine();
+        
+        // Find the current staff details
+        Staff currentStaff = null;
+        for (Staff staff : staffList) {
+            if (staff.getStaffID().equals(staffId)) {
+                currentStaff = staff;
+                break;
+            }
+        }
+        
+        if (currentStaff == null) {
+            System.out.println("Staff not found!");
+            return;
+        }
+
+        // Show update options menu
+        System.out.println("\nWhat would you like to update?");
+        System.out.println("1. Name");
+        System.out.println("2. Role");
+        System.out.println("3. Gender");
+        System.out.println("4. Age");
+        System.out.println("5. Cancel");
+        
+        System.out.print("Enter your choice (1-5): ");
+        String choice = scanner.nextLine();
+        
+        // Initialize variables with current values
+        String newName = currentStaff.getName();
+        String newRole = currentStaff.getRole();
+        String newGender = currentStaff.getGender();
+        int newAge = currentStaff.getAge();
+        
+        switch (choice) {
+            case "1":
+                System.out.print("Enter new name: ");
+                newName = scanner.nextLine();
+                break;
+                
+            case "2":
+                System.out.print("Enter new role: ");
+                newRole = scanner.nextLine();
+                break;
+                
+            case "3":
+                System.out.print("Enter new gender: ");
+                newGender = scanner.nextLine();
+                break;
+                
+            case "4":
+                System.out.print("Enter new age: ");
+                try {
+                    newAge = Integer.parseInt(scanner.nextLine());
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid age format. Update cancelled.");
+                    return;
+                }
+                break;
+                
+            case "5":
+                System.out.println("Update cancelled.");
+                return;
+                
+            default:
+                System.out.println("Invalid choice! Update cancelled.");
+                return;
+        }
+        
+        // Call the updateStaff method with the new values
+        updateStaff(staffId, newName, newRole, newGender, newAge);
     }
 
     @Override
