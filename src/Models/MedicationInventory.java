@@ -1,22 +1,31 @@
 package Models;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.*;
 
 public class MedicationInventory implements MedicationInventoryManager {
-
+    private static MedicationInventory instance;
     private String csvFilePath;
     private String requestsFilePath;
     private static final String CSV_HEADER = "Medicine Name,Initial Stock,Low Stock Level Alert";
     private static final String REQUESTS_HEADER = "Medicine Name,Requested Quantity";
 
-    public MedicationInventory(String medicationCsvPath, String requestsCsvPath) {
+    private MedicationInventory(String medicationCsvPath, String requestsCsvPath) {
         this.csvFilePath = medicationCsvPath;
         this.requestsFilePath = requestsCsvPath;
         initializeFiles();
+    }
+
+    public static synchronized MedicationInventory getInstance(String medicationCsvPath, String requestsCsvPath) {
+        if (instance == null) {
+            instance = new MedicationInventory(medicationCsvPath, requestsCsvPath);
+        }
+        return instance;
     }
 
     private void initializeFiles() {
@@ -304,5 +313,18 @@ public class MedicationInventory implements MedicationInventoryManager {
 
         System.out.println("Approved replenishment of " + requestedQuantity + " units for " + medicineName);
         return true;
+    }
+
+    public boolean hasReplenishRequests() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(requestsFilePath))) {
+            // Skip header
+            reader.readLine();
+            
+            // Check if there's at least one line after header
+            return reader.readLine() != null;
+        } catch (IOException e) {
+            System.err.println("Error checking replenishment requests: " + e.getMessage());
+            return false;
+        }
     }
 }
