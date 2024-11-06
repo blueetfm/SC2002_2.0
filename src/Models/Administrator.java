@@ -11,10 +11,10 @@ public class Administrator extends User {
         super(hospitalID, password, role);
         this.name = name;
         this.gender = gender;
-        this.staffList = new StaffList("data(testCopy)/Staff_List.csv");
+        this.staffList = new StaffList("data/Staff_List.csv");
         this.medicationInventory = MedicationInventory.getInstance(
-            "data(testCopy)/Medicine_List.csv", 
-            "data(testCopy)/medication_requests.csv"
+            "data/Medicine_List.csv", 
+            "data/Medication_Replenish_Requests.csv"
         );
     }
 
