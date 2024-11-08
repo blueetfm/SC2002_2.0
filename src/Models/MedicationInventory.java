@@ -1,22 +1,31 @@
 package Models;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.*;
 
 public class MedicationInventory implements MedicationInventoryManager {
-
+    private static MedicationInventory instance;
     private String csvFilePath;
     private String requestsFilePath;
     private static final String CSV_HEADER = "Medicine Name,Initial Stock,Low Stock Level Alert";
     private static final String REQUESTS_HEADER = "Medicine Name,Requested Quantity";
 
-    public MedicationInventory(String medicationCsvPath, String requestsCsvPath) {
+    private MedicationInventory(String medicationCsvPath, String requestsCsvPath) {
         this.csvFilePath = medicationCsvPath;
         this.requestsFilePath = requestsCsvPath;
         initializeFiles();
+    }
+
+    public static synchronized MedicationInventory getInstance(String medicationCsvPath, String requestsCsvPath) {
+        if (instance == null) {
+            instance = new MedicationInventory(medicationCsvPath, requestsCsvPath);
+        }
+        return instance;
     }
 
     private void initializeFiles() {
@@ -84,12 +93,18 @@ public class MedicationInventory implements MedicationInventoryManager {
     }
     
     public void addMedication(String medicineName, int initialStock, int lowStockAlert) {
+        // Validate input
+        if (medicineName == null || medicineName.trim().isEmpty()) {
+            System.out.println("Medication name cannot be empty");
+            return;
+        }
+        
         String[] lines = readCSVLines(csvFilePath);
         
         // Check if medication already exists
         for (String line : lines) {
             String[] parts = line.split(",");
-            if (parts.length > 0 && parts[0].trim().equals(medicineName)) {
+            if (parts.length > 0 && parts[0].trim().equalsIgnoreCase(medicineName.trim())) {
                 System.out.println("Medication already exists: " + medicineName);
                 return;
             }
@@ -100,10 +115,10 @@ public class MedicationInventory implements MedicationInventoryManager {
         for (String line : lines) {
             newContent.append(line).append("\n");
         }
-        newContent.append(String.format("%s,%d,%d", medicineName, initialStock, lowStockAlert));
+        newContent.append(String.format("%s,%d,%d", medicineName.trim(), initialStock, lowStockAlert));
         
         writeCSVLines(newContent.toString().split("\n"), csvFilePath);
-        System.out.println("Added new medication: " + medicineName);
+        System.out.println("Successfully added new medication: " + medicineName);
     }
 
     public void removeMedication(String medicineName) {
@@ -124,16 +139,8 @@ public class MedicationInventory implements MedicationInventoryManager {
         if (found) {
             writeCSVLines(newContent.toString().split("\n"), csvFilePath);
             System.out.println("Removed medication: " + medicineName);
-            
-            // Also remove any pending replenishment requests for this medication
-            String[] requestLines = readCSVLines(requestsFilePath);
-            StringBuilder newRequests = new StringBuilder(requestLines[0]); // Keep header
-            for (int i = 1; i < requestLines.length; i++) {
-                if (!requestLines[i].startsWith(medicineName + ",")) {
-                    newRequests.append("\n").append(requestLines[i]);
-                }
-            }
-            writeCSVLines(newRequests.toString().split("\n"), requestsFilePath);
+            System.out.println("\n===Updated Inventory===");
+            viewMedicationInventory();
         } else {
             System.out.println("Medication not found: " + medicineName);
         }
@@ -306,5 +313,18 @@ public class MedicationInventory implements MedicationInventoryManager {
 
         System.out.println("Approved replenishment of " + requestedQuantity + " units for " + medicineName);
         return true;
+    }
+
+    public boolean hasReplenishRequests() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(requestsFilePath))) {
+            // Skip header
+            reader.readLine();
+            
+            // Check if there's at least one line after header
+            return reader.readLine() != null;
+        } catch (IOException e) {
+            System.err.println("Error checking replenishment requests: " + e.getMessage());
+            return false;
+        }
     }
 }

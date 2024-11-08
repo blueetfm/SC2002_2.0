@@ -12,8 +12,8 @@ public class User {
         this.role = role;
     }
 
-    public void login(String hospitalID, String password) {
-        //implementation to be added
+    public boolean login(String hospitalID, String password) {
+        return this.hospitalID.equals(hospitalID) && this.password.equals(password);
     }
     
     public void resetPassword(String newPassword){
