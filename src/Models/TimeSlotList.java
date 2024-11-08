@@ -81,14 +81,25 @@ public class TimeSlotList {
 		return 0;
 	}
 	
-	public static ArrayList<TimeSlot> getTimeSlotByID(String ID) {
+	public static ArrayList<TimeSlot> getTimeSlotByStaffID(String ID) {
 		 ArrayList<TimeSlot> outputList = new ArrayList<TimeSlot>();
 		for (TimeSlot timeSlot : timeSlotList) {
 			if (timeSlot.getStaffID().equals(ID)) { 
 				outputList.add(timeSlot);
 			}
 		}
-		System.out.println("Time Slot List returned.");
+		System.out.println("Doctor's Time Slot List returned.");
+		return outputList;
+	}
+	
+	public static ArrayList<TimeSlot> getTimeSlotByPatientID(String ID) {
+		 ArrayList<TimeSlot> outputList = new ArrayList<TimeSlot>();
+		for (TimeSlot timeSlot : timeSlotList) {
+			if (timeSlot.getPatientID().equals(ID)) { 
+				outputList.add(timeSlot);
+			}
+		}
+		System.out.println("Patient's Time Slot List returned.");
 		return outputList;
 	}
 }
