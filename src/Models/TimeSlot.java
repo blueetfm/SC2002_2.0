@@ -5,14 +5,16 @@ import enums.*;
 
 public class TimeSlot {
 	String staffID;
+	String patientID;
 	String name;
 	LocalDate date;
 	LocalTime time;
 	ScheduleStatus scheduleStatus;
 	
 
-	public TimeSlot(String staffID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
+	public TimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
 		this.staffID = staffID;
+		this.patientID = patientID;
 		this.name = name;
 		this.date = date;
 		this.time = time;
@@ -21,6 +23,10 @@ public class TimeSlot {
 	
 	public String getStaffID() {
 		return this.staffID;
+	}
+	
+	public String getPatientID() {
+		return this.patientID;
 	}
 	
 	public String getName() {
@@ -42,6 +48,11 @@ public class TimeSlot {
 	public String setStaffID(TimeSlot timeSlot, String staffID) {
 		timeSlot.staffID = staffID;
 		return timeSlot.staffID;
+	}
+	
+	public String setPatientID(TimeSlot timeSlot, String staffID) {
+		timeSlot.patientID = patientID;
+		return timeSlot.patientID;
 	}
 	
 	public String setName(TimeSlot timeSlot, String name) {

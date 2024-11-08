@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.io.*;
 import java.time.*;
 import enums.*;
+import Models.TimeSlot;
 
 public class TimeSlotList {
 	private static TimeSlotList instance;
@@ -16,18 +17,16 @@ public class TimeSlotList {
 		while ((line = br.readLine()) != null) {
 			String[] row = line.split(",");
 			if (row.length >= 5) {  
-                String staffID = row[0].trim(); 
-                String name = row[1].trim();
-                LocalDate date = LocalDate.parse(row[2].trim());
-                LocalTime time = LocalTime.parse(row[3].trim());
-                ScheduleStatus scheduleStatus = ScheduleStatus.valueOf(row[4].trim().toUpperCase());
-                TimeSlot timeSlot = new TimeSlot(staffID, name, date, time, scheduleStatus);
+                String staffID = row[0].trim();
+                String patientID = row[1].trim();
+                String name = row[2].trim();
+                LocalDate date = LocalDate.parse(row[3].trim());
+                LocalTime time = LocalTime.parse(row[4].trim());
+                ScheduleStatus scheduleStatus = ScheduleStatus.valueOf(row[5].trim().toUpperCase());
+                TimeSlot timeSlot = new TimeSlot(staffID, patientID, name, date, time, scheduleStatus);
                 timeSlotList.add(timeSlot);
-            }
-			
+            }	
 		}
-
-		
 	}
 
 	public static TimeSlotList getTimeSlotList() throws IOException {
@@ -35,5 +34,61 @@ public class TimeSlotList {
 			instance = new TimeSlotList();
 		}	
 		return instance;
+	}
+	
+	public static int getTimeSlot(String name) {
+		for (TimeSlot timeSlot : timeSlotList) {
+			if (timeSlot.getName().equals(name)) { 
+				return 1;
+			}
+		}
+		return 0;
+	}
+	
+	public static int addTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
+		if (getTimeSlot(name) == 1) {
+			System.out.println("Name used, use a different name.");
+			return 0;
+		}
+		TimeSlot newSlot = new TimeSlot(staffID, patientID, name, date, time, scheduleStatus);
+		timeSlotList.add(newSlot);
+		System.out.println("Time Slot added.");
+		return 1;
+	}
+	
+	public static int deleteTimeSlot(String name) {
+		for (TimeSlot timeSlot : timeSlotList) {
+			if (timeSlot.getName().equals(name)) { 
+				timeSlotList.remove(timeSlot);
+				System.out.println("Time Slot removed.");
+				return 1;
+			}
+		}
+		System.out.println("Error: Time Slot not found.");
+		return 0;
+	}
+	
+	public static int editTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
+		for (TimeSlot timeSlot : timeSlotList) {
+			if (timeSlot.getName().equals(name)) { 
+				deleteTimeSlot(name);
+				addTimeSlot(staffID, patientID, name, date, time, scheduleStatus);
+				System.out.println("Time Slot edited.");
+				return 1;
+			}
+		}
+		System.out.println("Error: Time Slot not found.");
+		return 0;
+	}
+	
+	public static ArrayList<TimeSlot> getTimeSlotByID(String ID) {
+		 ArrayList<TimeSlot> outputList = new ArrayList<TimeSlot>();
+		for (TimeSlot timeSlot : timeSlotList) {
+			if (timeSlot.getStaffID().equals(ID)) { 
+				outputList.add(timeSlot);
+			}
+		}
+		System.out.println("Time Slot List returned.");
+		return outputList;
 	}
 }
