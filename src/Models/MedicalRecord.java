@@ -1,35 +1,52 @@
 package Models;
 
-import java.util.*;
+import java.util.ArrayList;
 
 public class MedicalRecord {
-    // protected String diagnosis;
-    // protected String medication;
-    // protected String treatment;
-    protected Map<String, String> record;
+	String patientID;
+	ArrayList<Record> recordList;
 
-    public MedicalRecord(String diagnosis, String medication, String treatment){
-        record = new HashMap<String, String>();
-        record.put("Diagnosis", diagnosis);
-        record.put("Medication", medication);
-        record.put("Treatment", treatment);
+	public MedicalRecord(String patientID) {
+		this.patientID = patientID;
+		this.recordList = new ArrayList<Record>();
+	}
+	
+	public int addRecord(MedicalRecord medicalRecord, String diagnosis, String medication, String treatment) {
+		Record record = new Record(diagnosis, medication, treatment);
+		medicalRecord.recordList.add(record);
+		return 1;
+	}
+	
+	public Record selectRecord(MedicalRecord medicalRecord, String diagnosis) {
+		for (Record record: medicalRecord.recordList) {
+			if (record.getDiagnosis().equals(diagnosis)) {
+				return record;
+			}
+		}
+		System.out.println("Error: record not found.");
+		return null;
+	}
+	
+	public int updateRecord(MedicalRecord medicalRecord, String diagnosis, String medication, String treatment) {
+		for (Record record: medicalRecord.recordList) {
+			if (record.getDiagnosis().equals(diagnosis)) {
+				record.medication = medication;
+				record.treatment = treatment;
+				return 1;
+			}
+		}
+		System.out.println("Error: record not found.");
+		return 0;
+	}
 
-        // medicalHistory = [{
-        //     "diagnosis": xx,
-        //     "medication": xx,
-        //     "treatment": xx
-        // }, {
-        //     "diagnosis:"
-        // }]
-    }
-
-    public Map<String, String> getRecord(){
-        return record;
-    }
-    
-    // public MedicalRecord(String diagnosis, String medication, String treatment){
-    //     this.diagnosis = diagnosis;
-    //     this.medication = medication;
-    //     this.treatment = treatment;
-    // }
+	public int deleteRecord(MedicalRecord medicalRecord, String diagnosis) {
+		for (Record record: medicalRecord.recordList) {
+			if (record.getDiagnosis().equals(diagnosis)) {
+				recordList.remove(record);
+				return 1;
+			}
+		}
+		System.out.println("Error: record not found.");
+		return 0;
+	}
 }
