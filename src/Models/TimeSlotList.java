@@ -6,7 +6,7 @@ import java.time.*;
 import enums.*;
 import Models.TimeSlot;
 
-public class TimeSlotList {
+public class TimeSlotList implements TimeSlotManager{
 	private static TimeSlotList instance;
 	private static ArrayList<TimeSlot> timeSlotList;
 	
@@ -45,7 +45,7 @@ public class TimeSlotList {
 		return 0;
 	}
 	
-	public static int addTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
+	public int addTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
 		if (getTimeSlot(name) == 1) {
 			System.out.println("Name used, use a different name.");
 			return 0;
@@ -56,7 +56,7 @@ public class TimeSlotList {
 		return 1;
 	}
 	
-	public static int deleteTimeSlot(String name) {
+	public int deleteTimeSlot(String name) {
 		for (TimeSlot timeSlot : timeSlotList) {
 			if (timeSlot.getName().equals(name)) { 
 				timeSlotList.remove(timeSlot);
@@ -68,7 +68,7 @@ public class TimeSlotList {
 		return 0;
 	}
 	
-	public static int editTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
+	public int editTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
 		for (TimeSlot timeSlot : timeSlotList) {
 			if (timeSlot.getName().equals(name)) { 
 				deleteTimeSlot(name);
@@ -81,7 +81,7 @@ public class TimeSlotList {
 		return 0;
 	}
 	
-	public static ArrayList<TimeSlot> getTimeSlotByStaffID(String ID) {
+	public ArrayList<TimeSlot> getTimeSlotByStaffID(String ID) {
 		 ArrayList<TimeSlot> outputList = new ArrayList<TimeSlot>();
 		for (TimeSlot timeSlot : timeSlotList) {
 			if (timeSlot.getStaffID().equals(ID)) { 
@@ -92,7 +92,7 @@ public class TimeSlotList {
 		return outputList;
 	}
 	
-	public static ArrayList<TimeSlot> getTimeSlotByPatientID(String ID) {
+	public ArrayList<TimeSlot> getTimeSlotByPatientID(String ID) {
 		 ArrayList<TimeSlot> outputList = new ArrayList<TimeSlot>();
 		for (TimeSlot timeSlot : timeSlotList) {
 			if (timeSlot.getPatientID().equals(ID)) { 
