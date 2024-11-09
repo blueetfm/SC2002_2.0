@@ -1,14 +1,20 @@
 package Models;
 
 import java.time.LocalDate;
-import enums.*;
+import enums.Service;
+import enums.PrescriptionStatus;
 
 public interface AppointmentOutcomeRecordManager {
-    public void createAppointmentOutcomeRecord(String appointmentID, String hospitalID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes);
 
-    public void readAppointmentOutcomeRecord(String appointmentID);
+    void createAppointmentOutcomeRecord(String appointmentID, String hospitalID, LocalDate date, Service service, 
+                                        String medication, PrescriptionStatus prescriptionStatus, String notes);
 
-    public void updateAppointmentOutcomeRecord(String appointmentID);
+    void viewAppointmentOutcomeRecords();
 
-    public void deleteAppointmentOutcomeRecord(String appointmentID);
+    void updateAppointmentOutcomeRecord(String appointmentID, LocalDate newDate, Service newService, 
+                                        String newMedication, PrescriptionStatus newPrescriptionStatus, String newNotes);
+
+    void deleteAppointmentOutcomeRecord(String appointmentID);
+
+    boolean hasAppointmentOutcomeRecords();
 }
