@@ -50,6 +50,18 @@ public class Appointment {
         return this.patientID;
     }
 
+    public String getDoctorID(){
+        return this.doctorID;
+    }
+
+    public LocalDate getDate(){
+        return this.date;
+    }
+
+    public LocalTime getTimeSlot(){
+        return this.timeSlot;
+    }
+
     public Status getStatus(){
         return this.status;
     }

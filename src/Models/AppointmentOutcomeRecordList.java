@@ -109,7 +109,7 @@ public class AppointmentOutcomeRecordList implements AppointmentOutcomeRecordMan
     public void updateAppointmentOutcomeRecord(String appointmentID, LocalDate newDate, Service newService, String newMedication, PrescriptionStatus newPrescriptionStatus, String newNotes) {
         String[] lines = readCSVLines(csvFilePath);
         boolean found = false;
-        StringBuilder newContent = new StringBuilder(lines[0]); // Keep header
+        StringBuilder newContent = new StringBuilder(lines[0]);
         
         // Update record if found
         for (int i = 1; i < lines.length; i++) {
@@ -142,7 +142,7 @@ public class AppointmentOutcomeRecordList implements AppointmentOutcomeRecordMan
     public void deleteAppointmentOutcomeRecord(String appointmentID) {
         String[] lines = readCSVLines(csvFilePath);
         boolean found = false;
-        StringBuilder newContent = new StringBuilder(lines[0]); // Keep header
+        StringBuilder newContent = new StringBuilder(lines[0]); 
         
         for (int i = 1; i < lines.length; i++) {
             String[] parts = lines[i].split(",");

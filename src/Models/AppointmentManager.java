@@ -4,47 +4,26 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import enums.*;
 
-// bigger manager of AppointmentOutcomeRecordManager?
-// acts as the controller that decides when and how to interact with AppointmentOutcomeRecordManager
-
-// BIG QUESTION: DO I NEED A INTERFACE FOR THIS? 
 public class AppointmentManager {
     private static AppointmentManager instance;
     private AppointmentList appointmentList;
     private AppointmentOutcomeRecordList outcomeRecordList;
 
-    private AppointmentManager() {
-        this.appointmentList = AppointmentList.getInstance();
-        this.outcomeRecordList = AppointmentOutcomeRecordList.getInstance();
+    private AppointmentManager(String appointmentFilePath, String outcomeFilePath) {
+        this.appointmentList = AppointmentList.getInstance(appointmentFilePath);
+        this.outcomeRecordList = AppointmentOutcomeRecordList.getInstance(outcomeFilePath);
     }
 
-    public static AppointmentManager getInstance() {
+    public static synchronized AppointmentManager getInstance(String appointmentFilePath, String outcomeFilePath) {
         if (instance == null) {
-            instance = new AppointmentManager();
+            instance = new AppointmentManager(appointmentFilePath, outcomeFilePath);
         }
         return instance;
     }
 
+    // CRUD
     public void createAppointment(String appointmentID, String patientID, String doctorID, LocalDate date, LocalTime timeSlot) {
         appointmentList.createAppointment(appointmentID, patientID, doctorID, date, timeSlot);
-    }
-
-    public void createAppointmentOutcome(String appointmentID, String hospitalID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes) {
-        Appointment appointment = getAppointmentById(appointmentID);
-        if (appointment != null && appointment.getStatus() == Status.COMPLETED) {
-            outcomeRecordList.createAppointmentOutcomeRecord(appointmentID, hospitalID, date, service, medication, prescriptionStatus, notes);
-        } else {
-            System.out.println("Appointment not found or not completed. Cannot create outcome record.");
-        }
-    }
-
-    public Appointment getAppointmentById(String appointmentID) {
-        for (Appointment appointment : appointmentList.appointmentList) {
-            if (appointment.getAppointmentID().equals(appointmentID)) {
-                return appointment;
-            }
-        }
-        return null;
     }
 
     public void viewAppointment(String appointmentID) {
@@ -59,12 +38,21 @@ public class AppointmentManager {
         appointmentList.deleteAppointment(appointmentID);
     }
 
+    public void createAppointmentOutcome(String appointmentID, String hospitalID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes) {
+        Appointment appointment = appointmentList.getAppointmentById(appointmentID);
+        if (appointment != null && appointment.getStatus() == Status.COMPLETED) {
+            outcomeRecordList.createAppointmentOutcomeRecord(appointmentID, hospitalID, date, service, medication, prescriptionStatus, notes);
+        } else {
+            System.out.println("Appointment not found or not completed. Cannot create outcome record.");
+        }
+    }
+
     public void viewAppointmentOutcome(String appointmentID) {
-        outcomeRecordList.readAppointmentOutcomeRecord(appointmentID);
+        outcomeRecordList.viewAppointmentOutcomeRecords();
     }
 
     public void updateAppointmentOutcome(String appointmentID) {
-        outcomeRecordList.updateAppointmentOutcomeRecord(appointmentID);
+        // outcomeRecordList.updateAppointmentOutcomeRecord(appointmentID);
     }
 
     public void deleteAppointmentOutcome(String appointmentID) {
