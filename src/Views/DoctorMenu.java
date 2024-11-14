@@ -56,7 +56,7 @@ public class DoctorMenu implements Menu {
 				String medication = sc.next();
 				System.out.print("Enter notes for appointment: ");
 				String notes = sc.next();
-				AppointmentOutcomeRecordList.getInstance().createAppointmentOutcomeRecord(appointmentID, hospitalID, null, null, medication, PrescriptionStatus.PENDING, notes);
+				// AppointmentOutcomeRecordList.getInstance().createAppointmentOutcomeRecord(appointmentID, hospitalID, null, null, medication, PrescriptionStatus.PENDING, notes);
 
 				break;
 			case 8: 
