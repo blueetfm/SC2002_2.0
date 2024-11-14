@@ -1,9 +1,12 @@
 package Models;
 
 import java.util.ArrayList;
+
+import Enums.*;
+
 import java.io.*;
 import java.time.*;
-import enums.*;
+
 import Models.TimeSlot;
 
 public class TimeSlotList implements TimeSlotManager{

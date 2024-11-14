@@ -2,7 +2,8 @@ package Models;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import enums.*;
+
+import Enums.*;
 
 // bigger manager of AppointmentOutcomeRecordManager?
 // acts as the controller that decides when and how to interact with AppointmentOutcomeRecordManager

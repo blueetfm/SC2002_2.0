@@ -1,8 +1,8 @@
 package Models;
 import java.time.LocalDate;
 import java.util.*;
-import enums.*;
 
+import Enums.*;
 import Views.UserMenu;
 
 public class AppointmentOutcomeRecordList implements AppointmentOutcomeRecordManager {

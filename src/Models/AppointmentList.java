@@ -2,8 +2,8 @@ package Models;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
-import enums.*;
 
+import Enums.*;
 import Views.UserMenu;
 
 public class AppointmentList {

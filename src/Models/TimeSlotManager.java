@@ -4,8 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+import Enums.ScheduleStatus;
 import Models.TimeSlotList;
-import enums.ScheduleStatus;
 
 public interface TimeSlotManager {
 	public int addTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus);
