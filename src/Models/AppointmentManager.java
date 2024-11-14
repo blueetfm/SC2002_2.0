@@ -12,11 +12,9 @@ import Enums.*;
 public class AppointmentManager {
     private static AppointmentManager instance;
     private AppointmentList appointmentList;
-    private AppointmentOutcomeRecordList outcomeRecordList;
 
     private AppointmentManager() {
         this.appointmentList = AppointmentList.getInstance();
-        this.outcomeRecordList = AppointmentOutcomeRecordList.getInstance();
     }
 
     public static AppointmentManager getInstance() {
@@ -33,7 +31,7 @@ public class AppointmentManager {
     public void createAppointmentOutcome(String appointmentID, String hospitalID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes) {
         Appointment appointment = getAppointmentById(appointmentID);
         if (appointment != null && appointment.getStatus() == Status.COMPLETED) {
-            outcomeRecordList.createAppointmentOutcomeRecord(appointmentID, hospitalID, date, service, medication, prescriptionStatus, notes);
+            // outcomeRecordList.createAppointmentOutcomeRecord(appointmentID, hospitalID, date, service, medication, prescriptionStatus, notes);
         } else {
             System.out.println("Appointment not found or not completed. Cannot create outcome record.");
         }
@@ -61,14 +59,14 @@ public class AppointmentManager {
     }
 
     public void viewAppointmentOutcome(String appointmentID) {
-        outcomeRecordList.readAppointmentOutcomeRecord(appointmentID);
+        // outcomeRecordList.readAppointmentOutcomeRecord(appointmentID);
     }
 
     public void updateAppointmentOutcome(String appointmentID) {
-        outcomeRecordList.updateAppointmentOutcomeRecord(appointmentID);
+        // outcomeRecordList.updateAppointmentOutcomeRecord(appointmentID);
     }
 
     public void deleteAppointmentOutcome(String appointmentID) {
-        outcomeRecordList.deleteAppointmentOutcomeRecord(appointmentID);
+        // outcomeRecordList.deleteAppointmentOutcomeRecord(appointmentID);
     }
 }

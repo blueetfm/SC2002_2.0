@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 import Enums.*;
 import Models.AppointmentOutcomeRecord;
-import Models.AppointmentOutcomeRecordList;
 
 public class DoctorMenu implements Menu {
 	public void showMenu() {
