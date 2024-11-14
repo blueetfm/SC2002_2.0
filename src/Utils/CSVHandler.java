@@ -6,19 +6,32 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+
 import java.util.*;
 
 public class CSVHandler {
 
-    private String[] readCSVLines(String filePath) {
-        try {
-            return Files.readAllLines(Paths.get(filePath)).toArray(new String[0]);
-        } catch (IOException e) {
-            System.err.println("Error reading CSV file: " + e.getMessage());
-            return new String[0];
+    private static final String COMMA_DELIMITER = ",";
+
+    private List<List<String>> readCSVLines(String filePath) {
+        List<List<String>> records = new ArrayList<>();
+        File file = new File(filePath);
+
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] values = line.split(COMMA_DELIMITER);
+                    records.add(Arrays.asList(values));
+                }
+            } catch (IOException e) {
+                System.err.println("Error reading the CSV file: " + e.getMessage());
+            }
+        } else {
+            System.out.println("File does not exist: " + filePath);
         }
+
+        return records; 
     }
 
     private void writeCSVLines(String[] headers, String[] lines, String filePath) {
