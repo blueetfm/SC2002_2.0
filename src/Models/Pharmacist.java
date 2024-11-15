@@ -35,11 +35,7 @@ public class Pharmacist extends User {
                 System.out.println("Invalid appointment ID");
                 return false;
             }
-<<<<<<< HEAD
-            AppointmentOutcomeRecordList.readAppointmentOutcomeRecord(appointmentID);
-=======
             // AppointmentOutcomeRecordList.getInstance().readAppointmentOutcomeRecord(appointmentID);
->>>>>>> 5154b130b112b524550b10d15cd356fe540613bf
             return true;
         } catch (Exception e) {
             System.err.println("Error viewing appointment: " + e.getMessage());
