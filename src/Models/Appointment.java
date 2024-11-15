@@ -1,8 +1,10 @@
 package Models;
 
 import java.util.*;
+
+import Enums.*;
+
 import java.time.*;
-import enums.*;
 
 // Appointment details should include:
 // - Patient ID

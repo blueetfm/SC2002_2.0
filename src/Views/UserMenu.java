@@ -26,13 +26,17 @@ public class UserMenu implements Menu {
                 sc.nextLine();
 
                 switch (choice) {
-                    case 1 -> handleLogin();
-                    case 2 -> {
+                    case 1:
+                        handleLogin();
+                        break;
+                    case 2:
                         System.out.println("Exiting system...");
                         isSystemRunning = false;
                         sc.close();
-                    }
-                    default -> System.out.println("Invalid choice. Please try again.");
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                        break;
                 }
             } catch (Exception e) {
                 System.out.println("Invalid input. Please try again.");

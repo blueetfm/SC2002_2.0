@@ -1,7 +1,9 @@
 package Models;
 import java.util.*;
+
+import Enums.*;
+
 import java.time.*;
-import enums.*;
 
 // Date of Appointment
 // ● Type of service provided (e.g., consultation, X-ray, blood test etc).

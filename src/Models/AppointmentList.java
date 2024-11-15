@@ -4,7 +4,13 @@ import java.io.*;
 import java.nio.file.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
+<<<<<<< HEAD
 import java.util.ArrayList;
+=======
+import java.util.*;
+
+import Enums.*;
+>>>>>>> 5154b130b112b524550b10d15cd356fe540613bf
 import Views.UserMenu;
 
 public class AppointmentList {

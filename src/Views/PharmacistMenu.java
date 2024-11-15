@@ -87,17 +87,27 @@ public class PharmacistMenu implements Menu {
     public boolean handleMenuChoice(int choice) {
         try {
             switch (choice) {
-                case 1 -> handleAppointmentView();
-                case 2 -> currentPharmacist.updatePrescriptionStatus();
-                case 3 -> currentPharmacist.viewMedicationInventory();
-                case 4 -> handleReplenishmentRequest();
-                case 5 -> {
+                case 1:
+                    handleAppointmentView();
+                    break;
+                case 2:
+                    currentPharmacist.updatePrescriptionStatus();
+                    break;
+                case 3:
+                    currentPharmacist.viewMedicationInventory();
+                    break;
+                case 4:
+                    handleReplenishmentRequest();
+                    break;
+                case 5:
                     if (currentPharmacist.logout()) {
                         isRunning = false;
                         return false;
                     }
-                }
-                default -> System.out.println("Invalid choice. Please try again.");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+                    break;
             }
         } catch (Exception e) {
             System.err.println("Error processing choice: " + e.getMessage());
