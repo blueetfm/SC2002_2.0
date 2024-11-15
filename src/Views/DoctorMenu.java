@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import Enums.*;
 import Models.AppointmentOutcomeRecord;
+import Utils.DateTimeFormatUtils;
 
 public class DoctorMenu implements Menu {
 	public void showMenu() {
@@ -48,7 +49,7 @@ public class DoctorMenu implements Menu {
 				System.out.print("Enter Hospital ID of Patient: ");
 				String hospitalID = sc.next();
 				System.out.print("Enter date of appointment in the form 'YYYY-MM-DD': ");
-				LocalDate date = LocalDate.parse(sc.next(), formatter);
+				LocalDate date = LocalDate.parse(sc.next(), DateTimeFormatUtils.DATE_FORMATTER);
 				System.out.print("Enter service provided: ");
 				Enums.Service service = Enums.Service.valueOf(sc.next().toUpperCase());
 				System.out.print("Enter medication prescribed: ");

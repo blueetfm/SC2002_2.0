@@ -23,13 +23,14 @@ public class Appointment {
     protected Status status;
     protected AppointmentOutcomeRecord outcomeRecord; 
 
-    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, LocalTime timeSlot){
+    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, LocalTime timeSlot, Status status, AppointmentOutcomeRecord outcomeRecord){
         this.appointmentID = appointmentID;
         this.patientID = patientID;
         this.doctorID = doctorID;
         this.date = date;
         this.timeSlot = timeSlot;
         this.status = Status.AVAILABLE;
+        this.outcomeRecord = outcomeRecord;
     }
 
     // setters
