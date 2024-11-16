@@ -12,7 +12,7 @@ import Views.PatientMenu;
 // ○ Patients can update non-medical personal information such as email address and
 // contact number.
 // ○ Patients are not allowed to modify the past diagnoses, prescribed medications,
-// treatments or blood type.. 
+// treatments or blood type..
 
 
 public class Patient extends User {
@@ -34,41 +34,45 @@ public class Patient extends User {
         this.patientID = patientID;
         this.bloodType = bloodType;
     }
-    
+
 //	methods return 0 if no error, else returns 1
 
-    public void viewMedicalRecord(){ 
-        
+    public void viewMedicalRecord(){
+		
     }
-    
+
+	public String getPatientId() {
+		return this.patientID;
+	}
+
     public int updatePersonalInformation() {
 		return 0;
 	}
-	
+
 	public int viewAvailableAppointmentSlots() {
 		return 0;
 	}
-	
+
 	public int scheduleAppointment() {
 		return 0;
 	}
-	
+
 	public int rescheduleAppointment() {
 		return 0;
 	}
-	
+
 	public int cancelAppointment() {
 		return 0;
 	}
-	
+
 	public int viewScheduledAppointments() {
 		return 0;
 	}
-	
+
 	public int viewAppointmentOutcomeRecords() {
 		return 0;
 	}
-	
+
 	public int logout() {
 		return 0;
 	}
@@ -81,9 +85,4 @@ public class Patient extends User {
     public void setEmail(String email){
         this.email = email;
     }
-
-
-
-
-    
 }
