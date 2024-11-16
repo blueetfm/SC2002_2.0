@@ -86,7 +86,7 @@ public class UserMenu implements Menu {
     private void routeToAppropriateMenu(String hospitalID) {
         if (hospitalID.startsWith("P") && (hospitalID.length() == 5)) {
             System.out.println("Showing Patient Menu");
-            new PatientMenu().showMenu();
+            new PatientMenu(hospitalID).showMenu();
         } else if (hospitalID.startsWith("P") && (hospitalID.length() == 4)) {
             new PharmacistMenu().showMenu();
         } else if (hospitalID.startsWith("D")) {

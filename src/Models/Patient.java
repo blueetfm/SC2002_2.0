@@ -84,8 +84,34 @@ public class Patient extends User {
 		System.out.print("Email changed successfully");
     }
 
+	// admin setters 
+	public void setPatientID(String patientID) {
+		this.patientID = patientID;
+		System.out.println("Patient ID changed successfully");
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+		System.out.println("Name changed successfully");
+	}
+	
+	public void setDateOfBirth(LocalDate birthDate) {
+		this.birthDate = birthDate;
+		System.out.println("Date of birth changed successfully");
+	}
+	
+	public void setGender(String gender) {
+		this.gender = gender;
+		System.out.println("Gender changed successfully");
+	}
+	
+	public void setBloodType(String bloodType) {
+		this.bloodType = bloodType;
+		System.out.println("Blood type changed successfully");
+	}
+
 	// utils 
-	public String getPatientId() {
+	public String getPatientID() {
 		return this.patientID;
 	}
 

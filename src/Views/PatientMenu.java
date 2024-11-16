@@ -1,7 +1,16 @@
 package Views;
 import java.util.Scanner;
+import Models.Patient;
+import Models.PatientList;
+import Models.PatientManager;
 
 public class PatientMenu implements Menu {
+	private String hospitalID;
+	private PatientManager patientmanager = PatientList.getInstance();
+	private Patient patient = patientmanager.getPatient(hospitalID);
+	public PatientMenu(String hospitalID) {
+		this.hospitalID=hospitalID;
+	}
 	public void showMenu() {
 		int choice;
 		Scanner sc = new Scanner(System.in);
