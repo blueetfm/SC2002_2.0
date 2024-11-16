@@ -16,7 +16,7 @@ public class UserMenu implements Menu {
     @Override
     public void showMenu() {
         while (isSystemRunning) {
-            System.out.println("\n=== Hospital Management System ===");
+            System.out.println("\n===Welcome to HMS!===");
             System.out.println("1: Login");
             System.out.println("2: Exit System");
             System.out.print("Enter your choice: ");
