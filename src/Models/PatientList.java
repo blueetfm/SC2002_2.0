@@ -9,7 +9,6 @@ import Utils.CSVHandler;
 
 public class PatientList implements PatientManager {
     private static PatientList instance;
-    private static CSVHandler csvhandler;
     protected ArrayList<Patient> patientList;
 
     public PatientList(){
@@ -25,16 +24,40 @@ public class PatientList implements PatientManager {
     
     @ Override
     public void createPatient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String patientID, String bloodType, List<MedicalRecord> medicalHistory) {
+        String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
+        List<String> allLines = new ArrayList<>();
         for (Patient patient: patientList) {
             if (patient.getPatientId().equals(hospitalID)) {
                 System.out.println("Patient profile already exists.");
                 return;
             }
-        Patient newPatient = new Patient(hospitalID, password, role, name, birthDate, gender, phoneNum, email,  patientID,  bloodType, medicalHistory);
+            String line = String.format("%s,%s,%s,%s,%s,%s",
+                patient.getPatientId(),
+                patient.getName(),
+                patient.getDateOfBirth(),
+                patient.getGender(),
+                patient.getBloodType(),
+                patient.getContactInformation()
+            );
+            allLines.add(line);
+        }
+        Patient newPatient = new Patient(hospitalID, password, role, name, birthDate, gender, phoneNum, email, bloodType, medicalHistory);
         patientList.add(newPatient);
-        System.out.println("Patient successfully created!"); }
-
+        String newLine = String.format("%s,%s,%s,%s,%s,%s",
+           newPatient.getPatientId(),
+           newPatient.getName(),
+           newPatient.getDateOfBirth(),
+           newPatient.getGender(),
+           newPatient.getBloodType(),
+           newPatient.getContactInformation()
+        );
+        allLines.add(newLine);
+        String[] lines = allLines.toArray(new String[0]);
+        CSVHandler.writeCSVLines(headers, lines, "../../data/Patient_List.csv"); 
+        System.out.println("Patient successfully created!"); 
     }
+
+    
 
     public Patient getPatient(String hospitalID) {
         String loggedInID = UserMenu.getLoggedInHospitalID(); 
@@ -53,19 +76,38 @@ public class PatientList implements PatientManager {
         }
 
         System.out.println("No matching patient profile ID.");
-    
+
         return null;
     }
 
-    public void deletePatient(String hospitalID)  {
-        for (Patient patient: patientList) {
-            if (patient.getPatientId().equals(hospitalID)){
-                System.out.println("Succesfully deleted patient profile.");
+    public void deletePatient(String hospitalID) {
+        String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
+
+        List<String> remainingLines = new ArrayList<>();
+        boolean found = false;
+        
+        for (Patient patient : patientList) {
+            if (!patient.getPatientId().equals(hospitalID)) {
+                String line = String.format("%s,%s,%s,%s,%s,%s",
+                    patient.getPatientId(),
+                    patient.getName(),
+                    patient.getDateOfBirth(),
+                    patient.getGender(),
+                    patient.getBloodType(),
+                    patient.getContactInformation()
+                );
+                remainingLines.add(line);
+            } else {
+                found = true;
                 patientList.remove(patient);
-                return;
             }
         }
+    
+        if (found) {
+            String[] lines = remainingLines.toArray(new String[0]);
+            CSVHandler.writeCSVLines(headers, lines, "../../data/Patient_List.csv"); 
+            System.out.println("Successfully deleted patient profile.");
+            return;}
         System.out.println("No matching patient profile ID.");
-        return;
     }
 }

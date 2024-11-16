@@ -24,14 +24,14 @@ public class Patient extends User {
     protected String patientID;
     protected String bloodType;
 
-    public Patient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String patientID, String bloodType, List<MedicalRecord> medicalHistory){
+    public Patient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String bloodType, List<MedicalRecord> medicalHistory){
         super(hospitalID, password, role);
         this.name = name;
         this.birthDate = birthDate;
         this.gender = gender;
         this.phoneNum = phoneNum;
         this.email = email;
-        this.patientID = patientID;
+        this.patientID = hospitalID;
         this.bloodType = bloodType;
     }
 
@@ -40,14 +40,6 @@ public class Patient extends User {
     public void viewMedicalRecord(){
 		
     }
-
-	public String getPatientId() {
-		return this.patientID;
-	}
-
-    public int updatePersonalInformation() {
-		return 0;
-	}
 
 	public int viewAvailableAppointmentSlots() {
 		return 0;
@@ -73,16 +65,51 @@ public class Patient extends User {
 		return 0;
 	}
 
+
+
 	public int logout() {
 		return 0;
 	}
 
-    // setters (only non-medical info)
+
+
+    // Update personal information(only non-medical info)
     public void setPhoneNum(String phoneNum){
         this.phoneNum = phoneNum;
+		System.out.print("Phone number changed successfully");
     }
 
     public void setEmail(String email){
         this.email = email;
+		System.out.print("Email changed successfully");
     }
+
+	// utils 
+	public String getPatientId() {
+		return this.patientID;
+	}
+
+	public String getPhoneNum(){
+        return this.phoneNum;
+    }
+
+    public String getEmail(){
+        return this.email;
+    }
+	public String getName() {
+		return this.name;
+	}
+	public LocalDate getDateOfBirth(){
+		return this.birthDate;
+	}
+	public String getGender() {
+		return this.gender;
+	}
+    public String getBloodType() {
+		return this.bloodType;
+	}
+	public String getContactInformation() {
+		return this.phoneNum;
+	}
+
 }
