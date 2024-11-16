@@ -13,7 +13,7 @@ public class CSVHandler {
 
     private static final String COMMA_DELIMITER = ",";
 
-    private List<List<String>> readCSVLines(String filePath) {
+    public static List<List<String>> readCSVLines(String filePath) {
         List<List<String>> records = new ArrayList<>();
         File file = new File(filePath);
 
@@ -34,7 +34,7 @@ public class CSVHandler {
         return records; 
     }
 
-    private void writeCSVLines(String[] headers, String[] lines, String filePath) {
+    public static void writeCSVLines(String[] headers, String[] lines, String filePath) {
         File file = new File(filePath);
         boolean headersAlreadyPresent = false;
 

@@ -30,10 +30,13 @@ public class Appointment {
         this.date = date;
         this.timeSlot = timeSlot;
         this.status = Status.AVAILABLE;
-        this.outcomeRecord = outcomeRecord;
+        this.outcomeRecord = null;
     }
 
     // setters
+    public void setStatus(Enums.Status status){
+        this.status = status;
+    }
     public void setAppointmentOutcomeRecord(AppointmentOutcomeRecord outcomeRecord){
         this.outcomeRecord = outcomeRecord;
         this.status = Status.COMPLETED;
