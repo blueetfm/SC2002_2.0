@@ -109,8 +109,9 @@ public class AdministratorMenu implements Menu {
         System.out.println("1: Add new staff");
         System.out.println("2: Remove staff");
         System.out.println("3: Update staff details");
-        System.out.println("4: Return to main menu");
-        System.out.print("Enter your choice (1-4): ");
+        System.out.println("4: Reset user password");
+        System.out.println("5: Return to main menu");
+        System.out.print("Enter your choice (1-5): ");
     }
 
 	private void displayInventoryMenu() {
@@ -146,10 +147,13 @@ public class AdministratorMenu implements Menu {
                         handleUpdateStaff();
                         break;
                     case 4:
+                        handleUpdatePassword();
+                        break;
+                    case 5:
                         managing = false;
                         break;
                     default:
-                        System.out.println("Invalid choice! Please enter a number between 1 and 4.");
+                        System.out.println("Invalid choice! Please enter a number between 1 and 5.");
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid number.");
@@ -265,6 +269,34 @@ public class AdministratorMenu implements Menu {
             System.out.println("Staff updated successfully!");
         } else {
             System.out.println("Failed to update staff.");
+        }
+    }
+
+    private void handleUpdatePassword() {
+        System.out.println("\nPassword Reset Menu");
+        System.out.println("--------------------");
+        System.out.println("Hospital ID Format:");
+        System.out.println("Staff: D*** (Doctors), A*** (Administrators)");
+        System.out.println("Patients: P**** (Regular patients)");
+        System.out.println("--------------------");
+        
+        System.out.print("Enter Hospital ID to reset password: ");
+        String hospitalId = getValidInput("Hospital ID");
+        
+        String currentPassword = currentAdmin.getUserPassword(hospitalId);
+        if (currentPassword == null) {
+            System.out.println("User not found!");
+            return;
+        }
+        
+        System.out.print("Enter new password: ");
+        String newPassword = getValidInput("Password");
+        
+        if (currentAdmin.updateUserPassword(hospitalId, newPassword)) {
+            System.out.println("Password reset successfully for user: " + hospitalId);
+            System.out.println("New password: " + newPassword);
+        } else {
+            System.out.println("Failed to reset password.");
         }
     }
 

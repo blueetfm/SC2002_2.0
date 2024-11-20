@@ -117,6 +117,25 @@ public class Administrator extends User {
         }
     }
 
+    //reset user pw
+    public boolean updateUserPassword(String hospitalID, String newPassword) {
+        try {
+            if (hospitalID.trim().isEmpty() || newPassword.trim().isEmpty()) {
+                System.out.println("Hospital ID and password cannot be empty!");
+                return false;
+            }
+            return staffList.updatePassword(hospitalID, newPassword);
+        } catch (Exception e) {
+            System.err.println("Error updating password: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public String getUserPassword(String hospitalID) {
+        return staffList.getCurrentPassword(hospitalID);
+    }
+    
+    
     // Appointment Methods
     public boolean viewAppointmentDetails() {
         // TODO: Implement appointment viewing logic when ready
