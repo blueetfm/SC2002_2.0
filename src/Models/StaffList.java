@@ -59,7 +59,7 @@ public class StaffList implements StaffManager {
         if (!file.exists()) {
             CSVHandler.writeCSVLines(headers, lines, csvFilePath);
         } else {
-            CSVHandler.writeCSVLines(null, lines, csvFilePath);
+            CSVHandler.writeCSVLines(headers, lines, csvFilePath);
         }
     }
 
@@ -89,7 +89,7 @@ public class StaffList implements StaffManager {
         if (!file.exists()) {
             CSVHandler.writeCSVLines(headers, lines, userListPath);
         } else {
-            CSVHandler.writeCSVLines(null, lines, userListPath);
+            CSVHandler.writeCSVLines(headers, lines, userListPath);
         }
     }
 
@@ -166,20 +166,49 @@ public class StaffList implements StaffManager {
 
     @Override
     public void viewStaffList() {
-    System.out.println("Staff List");
-    System.out.println("--------------------");
-    List<Staff> staffList = readAllStaff();
-    Set<String> printed = new HashSet<>();
-    for (Staff staff : staffList) {
-        if (!printed.contains(staff.getStaffID())) {
-            System.out.printf("ID: %s, Name: %s, Role: %s, Gender: %s, Age: %d%n",
-                staff.getStaffID(),
-                staff.getName(),
-                staff.getRole(),
-                staff.getGender(),
-                staff.getAge());
-            printed.add(staff.getStaffID());
+        System.out.println("Staff List");
+        System.out.println("--------------------");
+        List<Staff> staffList = readAllStaff();
+        Set<String> printed = new HashSet<>();
+        for (Staff staff : staffList) {
+            if (!printed.contains(staff.getStaffID())) {
+                System.out.printf("ID: %s, Name: %s, Role: %s, Gender: %s, Age: %d%n",
+                    staff.getStaffID(),
+                    staff.getName(),
+                    staff.getRole(),
+                    staff.getGender(),
+                    staff.getAge());
+                printed.add(staff.getStaffID());
+            }
         }
     }
-}
+
+    public synchronized boolean updatePassword(String hospitalID, String newPassword) {
+        List<String[]> userList = readUserList();
+        boolean updated = false;
+        
+        for (String[] user : userList) {
+            if (user[0].equals(hospitalID)) {
+                user[1] = newPassword;
+                updated = true;
+                break;
+            }
+        }
+        
+        if (updated) {
+            writeUserList(userList);
+            return true;
+        }
+        return false;
+    }
+
+    public String getCurrentPassword(String hospitalID) {
+        List<String[]> userList = readUserList();
+        for (String[] user : userList) {
+            if (user[0].equals(hospitalID)) {
+                return user[1];
+            }
+        }
+        return null;
+    }
 }
