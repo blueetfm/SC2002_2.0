@@ -38,7 +38,18 @@ public class MedicalRecordList {
 	}
 	
 	public int updateCSV() {
-		List<List<String>> record = new ArrayList<>();
+		String input = null;
+		List<String> record = new ArrayList<>();
+		for (MedicalRecord indivRecord : medicalRecordList) {
+			String ID = indivRecord.patientID;
+			for (Record soloRecord : indivRecord.recordList) {
+				input.concat(ID).concat(",").concat(soloRecord.diagnosis).concat(",").concat(soloRecord.medication).concat(",").concat(soloRecord.treatment);
+				record.add(input);
+			}
+		}
+		
+		String[] headers = {"ID","Diagnosis","Medication","Treatment"};
+		CSVHandler.writeCSVLines(headers, record.toArray(new String[0]), "data/MedicalRecord_List.csv");
 		return 0;
 	}
 	
