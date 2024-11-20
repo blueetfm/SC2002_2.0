@@ -2,7 +2,7 @@ package Models;
 
 import java.util.ArrayList;
 
-import Enums.*;
+import enums.ScheduleStatus;
 
 import java.io.*;
 import java.time.*;
@@ -46,6 +46,11 @@ public class TimeSlotList implements TimeSlotManager{
 			}
 		}
 		return 0;
+	}
+	
+	public static ArrayList<TimeSlot> getTimeSlots() throws IOException {
+		TimeSlotList.getTimeSlotList();
+		return TimeSlotList.timeSlotList;
 	}
 	
 	public int addTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
