@@ -25,6 +25,7 @@ public class Pharmacist extends User {
 	
 	public boolean updatePrescriptionStatus() {
         // to implement prescription update logic here
+        
         System.out.println("Prescription update functionality not implemented yet");
         return false;
     }

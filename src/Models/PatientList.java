@@ -176,7 +176,7 @@ public class PatientList implements PatientManager {
     
         if (found) {
             String[] lines = remainingLines.toArray(new String[0]);
-            CSVHandler.writeCSVLines(headers, lines, "../../data/Patient_List.csv"); 
+            CSVHandler.writeCSVLines(headers, lines, "data/Patient_List.csv"); 
             System.out.println("Successfully deleted patient profile.");
             return;}
         System.out.println("No matching patient profile ID.");
