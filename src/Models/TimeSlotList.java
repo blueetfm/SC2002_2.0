@@ -2,7 +2,7 @@ package Models;
 
 import java.util.ArrayList;
 
-import enums.ScheduleStatus;
+import Enums.ScheduleStatus;
 
 import java.io.*;
 import java.time.*;

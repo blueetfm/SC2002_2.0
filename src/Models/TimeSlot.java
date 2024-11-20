@@ -2,7 +2,7 @@ package Models;
 
 import java.time.*;
 
-import enums.*;
+import Enums.*;
 
 public class TimeSlot {
 	String staffID;

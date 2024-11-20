@@ -37,12 +37,15 @@ public class MedicalRecordList {
 //	}
 //	
 	public MedicalRecordList() {
+		
 		List<List<String>> record = CSVHandler.readCSVLines("data/MedicalRecord_List.csv");
+		
 		for (List<String> medicalRecord : record) {
 			for (String variable : medicalRecord) {
 				System.out.printf("%s ", variable);
 			}
 			System.out.printf("\n");
 		}
+		
 	}
 }
