@@ -1,16 +1,12 @@
 package Models;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import Models.Record;
 import Utils.CSVHandler;
 
 public class MedicalRecordList {
-	List<MedicalRecord> medicalRecordList;
+	private static List<MedicalRecord> medicalRecordList;
 
 	public MedicalRecordList() {
 		List<MedicalRecord> medicalRecordList = new ArrayList<MedicalRecord>();
@@ -38,6 +34,43 @@ public class MedicalRecordList {
 				}
 			}
 		}
-		this.medicalRecordList = medicalRecordList;
+		MedicalRecordList.medicalRecordList = medicalRecordList;
+	}
+	
+	public int updateCSV() {
+		List<List<String>> record = new ArrayList<>();
+		return 0;
+	}
+	
+	public MedicalRecord createMedicalRecord(String patientID) {
+		MedicalRecord newRecord = new MedicalRecord(patientID);
+		medicalRecordList.add(newRecord);
+		return newRecord;
+	}
+	
+	public int readAllMedicalRecords() {
+		for (MedicalRecord record : medicalRecordList) {
+			String ID = record.patientID;
+			for (Record obj : record.recordList) {
+				System.out.printf("ID: %s, Diagnosis: %s, Medication: %s, Treatment: %s \n", ID, obj.diagnosis, obj.medication, obj.treatment);
+			}
+		}
+		return 1;
+	}
+	
+	public int readMedicalRecordsByPatientID(String patientID) {
+		for (MedicalRecord record : medicalRecordList) {
+			if (record.patientID.equals(patientID)) {
+				String ID = record.patientID;
+				for (Record obj : record.recordList) {
+					System.out.printf("ID: %s, Diagnosis: %s, Medication: %s, Treatment: %s \n", ID, obj.diagnosis, obj.medication, obj.treatment);
+				}
+			}
+		}
+		return 1;
+	}
+	
+	public MedicalRecord updateMedicalRecord(String patientID, String diagnosis, String medication, String treatment) {
+		return null;
 	}
 }
