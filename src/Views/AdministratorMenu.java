@@ -177,11 +177,18 @@ public class AdministratorMenu implements Menu {
         System.out.println("1: Male");
         System.out.println("2: Female");
         int genderOption = Integer.parseInt(scanner.nextLine().trim());
-        String gender = switch (genderOption) {
-            case 1 -> "Male";
-            case 2 -> "Female";
-            default -> throw new IllegalArgumentException("Invalid gender option");
-        };
+        String gender;
+        switch (genderOption) {
+            case 1:
+                gender = "Male";
+                break;
+            case 2:
+                gender = "Female";
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid gender option");
+        }
+
     
         currentAdmin.addStaff(name, role, gender, age);
     }

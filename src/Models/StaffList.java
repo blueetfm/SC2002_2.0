@@ -216,12 +216,20 @@ public class StaffList implements StaffManager {
 
     private String generateHospitalID(String role) {
         List<Staff> staffList = readAllStaff();
-        String prefix = switch (role.toLowerCase()) {
-            case "doctor" -> "D";
-            case "pharmacist" -> "P";
-            case "administrator" -> "A";
-            default -> throw new IllegalArgumentException("Invalid role");
-        };
+        String prefix;
+        switch (role.toLowerCase()) {
+            case "doctor":
+                prefix = "D";
+                break;
+            case "pharmacist":
+                prefix = "P";
+                break;
+            case "administrator":
+                prefix = "A";
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid role");
+        }
         
         // Find highest existing ID number for this role
         int maxNum = 0;
