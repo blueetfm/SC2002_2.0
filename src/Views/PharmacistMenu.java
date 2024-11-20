@@ -79,9 +79,17 @@ public class PharmacistMenu implements Menu {
     public void displayOptions() {
         System.out.println("\nPharmacist Menu:");
         System.out.println("1: View Appointment Outcome Record");
+        // pharmacist class
+				// AppointmentManager: Fetch all appointments by Patient ID and print out AOR
         System.out.println("2: Update Prescription Status");
+        // pharmacist class
+				// AppointmentManager: Fetch appointment by appointment ID and update prescription status
         System.out.println("3: View Medication Inventory");
+        // pharmacist class
+				// MedicationInventoryManager: Print out all medications
         System.out.println("4: Submit Replenishment Request");
+        // pharmacist class
+				// MedicalInventoryManager: 
         System.out.println("5: Logout");
     }
 

@@ -20,14 +20,30 @@ public class DoctorMenu implements Menu {
 		do {
 			System.out.println("Perform the following methods:");
 			System.out.println("1: View Patient Medical Records");
-			System.out.println("2: Update Patient Medical Records");
-			System.out.println("3: View Personal Schedule");
+			// Doctor Class
+				// MedicalRecordManager: 
+			System.out.println("2: Update Patient Medical Records"); 
+			// Doctor Class
+				// MedicalRecordManager: 
+			System.out.println("3: View Personal Schedule"); // Doctor Class
 			System.out.println("4: Set Availability for Appointments");
+			// Doctor Class
+				// TimeSlotManager: Change availabiliy of new timeslot
 			System.out.println("5: Accept or Decline Appointment Requests");
+			/*  Doctor Class
+				IF ACCEPT:
+				TimeSlotManager: Change availabiliy of new timeslot
+				*/
 			System.out.println("6: View Upcoming Appointments");
+			// Doctor Class
+				// AppointmentManager: Fetch appointments by Doctor ID and sort by Schedule Status
 			System.out.println("7: Record Appointment Outcome");
+			// Doctor Class
+				// AppointmentManager: Fetch appointment by APT ID and record
 			System.out.println("8: Register Patient");
+			// Doctor Class
 			System.out.println("9: Discharge Patient");
+			// Doctor Class
 			System.out.println("10: Logout");
 			choice = sc.nextInt();
 			
