@@ -102,26 +102,28 @@ public class StaffList implements StaffManager {
     }
 
 
-
     @Override
-    public synchronized void addStaff(String StaffID, String password, String name, String role, String gender, int age) {
-        List<Staff> staffList = readAllStaff();
-        boolean exists = staffList.stream()
-            .anyMatch(s -> s.getStaffID().equals(StaffID));
-        
-        if (exists) {
-            System.out.println("Staff ID already exists: " + StaffID);
-            return;
+    public synchronized boolean addStaff(String name, String role, String gender, int age) {
+        try {
+            String staffID = generateHospitalID(role);
+            String defaultPassword = "password123";
+            
+            List<Staff> staffList = readAllStaff();
+            staffList.add(new Staff(staffID, name, role, gender, age));
+            writeAllStaff(staffList);
+    
+            List<String[]> userList = readUserList();
+            userList.add(new String[]{staffID, defaultPassword});
+            writeUserList(userList);
+
+            System.out.println("Staff " + name + "'s account has been created with the following account details: ");
+            System.out.println("Staff ID:" + staffID);
+            System.out.println("Default password" + defaultPassword);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error adding staff: " + e.getMessage());
+            return false;
         }
-
-        staffList.add(new Staff(StaffID, name, role, gender, age));
-        writeAllStaff(staffList);
-
-        List<String[]> userList = readUserList();
-        userList.add(new String[]{StaffID, password});
-        writeUserList(userList);
-
-        System.out.println("Staff " + StaffID + " has been added to the system with default password: " + password);
     }
 
     @Override
@@ -210,5 +212,32 @@ public class StaffList implements StaffManager {
             }
         }
         return null;
+    }
+
+    private String generateHospitalID(String role) {
+        List<Staff> staffList = readAllStaff();
+        String prefix = switch (role.toLowerCase()) {
+            case "doctor" -> "D";
+            case "pharmacist" -> "P";
+            case "administrator" -> "A";
+            default -> throw new IllegalArgumentException("Invalid role");
+        };
+        
+        // Find highest existing ID number for this role
+        int maxNum = 0;
+        for (Staff staff : staffList) {
+            String id = staff.getStaffID();
+            if (id.startsWith(prefix)) {
+                try {
+                    int num = Integer.parseInt(id.substring(1));
+                    maxNum = Math.max(maxNum, num);
+                } catch (NumberFormatException e) {
+                    continue;
+                }
+            }
+        }
+        
+        // Generate new ID
+        return String.format("%s%03d", prefix, maxNum + 1);
     }
 }

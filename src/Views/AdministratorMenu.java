@@ -164,36 +164,26 @@ public class AdministratorMenu implements Menu {
     }
 
     private void handleAddStaff() {
-        System.out.println("Enter new staff role: ");
+        System.out.println("Enter new staff role (Doctor/Pharmacist/Administrator): ");
         String role = getValidInput("Role");
-        
-        System.out.println("Enter new staff ID: ");
-        String staffID = getValidInput("Staff ID");
         
         System.out.println("Enter new staff name: ");
         String name = getValidInput("Name");
         
         System.out.println("Enter new staff age: ");
         int age = getValidPositiveNumber("Age");
-
+    
         System.out.println("Select new staff gender: ");
         System.out.println("1: Male");
         System.out.println("2: Female");
         int genderOption = Integer.parseInt(scanner.nextLine().trim());
-        String gender;
-        
-        switch (genderOption) {
-            case 1:
-                gender = "Male";
-                break;
-            case 2:
-                gender = "Female";
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid gender option");
-        }
-
-        currentAdmin.addStaff(staffID, name, role, gender, age);
+        String gender = switch (genderOption) {
+            case 1 -> "Male";
+            case 2 -> "Female";
+            default -> throw new IllegalArgumentException("Invalid gender option");
+        };
+    
+        currentAdmin.addStaff(name, role, gender, age);
     }
 
     private void handleRemoveStaff() {
@@ -276,7 +266,7 @@ public class AdministratorMenu implements Menu {
         System.out.println("\nPassword Reset Menu");
         System.out.println("--------------------");
         System.out.println("Hospital ID Format:");
-        System.out.println("Staff: D*** (Doctors), A*** (Administrators)");
+        System.out.println("Staff: D*** (Doctors), P*** (Pharmacists), A*** (Administrators)");
         System.out.println("Patients: P**** (Regular patients)");
         System.out.println("--------------------");
         

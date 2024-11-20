@@ -23,14 +23,8 @@ public class Administrator extends User {
         staffList.viewStaffList();
     }
 
-    public boolean addStaff(String staffID, String name, String role, String gender, int age) {
-        try {
-            staffList.addStaff(staffID, "password", name, role, gender, age);
-            return true;
-        } catch (Exception e) {
-            System.err.println("Error adding staff: " + e.getMessage());
-            return false;
-        }
+    public boolean addStaff(String name, String role, String gender, int age) {
+        return staffList.addStaff(name, role, gender, age);
     }
 
     public boolean removeStaff(String staffID) {
