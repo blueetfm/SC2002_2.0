@@ -20,11 +20,12 @@ import Utils.DateTimeFormatUtils;
 public class AppointmentManager {
     private static AppointmentManager instance;
     private List<Appointment> appointments;
+    private List<AppointmentOutcomeRecord> appointmentOutcomeRecords;
 
     private static final AtomicInteger counter = new AtomicInteger(0);
 
     private AppointmentManager() {
-        this.appointments = initializeObjects();
+        initializeObjects();
     }
 
     public static synchronized AppointmentManager getInstance() {
@@ -36,7 +37,9 @@ public class AppointmentManager {
 
     // Function to initialize objects from CSVHandler's readCSVLines
     public List<Appointment> initializeObjects() {
-        List<Appointment> appointments = new ArrayList<>();
+        this.appointments = new ArrayList<>();
+        this.appointmentOutcomeRecords = new ArrayList<>();
+
         List<List<String>> records = CSVHandler.readCSVLines("data/Appointment_List.csv");
 
         if (!records.isEmpty()) {
@@ -68,6 +71,7 @@ public class AppointmentManager {
                 );
 
                 appointments.add(appointment);
+                appointmentOutcomeRecords.add(outcomeRecord);
             }
         }
         return appointments;
@@ -109,16 +113,29 @@ public class AppointmentManager {
         return appointments;
     }
 
+    public List<AppointmentOutcomeRecord> getAppointmentOutcomeRecords(){
+        return appointmentOutcomeRecords;
+    }
+
+    /* Stuff in AppointmentQuery.java */
+    public Appointment getAppointmentByID(String appointmentID){
+        return AppointmentQuery.getAppointmentById(appointments, appointmentID);
+    }
+
     public List<Appointment> getAppointmentsByPatientID(String patientID) {
-        return getAppointments().stream()
-                .filter(appointment -> appointment.getPatientID().equals(patientID))
-                .collect(Collectors.toList());
+        return AppointmentQuery.getAppointmentsByPatientID(appointments, patientID);
     }
 
     public List<Appointment> getAppointmentsByDoctorID(String doctorID) {
-        return getAppointments().stream()
-                .filter(appointment -> appointment.getDoctorID().equals(doctorID))
-                .collect(Collectors.toList());
+        return AppointmentQuery.getAppointmentsByDoctorID(appointments, doctorID);
+    }
+
+    public AppointmentOutcomeRecord getAppointmentOutcomeRecordById(String appointmentID){
+        return AppointmentQuery.getAppointmentOutcomeRecordByID(appointments, appointmentID);
+    }
+
+    public List<AppointmentOutcomeRecord> getAppointmentOutcomeRecordsByPatientID(String patientID){
+        return AppointmentQuery.getAppointmentOutcomeRecordByPatientID(appointments, patientID);
     }
 
 
@@ -184,21 +201,7 @@ public class AppointmentManager {
 
 
     /*Pharmacist Menu Stuff*/
-    public List<AppointmentOutcomeRecord> viewAppointmentOutcomeRecords(){
-        List<AppointmentOutcomeRecord> appointmentOutcomeRecords = new ArrayList<>();
-
-        for (Appointment appointment : appointments){
-            appointmentOutcomeRecords.add(appointment.outcomeRecord);
-        }
-
-        return appointmentOutcomeRecords;
-    }
-
-    public AppointmentOutcomeRecord viewAppointmentOutcomeRecord(String appointmentID){
-        Appointment appointment = AppointmentQuery.getAppointmentById(appointments, appointmentID);
-
-        return appointment.outcomeRecord;
-    }
+    
 
     /*Administrator Menu Stuff*/
     public List<Appointment> viewAppointments(){
