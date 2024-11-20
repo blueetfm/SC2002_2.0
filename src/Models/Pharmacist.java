@@ -3,13 +3,13 @@ package Models;
 public class Pharmacist extends User {
 	protected String name;
 	protected String gender;
-	protected MedicationInventory medicationInventory;
+	protected MedicationInventoryManager medicationInventory;
 
 	public Pharmacist(String hospitalID, String password, String role, String name, String gender, String medicineListPath, String requestsPath){
         super(hospitalID, password, role);
         this.name = name;
         this.gender = gender;
-		this.medicationInventory = MedicationInventory.getInstance(medicineListPath, requestsPath);
+		this.medicationInventory = MedicationInventoryManager.getInstance(medicineListPath, requestsPath);
     }
 	
 	
