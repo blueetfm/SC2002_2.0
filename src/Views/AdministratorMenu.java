@@ -52,10 +52,16 @@ public class AdministratorMenu implements Menu {
     public void showMenu() {
         while (isRunning) {
             System.out.println("\nAdministrator Menu:");
-            System.out.println("1: View and Manage Hospital Staff");
+            System.out.println("1: View and Manage Hospital Staff"); // Administrator Class  
             System.out.println("2: View Appointments Details");
+            // Administrator Class
+                // AppointmentManager: Fetch appointment by APT ID/Patient ID/Doctor ID
             System.out.println("3: View and Manage Medication Inventory");
+            // Administrator Class
+                // MedicationInventoryManager
             System.out.println("4: Approve Replenishment Requests");
+                        // Administrator Class
+                // MedicationInventoryManager
             System.out.println("5: Logout");
             System.out.print("Enter your choice (1-5): ");
 

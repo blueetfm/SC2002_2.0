@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -97,10 +98,6 @@ public class AppointmentManager {
         return records;
     }
 
-    public List<Appointment> getAppointments() {
-        return appointments;
-    }
-
     public String generateAppointmentID(){
         int uniqueNumber = counter.incrementAndGet();
         String uniquePart = String.format("%03d", uniqueNumber);
@@ -108,24 +105,47 @@ public class AppointmentManager {
         return "APT-" + "-" + uniquePart;
     }
 
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public List<Appointment> getAppointmentsByPatientID(String patientID) {
+        return getAppointments().stream()
+                .filter(appointment -> appointment.getPatientID().equals(patientID))
+                .collect(Collectors.toList());
+    }
+
+    public List<Appointment> getAppointmentsByDoctorID(String doctorID) {
+        return getAppointments().stream()
+                .filter(appointment -> appointment.getDoctorID().equals(doctorID))
+                .collect(Collectors.toList());
+    }
+
 
     /*Patient Menu Stuff*/
-    // View available appointments
-        // public List<TimeSlot> viewAvailableAppointmentSlots(LocalDate date, String doctorID) {
-        //     // return TimeSlotList.getTimeSlotList().getAvailableSlots(date, doctorID);
-        // }
+    // Schedule appointment
+    public boolean scheduleAppointment(){
+        List<Appointment> appointments = getAppointments();
+        // List<TimeSlot> timeslots = TimeSlotList.getTimeSlotList();
+        // Appointment appointment = 
 
-    // Schedule an appointment
-        // public boolean scheduleAppointment(String patientID, String doctorID, LocalDate date, LocalTime timeSlot) {
-        // }
-    
-    // Reschedule an appointment
-        // public boolean rescheduleAppointment(String appointmentID, LocalDate newDate, LocalTime newTimeSlot) {
-        // }
-    
+        return false;
+    }
+
     // Cancel appointment
-        // public boolean cancelAppointment(String appointmentID) {
-        // }
+    public boolean cancelAppointment(String appointmentID){
+        List<Appointment> appointments = getAppointments();
+        Iterator<Appointment> iterator = appointments.iterator();
+
+        while (iterator.hasNext()) {
+            Appointment appointment = iterator.next();
+            if (appointment.getAppointmentID().equals(appointmentID)) {
+                iterator.remove(); 
+                return true; 
+            }
+        }    
+        return false; 
+    }
     
     // View scheduled appointment
     public List<Appointment> viewScheduledAppointments(String patientID) {
@@ -157,12 +177,10 @@ public class AppointmentManager {
             CSVHandler.writeCSVLines(headers, lines, "data/Appointment_List.csv");
             return true;
 
-
         } else {
             return false;
         }
     }
-
 
 
     /*Pharmacist Menu Stuff*/
