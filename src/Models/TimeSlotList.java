@@ -1,6 +1,7 @@
 package Models;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import Enums.ScheduleStatus;
 
@@ -11,9 +12,11 @@ import Models.TimeSlot;
 
 public class TimeSlotList implements TimeSlotManager{
 	private static TimeSlotList instance;
-	private static ArrayList<TimeSlot> timeSlotList;
+	private static List<TimeSlot> timeSlotList;
 	
 	private TimeSlotList() throws IOException {
+		timeSlotList = new ArrayList<TimeSlot>();
+
 		BufferedReader br = new BufferedReader(new FileReader("../data/TimeSlot_List.csv"));
 		String line;
 		br.readLine(); 
@@ -48,7 +51,7 @@ public class TimeSlotList implements TimeSlotManager{
 		return 0;
 	}
 	
-	public static ArrayList<TimeSlot> getTimeSlots() throws IOException {
+	public static List<TimeSlot> getTimeSlots() throws IOException {
 		TimeSlotList.getTimeSlotList();
 		return TimeSlotList.timeSlotList;
 	}
@@ -89,8 +92,8 @@ public class TimeSlotList implements TimeSlotManager{
 		return 0;
 	}
 	
-	public ArrayList<TimeSlot> getTimeSlotByStaffID(String ID) {
-		 ArrayList<TimeSlot> outputList = new ArrayList<TimeSlot>();
+	public List<TimeSlot> getTimeSlotByStaffID(String ID) {
+		List<TimeSlot> outputList = new ArrayList<TimeSlot>();
 		for (TimeSlot timeSlot : timeSlotList) {
 			if (timeSlot.getStaffID().equals(ID)) { 
 				outputList.add(timeSlot);
@@ -100,8 +103,8 @@ public class TimeSlotList implements TimeSlotManager{
 		return outputList;
 	}
 	
-	public ArrayList<TimeSlot> getTimeSlotByPatientID(String ID) {
-		 ArrayList<TimeSlot> outputList = new ArrayList<TimeSlot>();
+	public List<TimeSlot> getTimeSlotByPatientID(String ID) {
+		List<TimeSlot> outputList = new ArrayList<TimeSlot>();
 		for (TimeSlot timeSlot : timeSlotList) {
 			if (timeSlot.getPatientID().equals(ID)) { 
 				outputList.add(timeSlot);

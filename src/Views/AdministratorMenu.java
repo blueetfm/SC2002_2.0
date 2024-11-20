@@ -187,9 +187,7 @@ public class AdministratorMenu implements Menu {
                 break;
             default:
                 throw new IllegalArgumentException("Invalid gender option");
-        }
-
-    
+        }    
         currentAdmin.addStaff(name, role, gender, age);
     }
 

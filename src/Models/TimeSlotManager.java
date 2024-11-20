@@ -2,7 +2,7 @@ package Models;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.util.List;
 
 import Enums.ScheduleStatus;
 
@@ -13,7 +13,7 @@ public interface TimeSlotManager {
 	
 	public int editTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus);
 	
-	public ArrayList<TimeSlot> getTimeSlotByStaffID(String ID);
+	public List<TimeSlot> getTimeSlotByStaffID(String ID);
 	
-	public ArrayList<TimeSlot> getTimeSlotByPatientID(String ID);
+	public List<TimeSlot> getTimeSlotByPatientID(String ID);
 }
