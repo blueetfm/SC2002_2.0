@@ -2,6 +2,7 @@
 package Views;
 
 import Models.Administrator;
+import Models.Staff;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -127,10 +128,7 @@ public class AdministratorMenu implements Menu {
         while (managing) {
             displayStaffMenu();
             try {
-                // Clear any leftover newline
                 String input = scanner.nextLine().trim();
-                
-                // If input is empty (due to previous nextInt), read again
                 if (input.isEmpty()) {
                     input = scanner.nextLine().trim();
                 }
@@ -139,44 +137,13 @@ public class AdministratorMenu implements Menu {
 
                 switch (choice) {
                     case 1: 
-                        System.out.println("Enter new staff role: ");
-                        String role = scanner.nextLine().trim();
-                        
-                        System.out.println("Enter new staff ID: ");
-                        String staffID = scanner.nextLine().trim();
-                        
-                        System.out.println("Enter new staff name: ");
-                        String name = scanner.nextLine().trim();
-                        
-                        System.out.println("Enter new staff age: ");
-                        int age = Integer.parseInt(scanner.nextLine().trim());
-
-                        System.out.println("Select new staff gender: ");
-                        System.out.println("1: Male");
-                        System.out.println("2: Female");
-                        int genderOption = Integer.parseInt(scanner.nextLine().trim());
-                        String gender;
-                        
-                        switch (genderOption) {
-                            case 1:
-                                gender = "Male";
-                                break;
-                            case 2:
-                                gender = "Female";
-                                break;
-                            default:
-                                throw new IllegalArgumentException("Invalid gender option");
-                        };
-
-                        currentAdmin.addStaff(staffID, name, role, gender, age);
+                        handleAddStaff();
                         break;
                     case 2:
-                        System.out.println("Enter staff ID to remove: ");
-                        String rstaffID = scanner.nextLine().trim();
-                        currentAdmin.removeStaff(rstaffID);
+                        handleRemoveStaff();
                         break;
                     case 3:
-                        currentAdmin.updateStaffDetails();
+                        handleUpdateStaff();
                         break;
                     case 4:
                         managing = false;
@@ -189,6 +156,115 @@ public class AdministratorMenu implements Menu {
             } catch (Exception e) {
                 System.err.println("Error: " + e.getMessage());
             }
+        }
+    }
+
+    private void handleAddStaff() {
+        System.out.println("Enter new staff role: ");
+        String role = getValidInput("Role");
+        
+        System.out.println("Enter new staff ID: ");
+        String staffID = getValidInput("Staff ID");
+        
+        System.out.println("Enter new staff name: ");
+        String name = getValidInput("Name");
+        
+        System.out.println("Enter new staff age: ");
+        int age = getValidPositiveNumber("Age");
+
+        System.out.println("Select new staff gender: ");
+        System.out.println("1: Male");
+        System.out.println("2: Female");
+        int genderOption = Integer.parseInt(scanner.nextLine().trim());
+        String gender;
+        
+        switch (genderOption) {
+            case 1:
+                gender = "Male";
+                break;
+            case 2:
+                gender = "Female";
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid gender option");
+        }
+
+        currentAdmin.addStaff(staffID, name, role, gender, age);
+    }
+
+    private void handleRemoveStaff() {
+        System.out.println("Enter staff ID to remove: ");
+        String staffID = getValidInput("Staff ID");
+        currentAdmin.removeStaff(staffID);
+    }
+
+    private void handleUpdateStaff() {
+        // Display current staff list
+        currentAdmin.viewStaffList();
+        
+        // Get staff ID to update
+        System.out.print("\nEnter Staff ID to update: ");
+        String staffId = getValidInput("Staff ID");
+        
+        // Get current staff details
+        Staff currentStaff = currentAdmin.getStaffById(staffId);
+        
+        if (currentStaff == null) {
+            System.out.println("Staff not found!");
+            return;
+        }
+
+        // Show update options menu
+        System.out.println("\nWhat would you like to update?");
+        System.out.println("1. Name");
+        System.out.println("2. Role");
+        System.out.println("3. Gender");
+        System.out.println("4. Age");
+        System.out.println("5. Cancel");
+        
+        System.out.print("Enter your choice (1-5): ");
+        String choice = scanner.nextLine();
+        
+        String newName = currentStaff.getName();
+        String newRole = currentStaff.getRole();
+        String newGender = currentStaff.getGender();
+        int newAge = currentStaff.getAge();
+        
+        switch (choice) {
+            case "1":
+                System.out.print("Enter new name: ");
+                newName = getValidInput("Name");
+                break;
+                
+            case "2":
+                System.out.print("Enter new role: ");
+                newRole = getValidInput("Role");
+                break;
+                
+            case "3":
+                System.out.print("Enter new gender: ");
+                newGender = getValidInput("Gender");
+                break;
+                
+            case "4":
+                System.out.print("Enter new age: ");
+                newAge = getValidPositiveNumber("Age");
+                break;
+                
+            case "5":
+                System.out.println("Update cancelled.");
+                return;
+                
+            default:
+                System.out.println("Invalid choice! Update cancelled.");
+                return;
+        }
+        
+        // Call the update method
+        if (currentAdmin.updateStaff(staffId, newName, newRole, newGender, newAge)) {
+            System.out.println("Staff updated successfully!");
+        } else {
+            System.out.println("Failed to update staff.");
         }
     }
 

@@ -43,9 +43,14 @@ public class Administrator extends User {
         }
     }
 
-    public void updateStaffDetails() {
-        staffList.updateStaffDetails();
+    public boolean updateStaff(String staffId, String name, String role, String gender, int age) {
+        return staffList.updateStaff(staffId, name, role, gender, age);
     }
+
+    public Staff getStaffById(String staffId) {
+        return staffList.getStaffById(staffId);
+    }
+
 
     // Medication Management Methods
     public void viewMedicationInventory() {
