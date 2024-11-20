@@ -138,7 +138,7 @@ public class AppointmentManager {
         return AppointmentQuery.getAppointmentsByDoctorID(appointments, doctorID);
     }
 
-    public void recordAppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate outcomeDate, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
+    public boolean recordAppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate outcomeDate, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
         Appointment appointment = AppointmentQuery.getAppointmentById(appointments, appointmentID);
 
         if (appointment.outcomeRecord == null){
@@ -155,10 +155,11 @@ public class AppointmentManager {
                 .toArray(String[]::new);
 
             CSVHandler.writeCSVLines(headers, lines, "data/Appointment_List.csv");
+            return true;
 
 
         } else {
-            System.out.println("Appointment Outcome Record already exists for this appointment.");
+            return false;
         }
     }
 

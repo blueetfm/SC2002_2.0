@@ -16,6 +16,7 @@ public class PharmacistMenu implements Menu {
         initializePharmacist();
     }
 
+    // Assumption that UserMenu.java already checks the person is a Pharmacist
     private void initializePharmacist() {
         try {
             String loggedInID = UserMenu.getLoggedInHospitalID();

@@ -5,14 +5,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import Enums.*;
+import Models.AppointmentManager;
 import Models.AppointmentOutcomeRecord;
 import Utils.DateTimeFormatUtils;
 
 public class DoctorMenu implements Menu {
 	public void showMenu() {
 
-		// datetime formatter https://stackoverflow.com/questions/8746084/string-to-localdate
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		
+
 
 		int choice;
 		Scanner sc = new Scanner(System.in);
@@ -56,7 +57,13 @@ public class DoctorMenu implements Menu {
 				String medication = sc.next();
 				System.out.print("Enter notes for appointment: ");
 				String notes = sc.next();
-				// AppointmentOutcomeRecordList.getInstance().createAppointmentOutcomeRecord(appointmentID, hospitalID, null, null, medication, PrescriptionStatus.PENDING, notes);
+				// if (AppointmentManager.recordAppointmentOutcomeRecord(appointmentID, hospitalID, date, 
+				// 	service, medication, PrescriptionStatus.PENDING, notes)){
+				// 		System.out.println("Appointment Outcome Record created successfully!");
+				// } else {
+				// 	System.out.println("Appointment Outcome Record already exists for this appointment.");
+					
+				// };
 
 				break;
 			case 8: 
