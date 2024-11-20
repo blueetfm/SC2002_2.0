@@ -19,12 +19,13 @@ import Utils.DateTimeFormatUtils;
 
 public class AppointmentManager {
     private static AppointmentManager instance;
-    private List<Appointment> appointments;
+    private static List<Appointment> appointments;
+    private static List<AppointmentOutcomeRecord> appointmentOutcomeRecords;
 
     private static final AtomicInteger counter = new AtomicInteger(0);
 
     private AppointmentManager() {
-        this.appointments = initializeObjects();
+        initializeObjects();
     }
 
     public static synchronized AppointmentManager getInstance() {
@@ -36,7 +37,9 @@ public class AppointmentManager {
 
     // Function to initialize objects from CSVHandler's readCSVLines
     public List<Appointment> initializeObjects() {
-        List<Appointment> appointments = new ArrayList<>();
+        appointments = new ArrayList<>();
+        appointmentOutcomeRecords = new ArrayList<>();
+
         List<List<String>> records = CSVHandler.readCSVLines("data/Appointment_List.csv");
 
         if (!records.isEmpty()) {
@@ -68,6 +71,7 @@ public class AppointmentManager {
                 );
 
                 appointments.add(appointment);
+                appointmentOutcomeRecords.add(outcomeRecord);
             }
         }
         return appointments;
@@ -109,16 +113,44 @@ public class AppointmentManager {
         return appointments;
     }
 
+    public List<AppointmentOutcomeRecord> getAppointmentOutcomeRecords(){
+        return appointmentOutcomeRecords;
+    }
+
+    /* Appointment Queries */
+    public Appointment getAppointmentById(String appointmentID) {
+        for (Appointment appointment : appointments) {
+            if (appointment.getAppointmentID().equals(appointmentID)) {
+                return appointment;
+            }
+        }
+        return null;
+    }
+
     public List<Appointment> getAppointmentsByPatientID(String patientID) {
-        return getAppointments().stream()
+        return appointments.stream()
                 .filter(appointment -> appointment.getPatientID().equals(patientID))
                 .collect(Collectors.toList());
     }
 
     public List<Appointment> getAppointmentsByDoctorID(String doctorID) {
-        return getAppointments().stream()
+        return appointments.stream()
                 .filter(appointment -> appointment.getDoctorID().equals(doctorID))
                 .collect(Collectors.toList());
+    }
+
+    /* Appointment Outcome Records */
+    public AppointmentOutcomeRecord getAppointmentOutcomeRecordByID(String appointmentID){
+        Appointment appointment = getAppointmentById(appointmentID);
+
+        return appointment.outcomeRecord;
+    }
+
+    public List<AppointmentOutcomeRecord> getAppointmentOutcomeRecordByPatientID(String patientID){
+        return appointments.stream()
+                .filter(appointment -> appointment.getPatientID().equals(patientID)) 
+                .map(Appointment::getOutcomeRecord) 
+                .collect(Collectors.toList()); 
     }
 
 
@@ -147,19 +179,9 @@ public class AppointmentManager {
         return false; 
     }
     
-    // View scheduled appointment
-    public List<Appointment> viewScheduledAppointments(String patientID) {
-        return AppointmentQuery.getAppointmentsByPatientID(appointments, patientID);
-    }
-
-
-    /*Doctor Menu Stuff*/
-    public List<Appointment> viewUpcomingAppointments(String doctorID){
-        return AppointmentQuery.getAppointmentsByDoctorID(appointments, doctorID);
-    }
 
     public boolean recordAppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate outcomeDate, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
-        Appointment appointment = AppointmentQuery.getAppointmentById(appointments, appointmentID);
+        Appointment appointment = getAppointmentById(appointmentID);
 
         if (appointment.outcomeRecord == null){
             AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(
@@ -184,26 +206,7 @@ public class AppointmentManager {
 
 
     /*Pharmacist Menu Stuff*/
-    public List<AppointmentOutcomeRecord> viewAppointmentOutcomeRecords(){
-        List<AppointmentOutcomeRecord> appointmentOutcomeRecords = new ArrayList<>();
-
-        for (Appointment appointment : appointments){
-            appointmentOutcomeRecords.add(appointment.outcomeRecord);
-        }
-
-        return appointmentOutcomeRecords;
-    }
-
-    public AppointmentOutcomeRecord viewAppointmentOutcomeRecord(String appointmentID){
-        Appointment appointment = AppointmentQuery.getAppointmentById(appointments, appointmentID);
-
-        return appointment.outcomeRecord;
-    }
-
-    /*Administrator Menu Stuff*/
-    public List<Appointment> viewAppointments(){
-        return appointments;
-    }
+    
 
     
 }

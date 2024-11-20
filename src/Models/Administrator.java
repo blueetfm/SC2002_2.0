@@ -23,14 +23,8 @@ public class Administrator extends User {
         staffList.viewStaffList();
     }
 
-    public boolean addStaff(String staffID, String name, String role, String gender, int age) {
-        try {
-            staffList.addStaff(staffID, "password", name, role, gender, age);
-            return true;
-        } catch (Exception e) {
-            System.err.println("Error adding staff: " + e.getMessage());
-            return false;
-        }
+    public boolean addStaff(String name, String role, String gender, int age) {
+        return staffList.addStaff(name, role, gender, age);
     }
 
     public boolean removeStaff(String staffID) {
@@ -43,9 +37,14 @@ public class Administrator extends User {
         }
     }
 
-    public void updateStaffDetails() {
-        staffList.updateStaffDetails();
+    public boolean updateStaff(String staffId, String name, String role, String gender, int age) {
+        return staffList.updateStaff(staffId, name, role, gender, age);
     }
+
+    public Staff getStaffById(String staffId) {
+        return staffList.getStaffById(staffId);
+    }
+
 
     // Medication Management Methods
     public void viewMedicationInventory() {
@@ -112,6 +111,25 @@ public class Administrator extends User {
         }
     }
 
+    //reset user pw
+    public boolean updateUserPassword(String hospitalID, String newPassword) {
+        try {
+            if (hospitalID.trim().isEmpty() || newPassword.trim().isEmpty()) {
+                System.out.println("Hospital ID and password cannot be empty!");
+                return false;
+            }
+            return staffList.updatePassword(hospitalID, newPassword);
+        } catch (Exception e) {
+            System.err.println("Error updating password: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public String getUserPassword(String hospitalID) {
+        return staffList.getCurrentPassword(hospitalID);
+    }
+    
+    
     // Appointment Methods
     public boolean viewAppointmentDetails() {
         // TODO: Implement appointment viewing logic when ready
