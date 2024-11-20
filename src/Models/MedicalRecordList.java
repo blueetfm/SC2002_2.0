@@ -10,42 +10,34 @@ import Models.Record;
 import Utils.CSVHandler;
 
 public class MedicalRecordList {
-	ArrayList<MedicalRecord> medicalRecordList;
+	List<MedicalRecord> medicalRecordList;
 
-//	public MedicalRecordList() throws IOException {
-//		try (BufferedReader br = new BufferedReader(new FileReader("../data/MedicalRecord_List.csv"))) {
-//			String line;
-//			br.readLine(); 
-//			while ((line = br.readLine()) != null) {
-//				MedicalRecord medicalRecord = null;
-//				String[] row = line.split(",");
-//				if (row.length >= 2) { 
-//					String patientID = row[0].trim();
-//					medicalRecord = new MedicalRecord(patientID);
-//					String[] recordList = row[1].replaceAll("{}", "").split(");(");
-//					for (String recordString : recordList) {
-//						String[] recordParts = recordString.replaceAll("()", "").split(";");
-//						this.medicalRecordList = new ArrayList<MedicalRecord>();
-//						medicalRecord.recordList.add(new Record(recordParts[0], recordParts[1], recordParts[2]));
-//					}
-//				}
-//				if (medicalRecord != null) {
-//					medicalRecordList.add(medicalRecord);
-//				}
-//			}
-//		}
-//	}
-//	
 	public MedicalRecordList() {
+		List<MedicalRecord> medicalRecordList = new ArrayList<MedicalRecord>();
 		
 		List<List<String>> record = CSVHandler.readCSVLines("data/MedicalRecord_List.csv");
 		
 		for (List<String> medicalRecord : record) {
-			for (String variable : medicalRecord) {
-				System.out.printf("%s ", variable);
+			if (medicalRecord.size() == 4) {
+				String patientID = medicalRecord.get(0);
+				String diagnosis = medicalRecord.get(1);
+				String medication = medicalRecord.get(2);	
+				String treatment = medicalRecord.get(3);
+				
+				Boolean flag = false;
+				for (MedicalRecord indivRecord : medicalRecordList) {
+					if (indivRecord.patientID.equals(patientID)) {
+						indivRecord.addRecord(indivRecord, diagnosis, medication, treatment);
+						flag = true;
+					}
+				}
+				if (flag == false) {
+					MedicalRecord indivRecord = new MedicalRecord(patientID);
+					indivRecord.addRecord(indivRecord, diagnosis, medication, treatment);
+					medicalRecordList.add(indivRecord);
+				}
 			}
-			System.out.printf("\n");
 		}
-		
+		this.medicalRecordList = medicalRecordList;
 	}
 }
