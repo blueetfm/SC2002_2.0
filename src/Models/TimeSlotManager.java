@@ -87,7 +87,6 @@ public class TimeSlotManager implements TimeSlotInterface{
 		return 0;
 	}
 
-	
 	public String generateTimeSlotID(){
         int uniqueNumber = counter.incrementAndGet();
         String uniquePart = String.format("%03d", uniqueNumber);

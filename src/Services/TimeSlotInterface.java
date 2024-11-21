@@ -12,7 +12,7 @@ public interface TimeSlotInterface {
 	static List<TimeSlot> initializeObjects(){
 		return null;
 	}
-    static int initializeCSVLines(List<TimeSlot> timeSlots){
+    static int updateCSV(List<TimeSlot> timeSlots){
 		return 0;
 	}
 	static List<TimeSlot> getTimeSlots(){
