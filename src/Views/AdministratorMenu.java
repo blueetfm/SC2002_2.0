@@ -21,16 +21,13 @@ public class AdministratorMenu implements Menu {
 	public AdministratorMenu() {
         this.scanner = new Scanner(System.in);
         this.isRunning = true;
-        // this.appointmentManager = AppointmentManager.getInstance();
         initializeAdministrator();
     }
 
-    //initialises an administrator object with the info from staff list csv
 	private void initializeAdministrator() {
         try {
             String loggedInID = UserMenu.getLoggedInHospitalID();
             
-            // get administrator details
             BufferedReader reader = new BufferedReader(new FileReader("data/Staff_List.csv"));
             reader.readLine(); // Skip header
             

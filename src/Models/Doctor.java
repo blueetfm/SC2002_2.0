@@ -137,7 +137,13 @@ public class Doctor extends User{
 		return PatientInterface.deletePatient(case9Choice);
 	}
 	
-	public int logout() {
-		return 0;
+	public boolean logout() {
+		try {
+            System.out.println("Logging out doctor: " + this.name);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error during logout: " + e.getMessage());
+            return false;
+        }
 	}
 }

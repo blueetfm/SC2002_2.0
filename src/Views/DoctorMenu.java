@@ -46,23 +46,11 @@ public class DoctorMenu implements Menu {
 			System.out.println("2: Update Patient Medical Records"); 
 			System.out.println("3: View Personal Schedule");
 			System.out.println("4: Set Availability for Appointments");
-			// Doctor Class
-				// TimeSlotManager: Change availability of new TimeSlot
 			System.out.println("5: Accept or Decline Appointment Requests");
-			/*  Doctor Class
-				IF ACCEPT:
-				TimeSlotManager: Change availability of new TimeSlot
-				*/
 			System.out.println("6: View Upcoming Appointments");
-			// Doctor Class
-				// AppointmentManager: Fetch appointments by Doctor ID and sort by Schedule Status
 			System.out.println("7: Record Appointment Outcome");
-			// Doctor Class
-				// AppointmentManager: Fetch appointment by APT ID and record
 			System.out.println("8: Register Patient");
-			// Doctor Class
 			System.out.println("9: Discharge Patient");
-			// Doctor Class
 			System.out.println("10: Logout");
 			choice = sc.nextInt();
 			int result;
@@ -148,8 +136,7 @@ public class DoctorMenu implements Menu {
 				}	
 			case 10: 
 				System.out.println("Logging out ….");
-				result = currentDoctor.logout();
-				if (result == 1) {
+				if (currentDoctor.logout()) {
 					System.out.println("Task completed successfully.");
 				} else {
 					System.out.println("Task failed.");
