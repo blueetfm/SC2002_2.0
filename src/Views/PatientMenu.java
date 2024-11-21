@@ -119,11 +119,19 @@ public class PatientMenu implements Menu {
 		System.out.println("1: Phone number");
 		System.out.println("2: Email");
 		int choice = sc.nextInt();
-		sc.nextLine(); // Consume newline character
+		sc.nextLine(); 
 		switch (choice) {
 			case 1: 
-				System.out.println("Enter your new phone number:");
-				String newPhoneNumber = sc.nextLine();
+				String newPhoneNumber = null;
+				while (newPhoneNumber == null) {
+					System.out.println("Enter your new phone number:");
+					String input = sc.nextLine();
+					if (input.matches("\\d+")) { 
+						newPhoneNumber = input;
+					} else {
+						System.out.println("Invalid phone number. Please enter digits only.");
+					}
+				}
 				currentPatient.setPhoneNum(newPhoneNumber);
 				break;
 			case 2: 
