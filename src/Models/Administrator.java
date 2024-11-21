@@ -1,5 +1,7 @@
 package Models;
 
+import java.util.List;
+
 public class Administrator extends User {
     private final String name;
     private final String gender;
@@ -131,10 +133,19 @@ public class Administrator extends User {
     
     
     // Appointment Methods
-    public boolean viewAppointmentDetails() {
-        // TODO: Implement appointment viewing logic when ready
-        System.out.println("Appointment viewing functionality not implemented yet");
-        return false;
+    public Appointment viewAppointmentDetailsByID(String appointmentID) {
+        Appointment appointment = AppointmentManager.getAppointmentByID(appointmentID);
+        return appointment;
+    }
+
+    public List<Appointment> viewAppointmentDetailsByPatientID(String patientID) {
+        List<Appointment> appointments = AppointmentManager.getAppointmentsByPatientID(patientID);
+        return appointments;
+    }
+
+    public List<Appointment> viewAppointmentDetailsByDoctorID(String doctorID) {
+        List<Appointment> appointments = AppointmentManager.getAppointmentsByDoctorID(doctorID);
+        return appointments;
     }
 
     public boolean logout() {

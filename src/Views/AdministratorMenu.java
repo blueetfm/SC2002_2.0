@@ -2,10 +2,14 @@
 package Views;
 
 import Models.Administrator;
+import Models.Appointment;
 import Models.Staff;
+import Utils.DateTimeFormatUtils;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 public class AdministratorMenu implements Menu {
@@ -79,7 +83,7 @@ public class AdministratorMenu implements Menu {
                         handleStaffManagement();
                         break;
                     case 2:
-                        currentAdmin.viewAppointmentDetails();
+                        viewAppointmentDetails();
                         break;
                     case 3:
                         handleInventoryManagement();
@@ -295,6 +299,72 @@ public class AdministratorMenu implements Menu {
         }
     }
 
+    /* Appointment Details */
+    private void viewAppointmentDetails(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Choose an option to view appointments:");
+        System.out.println("1. By Appointment ID");
+        System.out.println("2. By Patient ID");
+        System.out.println("3. By Doctor ID");
+        System.out.print("Enter your choice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); 
+
+        switch (choice) {
+            case 1:
+                System.out.print("Enter Appointment ID: ");
+                String appointmentID = scanner.nextLine();
+                Appointment appointment = currentAdmin.viewAppointmentDetailsByID(appointmentID);
+                if (appointment != null) {
+                    printAppointment(appointment);
+                } else {
+                    System.out.println("No appointment found with the provided ID.");
+                }
+                break;
+
+            case 2:
+                System.out.print("Enter Patient ID: ");
+                String patientID = scanner.nextLine();
+                List<Appointment> appointmentsByPatient = currentAdmin.viewAppointmentDetailsByPatientID(patientID);
+                if (!appointmentsByPatient.isEmpty()) {
+                    for (Appointment appt : appointmentsByPatient) {
+                        printAppointment(appt);
+                    }
+                } else {
+                    System.out.println("No appointments found for the provided Patient ID.");
+                }
+                break;
+
+            case 3:
+                System.out.print("Enter Doctor ID: ");
+                String doctorID = scanner.nextLine();
+                List<Appointment> appointmentsByDoctor = currentAdmin.viewAppointmentDetailsByDoctorID(doctorID);
+                if (!appointmentsByDoctor.isEmpty()) {
+                    for (Appointment appt : appointmentsByDoctor) {
+                        printAppointment(appt);
+                    }
+                } else {
+                    System.out.println("No appointments found for the provided Doctor ID.");
+                }
+                break;
+
+            default:
+                System.out.println("Invalid choice. Please try again.");
+                break;
+        }
+    }
+
+    private void printAppointment(Appointment appointment){
+        System.out.println("--------------------");
+        System.out.println("Appointment ID: " + appointment.getAppointmentID());
+        System.out.println("Patient ID: " + appointment.getPatientID());
+        System.out.println("Doctor ID: " + appointment.getDoctorID());
+        System.out.println("Date: " + appointment.getDate().format(DateTimeFormatUtils.DATE_FORMATTER));
+        System.out.println("Time: " + appointment.getTimeSlot().format(DateTimeFormatUtils.TIME_FORMATTER));
+        System.out.println("Status: " + appointment.getStatus().name());
+        System.out.println("--------------------");
+        return;
+    }
 
     private void handleInventoryManagement() {
         currentAdmin.viewMedicationInventory();

@@ -36,7 +36,7 @@ public class AppointmentManager {
     }
 
     // Function to initialize objects from CSVHandler's readCSVLines
-    public List<Appointment> initializeObjects() {
+    public static List<Appointment> initializeObjects() {
         appointments = new ArrayList<Appointment>();
         appointmentOutcomeRecords = new ArrayList<AppointmentOutcomeRecord>();
 
@@ -78,7 +78,7 @@ public class AppointmentManager {
     }
 
     // Function to transform objects back into CSV lines
-    public List<List<String>> initializeCSVLines(List<Appointment> appointments){
+    public static List<List<String>> initializeCSVLines(List<Appointment> appointments){
         List<List<String>> records = new ArrayList<>();
 
         records.add(Arrays.asList("Appointment ID","Patient ID","Doctor ID","Date","Time Slot","Status","Outcome Date","Service","Medication","Prescription Status","Notes"));
@@ -109,16 +109,16 @@ public class AppointmentManager {
         return "APT-" + "-" + uniquePart;
     }
 
-    public List<Appointment> getAppointments() {
+    public static List<Appointment> getAppointments() {
         return appointments;
     }
 
-    public List<AppointmentOutcomeRecord> getAppointmentOutcomeRecords(){
+    public static List<AppointmentOutcomeRecord> getAppointmentOutcomeRecords(){
         return appointmentOutcomeRecords;
     }
 
     /* Appointment Queries */
-    public Appointment getAppointmentById(String appointmentID) {
+    public static Appointment getAppointmentByID(String appointmentID) {
         for (Appointment appointment : appointments) {
             if (appointment.getAppointmentID().equals(appointmentID)) {
                 return appointment;
@@ -127,26 +127,26 @@ public class AppointmentManager {
         return null;
     }
 
-    public List<Appointment> getAppointmentsByPatientID(String patientID) {
+    public static List<Appointment> getAppointmentsByPatientID(String patientID) {
         return appointments.stream()
                 .filter(appointment -> appointment.getPatientID().equals(patientID))
                 .collect(Collectors.toList());
     }
 
-    public List<Appointment> getAppointmentsByDoctorID(String doctorID) {
+    public static List<Appointment> getAppointmentsByDoctorID(String doctorID) {
         return appointments.stream()
                 .filter(appointment -> appointment.getDoctorID().equals(doctorID))
                 .collect(Collectors.toList());
     }
 
     /* Appointment Outcome Records */
-    public AppointmentOutcomeRecord getAppointmentOutcomeRecordByID(String appointmentID){
-        Appointment appointment = getAppointmentById(appointmentID);
+    public static AppointmentOutcomeRecord getAppointmentOutcomeRecordByID(String appointmentID){
+        Appointment appointment = getAppointmentByID(appointmentID);
 
         return appointment.outcomeRecord;
     }
 
-    public List<AppointmentOutcomeRecord> getAppointmentOutcomeRecordByPatientID(String patientID){
+    public static List<AppointmentOutcomeRecord> getAppointmentOutcomeRecordsByPatientID(String patientID){
         return appointments.stream()
                 .filter(appointment -> appointment.getPatientID().equals(patientID)) 
                 .map(Appointment::getOutcomeRecord) 
@@ -156,7 +156,7 @@ public class AppointmentManager {
 
     /*Patient Menu Stuff*/
     // Schedule appointment
-    public boolean scheduleAppointment(){
+    public static boolean scheduleAppointment(){
         List<Appointment> appointments = getAppointments();
         // List<TimeSlot> timeslots = TimeSlotList.getTimeSlotList();
         // Appointment appointment = 
@@ -165,7 +165,7 @@ public class AppointmentManager {
     }
 
     // Cancel appointment
-    public boolean cancelAppointment(String appointmentID){
+    public static boolean cancelAppointment(String appointmentID){
         List<Appointment> appointments = getAppointments();
         Iterator<Appointment> iterator = appointments.iterator();
 
@@ -180,8 +180,8 @@ public class AppointmentManager {
     }
     
 
-    public boolean recordAppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate outcomeDate, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
-        Appointment appointment = getAppointmentById(appointmentID);
+    public static boolean recordAppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate outcomeDate, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
+        Appointment appointment = getAppointmentByID(appointmentID);
 
         if (appointment.outcomeRecord == null){
             AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(
