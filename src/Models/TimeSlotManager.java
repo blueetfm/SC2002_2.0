@@ -168,26 +168,26 @@ public class TimeSlotManager implements TimeSlotInterface{
 	}
 
 	/* Editing Time Slot */	
-	public boolean editTimeSlotPatientID(String timeSlotID, String patientID) {
+	public int editTimeSlotPatientID(String timeSlotID, String patientID) {
 		TimeSlot timeSlot = getTimeSlotByID(timeSlotID);
 		if (timeSlot != null && !timeSlot.getPatientID().equals("")){
 			timeSlot.setPatientID(patientID);
 
 			updateCSV(timeSlots);
-			return true;
+			return 1;
 		}
-		return false;
+		return 0;
 	}
 
-	public boolean editTimeSlotScheduleStatus(String timeSlotID, ScheduleStatus scheduleStatus) {
+	public int editTimeSlotScheduleStatus(String timeSlotID, ScheduleStatus scheduleStatus) {
 		TimeSlot timeSlot = getTimeSlotByID(timeSlotID);
 		if (timeSlot != null){
 			timeSlot.setScheduleStatus(scheduleStatus);
 
 			updateCSV(timeSlots);
-			return true;
+			return 1;
 		}
-		return false;
+		return 0;
 	}
 	
 	public static void printTimeSlot(TimeSlot slot) {

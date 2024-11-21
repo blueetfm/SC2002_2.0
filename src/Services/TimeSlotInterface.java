@@ -30,7 +30,10 @@ public interface TimeSlotInterface {
     static int addTimeSlot(String doctorID, String patientID, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus){
 		return 0;
 	}
-    static int editTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus){
+    static int editTimeSlotPatientID(String timeSlotID, String patientID){
+		return 0;
+	}
+	static int editTimeSlotScheduleStatus(String timeSlotID, ScheduleStatus scheduleStatus){
 		return 0;
 	}
 	static String generateTimeSlotID(){
