@@ -1,9 +1,6 @@
 package Models;
 
-import java.util.*;
-
 import Enums.*;
-
 import java.time.*;
 
 // Appointment details should include:
@@ -11,7 +8,6 @@ import java.time.*;
 // - Doctor ID
 // - Appointment status (e.g., confirmed, canceled, completed).
 // - Date and time of appointment
-// - Appointment Outcome Record (for completed appointments) 
 
 
 public class Appointment {
@@ -19,27 +15,23 @@ public class Appointment {
     protected String patientID; 
     protected String doctorID;
     protected LocalDate date;
+    protected LocalTime time;
     protected String timeSlotID;
     protected AppointmentStatus status;
-    protected AppointmentOutcomeRecord outcomeRecord; 
 
-    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, String timeSlotID, AppointmentStatus status, AppointmentOutcomeRecord outcomeRecord){
+    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, String timeSlotID, AppointmentStatus status){
         this.appointmentID = appointmentID;
         this.patientID = patientID;
         this.doctorID = doctorID;
         this.date = date;
         this.timeSlotID = timeSlotID;
         this.status = status;
-        this.outcomeRecord = outcomeRecord;
+
     }
 
     // setters
     public void setStatus(Enums.AppointmentStatus status){
         this.status = status;
-    }
-    public void setAppointmentOutcomeRecord(AppointmentOutcomeRecord outcomeRecord){
-        this.outcomeRecord = outcomeRecord;
-        this.status = AppointmentStatus.COMPLETED;
     }
     
     // getters
@@ -66,8 +58,4 @@ public class Appointment {
     public AppointmentStatus getStatus(){
         return this.status;
     }
-
-    public AppointmentOutcomeRecord getOutcomeRecord(){
-        return this.outcomeRecord;
-    }    
 }

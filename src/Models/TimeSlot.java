@@ -1,78 +1,33 @@
 package Models;
-
+import Enums.ScheduleStatus;
 import java.time.*;
 
-import Enums.*;
-
 public class TimeSlot {
-	protected String timeSlotID;
-	protected String doctorID;
-	protected String patientID;
-	protected LocalDate date;
-	protected LocalTime time;
-	protected ScheduleStatus scheduleStatus;
-	
-	public TimeSlot(String timeSlotID, String doctorID, String patientID, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
-		this.timeSlotID = timeSlotID;
-		this.doctorID = doctorID;
-		this.patientID = patientID;
-		this.date = date;
-		this.time = time;
-		this.scheduleStatus = scheduleStatus;
-	}
+    private String timeSlotID;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private String doctorID;
+    private String patientID;
+    private ScheduleStatus status;
 
-	public String getTimeSlotID() {
-		return this.timeSlotID;
-	}
-	
-	public String getDoctorID() {
-		return this.doctorID;
-	}
-	
-	public String getPatientID() {
-		return this.patientID;
-	}
-	
-	public LocalDate getDate() {
-		return this.date;
-	}
-	
-	public LocalTime getTime() {
-		return this.time;
-	}
-	
-	public ScheduleStatus getScheduleStatus() {
-		return this.scheduleStatus;
-	}
+    public TimeSlot(String timeSlotID, LocalDateTime start, LocalDateTime end, String doctorID, String patientID, ScheduleStatus status) {
+        this.timeSlotID = timeSlotID;
+        this.startTime = start;
+        this.endTime = end;
+        this.doctorID = doctorID;
+        this.patientID = patientID;
+        this.status = status;
+    }
 
-	public void setTimeSlotID(String timeSlotID) {
-		this.timeSlotID = timeSlotID;
-		return;
-	}
-	
-	public void setDoctorID(String doctorID) {
-		this.doctorID = doctorID;
-		return;
-	}
-	
-	public void setPatientID(String doctorID) {
-		this.patientID = patientID;
-		return;
-	}
-	
-	public void setDate(LocalDate date) {
-		this.date = date;
-		return;
-	}
-	
-	public void setTime(LocalTime time) {
-		this.time = time;
-		return;
-	}
-	
-	public void setScheduleStatus(ScheduleStatus scheduleStatus) {
-		this.scheduleStatus = scheduleStatus;
-		return;
-	}
+    // Getters
+    public String getTimeSlotID() { return timeSlotID; }
+    public LocalDateTime getStartTime() { return startTime; }
+    public LocalDateTime getEndTime() { return endTime; }
+    public String getDoctorID() { return doctorID; }
+    public String getPatientID() { return patientID; }
+    public ScheduleStatus getStatus() { return status; }
 
+    // Setters
+    public void setPatientID(String patientID) { this.patientID = patientID; }
+    public void setStatus(ScheduleStatus status) { this.status = status; }
 }
