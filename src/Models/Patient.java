@@ -34,7 +34,7 @@ public class Patient extends User {
     public Patient(String hospitalID, 
 	String password, String role, String name, 
 	LocalDate birthDate, String gender, String phoneNum, String email,
-	String bloodType, List<MedicalRecord> medicalHistory){
+	String bloodType){
         super(hospitalID, password, role);
         this.name = name;
         this.birthDate = birthDate;

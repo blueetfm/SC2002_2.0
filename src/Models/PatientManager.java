@@ -46,7 +46,7 @@ public class PatientManager implements PatientInterface {
         return null;
     }
 
-    public int createPatient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String patientID, String bloodType, List<MedicalRecord> medicalHistory) {
+    public static int createPatient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String bloodType) {
         String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
         List<String> allLines = new ArrayList<>();
         for (Patient patient: patientList) {
@@ -64,7 +64,7 @@ public class PatientManager implements PatientInterface {
             );
             allLines.add(line);
         }
-        Patient newPatient = new Patient(hospitalID, password, role, name, birthDate, gender, phoneNum, email, bloodType, medicalHistory);
+        Patient newPatient = new Patient(hospitalID, password, role, name, birthDate, gender, phoneNum, email, bloodType);
         patientList.add(newPatient);
         String newLine = String.format("%s,%s,%s,%s,%s,%s",
            newPatient.getPatientID(),
