@@ -111,6 +111,19 @@ public class Doctor extends User{
 	}
 	
 	public int registerPatient() {
+		Scanner case8Scanner = new Scanner(System.in);
+		System.out.print("Enter Patient ID to record: ");
+		String patientID = case8Scanner.next();
+		System.out.print("Enter Name of Patient: ");
+		String name = case8Scanner.next();
+		System.out.print("Enter date of birth 'YYYY-MM-DD': ");
+		LocalDate date = LocalDate.parse(case8Scanner.next(), DateTimeFormatUtils.DATE_FORMATTER);
+		System.out.print("Enter service provided: ");
+		Enums.Service service = Enums.Service.valueOf(case7Scanner.next().toUpperCase());
+		System.out.print("Enter medication prescribed: ");
+		String medication = case7Scanner.next();
+		System.out.print("Enter notes for appointment: ");
+		String notes = case7Scanner.next();		
 		return 0;
 	}
 	
