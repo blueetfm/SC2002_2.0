@@ -154,6 +154,6 @@ public class UserMenu implements Menu {
     }
 
     public static String getLoggedInHospitalID() {
-        return loggedInHospitalID;
+        return loggedInHospitalID.toUpperCase();
     }
 }
