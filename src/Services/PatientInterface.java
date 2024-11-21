@@ -13,8 +13,8 @@ public interface PatientInterface {
     public static void readPatient(String hospitalID) {
     	PatientManager.readPatient(hospitalID);
 	};
-    public static int updatePatient() {;
-    	return PatientManager.updatePatient();
+    public static int updatePatient(Patient patient) {
+    	return PatientManager.updatePatient(patient);
     }
     public static int deletePatient(String hospitalID) {
 		return PatientManager.deletePatient(hospitalID);
@@ -26,4 +26,3 @@ public interface PatientInterface {
 		return PatientManager.getAllPatients();
 	}
 }
-

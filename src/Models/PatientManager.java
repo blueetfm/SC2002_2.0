@@ -136,26 +136,54 @@ public class PatientManager implements PatientInterface {
         System.out.println("No matching patient profile ID.");
     }
 
-    public static int updatePatient() {
-        String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
-        List<String> allLines = new ArrayList<>();
-        for (Patient patient: patientList) {
-            String line = String.format("%s,%s,%s,%s,%s,%s",
-                patient.getPatientID(),
-                patient.getName(),
-                patient.getDateOfBirth(),
-                patient.getGender(),
-                patient.getBloodType(),
-                patient.getPhoneNum()
-            );
-            allLines.add(line);
+    public static int updatePatient(Patient updatedPatient) {
+        String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Email", "Contact Information"};
+        
+        // Read the CSV file into a List of List of Strings (representing rows and columns)
+        List<List<String>> allLines = CSVHandler.readCSVLines("data/Patient_List.csv");
+        boolean patientUpdated = false;
+    
+        // Loop through all lines
+        for (int i = 0; i < allLines.size(); i++) {
+            List<String> row = allLines.get(i);
+    
+            // Ensure we're checking for 7 columns and the Patient ID is the first column
+            if (row.get(0).equals(updatedPatient.getPatientID().toUpperCase())) {
+                // Update the row with the new patient details
+                row.set(0, updatedPatient.getPatientID().toUpperCase());
+                row.set(1, updatedPatient.getName());
+                row.set(2, updatedPatient.getDateOfBirth().toString());
+                row.set(3, updatedPatient.getGender());
+                row.set(4, updatedPatient.getBloodType());
+                row.set(5, updatedPatient.getEmail()); // Update email
+                row.set(6, updatedPatient.getPhoneNum()); // Update contact info
+                patientUpdated = true;
+                break;
+            }
         }
-   
-        String[] lines = allLines.toArray(new String[0]);
-        CSVHandler.writeCSVLines(headers, lines, "../../data/Patient_List.csv"); 
-        System.out.println("Patient database successfully updated!"); 
+    
+        if (!patientUpdated) {
+            System.out.println("Patient with ID " + updatedPatient.getPatientID() + " not found.");
+            return 0;
+        }
+    
+        // Convert List<List<String>> to String[] array for writeCSVLines method
+        List<String> flattenedLines = new ArrayList<>();
+        for (List<String> row : allLines) {
+            flattenedLines.add(String.join(",", row));  // Convert each row (List<String>) to a single comma-separated String
+        }
+    
+        // Convert the list to a String[] array
+        String[] allLinesArray = flattenedLines.toArray(new String[0]);
+        
+        String[] pls_lah={};
+        // Write the updated data back to the CSV (without headers being overwritten)
+        CSVHandler.writeCSVLines(pls_lah, allLinesArray, "data/Patient_List.csv");
+        System.out.println("Patient database successfully updated!\n");
         return 1;
     }
+    
+    
 
     public static int deletePatient(String hospitalID) {
         String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
