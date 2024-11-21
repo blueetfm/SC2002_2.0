@@ -68,6 +68,7 @@ public class DoctorMenu implements Menu {
 				} else {
 					System.out.println("Task failed.");
 				}
+				break;
 			case 2: 
 				result = currentDoctor.updatePatientMedicalRecords();
 				if (result == 1) {
@@ -75,6 +76,7 @@ public class DoctorMenu implements Menu {
 				} else {
 					System.out.println("Task failed.");
 				}
+				break;
 			case 3: 
 				result = currentDoctor.viewPersonalSchedule();
 				if (result == 1) {
@@ -82,20 +84,23 @@ public class DoctorMenu implements Menu {
 				} else {
 					System.out.println("Task failed.");
 				}
+				break;
 			case 4: 
 				result = currentDoctor.setAppointmentAvailability();
 				if (result == 1) {
 					System.out.println("Task completed successfully.");
 				} else {
 					System.out.println("Task failed.");
-				}		
+				}
+				break;		
 			case 5: 
 				result = currentDoctor.acceptOrDeclineAppointmentRequests();
 				if (result == 1) {
 					System.out.println("Task completed successfully.");
 				} else {
 					System.out.println("Task failed.");
-				}	
+				}
+				break;	
 			case 6: 
 				result = currentDoctor.viewUpcomingAppointments();
 				if (result == 1) {
@@ -103,6 +108,7 @@ public class DoctorMenu implements Menu {
 				} else {
 					System.out.println("Task failed.");
 				}
+				break;
 			case 7: 
 				result = currentDoctor.recordAppointmentOutcome();
 				if (result == 1) {
@@ -118,13 +124,15 @@ public class DoctorMenu implements Menu {
 				} else {
 					System.out.println("Task failed.");
 				}
+				break;
 			case 9: 
 				result = currentDoctor.dischargePatient();
 				if (result == 1) {
 					System.out.println("Task completed successfully.");
 				} else {
 					System.out.println("Task failed.");
-				}	
+				}
+				break;	
 			case 10: 
 				System.out.println("Logging out ….");
 				if (currentDoctor.logout()) {
@@ -132,6 +140,7 @@ public class DoctorMenu implements Menu {
 				} else {
 					System.out.println("Task failed.");
 				}
+				break;
 			}
 		} while (choice < 10);
 		sc.close();
