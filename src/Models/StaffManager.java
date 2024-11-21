@@ -111,7 +111,7 @@ public class StaffManager implements StaffInterface {
     public static synchronized boolean addStaff(String name, String role, String gender, int age) {
         try {
             String staffID = generateHospitalID(role);
-            String defaultPassword = "password123";
+            String defaultPassword = "password";
             
             List<Staff> staffList = readAllStaff();
             staffList.add(new Staff(staffID, name, role, gender, age));
@@ -123,7 +123,7 @@ public class StaffManager implements StaffInterface {
 
             System.out.println("Staff " + name + "'s account has been created with the following account details: ");
             System.out.println("Staff ID:" + staffID);
-            System.out.println("Default password" + defaultPassword);
+            System.out.println("Default password: " + defaultPassword);
             return true;
         } catch (Exception e) {
             System.err.println("Error adding staff: " + e.getMessage());
