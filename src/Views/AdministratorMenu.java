@@ -119,9 +119,8 @@ public class AdministratorMenu implements Menu {
         System.out.println("1: Add new staff");
         System.out.println("2: Remove staff");
         System.out.println("3: Update staff details");
-        System.out.println("4: Reset user password");
-        System.out.println("5: Return to main menu");
-        System.out.print("Enter your choice (1-5): ");
+        System.out.println("4: Return to main menu");
+        System.out.print("Enter your choice (1-4): ");
     }
 
 	private void displayInventoryMenu() {
@@ -171,31 +170,42 @@ public class AdministratorMenu implements Menu {
     }
 
     private void handleAddStaff() {
-        System.out.println("Enter new staff role (Doctor/Pharmacist/Administrator): ");
-        String role = getValidInput("Role");
+        try {
+            System.out.println("Enter new staff role (Doctor/Pharmacist/Administrator): ");
+            String role = getValidInput("Role");
+            
+            System.out.println("Enter new staff name: ");
+            String name = getValidInput("Name");
+            
+            System.out.println("Enter new staff age: ");
+            int age = getValidPositiveNumber("Age");
         
-        System.out.println("Enter new staff name: ");
-        String name = getValidInput("Name");
-        
-        System.out.println("Enter new staff age: ");
-        int age = getValidPositiveNumber("Age");
-    
-        System.out.println("Select new staff gender: ");
-        System.out.println("1: Male");
-        System.out.println("2: Female");
-        int genderOption = Integer.parseInt(scanner.nextLine().trim());
-        String gender;
-        switch (genderOption) {
-            case 1:
-                gender = "Male";
-                break;
-            case 2:
-                gender = "Female";
-                break;
-            default:
-                throw new IllegalArgumentException("Invalid gender option");
-        }    
-        currentAdmin.addStaff(name, role, gender, age);
+            System.out.println("Select new staff gender: ");
+            System.out.println("1: Male");
+            System.out.println("2: Female");
+            int genderOption = Integer.parseInt(scanner.nextLine().trim());
+            String gender;
+            switch (genderOption) {
+                case 1:
+                    gender = "Male";
+                    break;
+                case 2:
+                    gender = "Female";
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid gender option");
+            }    
+            
+            boolean success = currentAdmin.addStaff(name, role, gender, age);
+            if (success) {
+                System.out.println("\nStaff member added successfully!");
+                currentAdmin.viewStaffList();  // Show updated list
+            } else {
+                System.out.println("\nFailed to add staff member.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error adding staff: " + e.getMessage());
+        }
     }
 
     private void handleRemoveStaff() {

@@ -2,20 +2,30 @@ package Models;
 
 public interface StaffInterface {
     public static boolean addStaff(String name, String role, String gender, int age) {
-        return false;
+        return StaffManager.addStaff(name, role, gender, age);
     }
-    public static void removeStaff(String StaffID) {}
-    public static void viewStaffList() {}
+    
+    public static void removeStaff(String StaffID) {
+        StaffManager.removeStaff(StaffID);
+    }
+    
+    public static void viewStaffList() {
+        StaffManager.viewStaffList();
+    }
+    
     public static boolean updateStaff(String staffID, String name, String role, String gender, int age) {
-        return false;
+        return StaffManager.updateStaff(staffID, name, role, gender, age);
     }
+    
     public static Staff getStaffByID(String staffId) {
-        return null;
+        return StaffManager.getStaffByID(staffId);
     }
+    
     public static boolean updatePassword(String hospitalID, String newPassword) {
-        return false;
+        return StaffManager.updatePassword(hospitalID, newPassword);
     }
+    
     public static String getCurrentPassword(String hospitalID) {
-        return null;
+        return StaffManager.getCurrentPassword(hospitalID);
     }
 }

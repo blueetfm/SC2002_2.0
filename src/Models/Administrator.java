@@ -6,7 +6,7 @@ public class Administrator extends User {
     private String name;
     private String gender;
     // private StaffManager staffManager;
-    private MedicationInventoryManager medicationInventory;
+    // private MedicationInventoryManager medicationInventory;
 
     public Administrator(String hospitalID, String password, String role, 
                      String name, String gender) {
@@ -22,7 +22,11 @@ public class Administrator extends User {
 
     // Staff Management Methods
     public void viewStaffList() {
-        StaffInterface.viewStaffList();
+        try {
+            StaffInterface.viewStaffList();
+        } catch (Exception e) {
+            System.err.println("Error viewing staff list: " + e.getMessage());
+        }
     }
 
     public boolean addStaff(String name, String role, String gender, int age) {
@@ -50,7 +54,7 @@ public class Administrator extends User {
 
     // Medication Management Methods
     public void viewMedicationInventory() {
-        medicationInventory.viewMedicationInventory();
+        MedicationInventoryInterface.viewMedicationInventory();
     }
 
     public boolean addMedication(String medicineName, int initialStock, int lowStockAlert) {
@@ -59,7 +63,7 @@ public class Administrator extends User {
                 System.out.println("Medicine name cannot be empty!");
                 return false;
             }
-            medicationInventory.addMedication(medicineName, initialStock, lowStockAlert);
+            MedicationInventoryInterface.addMedication(medicineName, initialStock, lowStockAlert);
             return true;
         } catch (Exception e) {
             System.err.println("Error adding medication: " + e.getMessage());
@@ -73,7 +77,7 @@ public class Administrator extends User {
                 System.out.println("Medicine name cannot be empty!");
                 return false;
             }
-            medicationInventory.removeMedication(medicineName);
+            MedicationInventoryInterface.removeMedication(medicineName);
             return true;
         } catch (Exception e) {
             System.err.println("Error removing medication: " + e.getMessage());
@@ -87,7 +91,7 @@ public class Administrator extends User {
                 System.out.println("Medicine name cannot be empty!");
                 return false;
             }
-            medicationInventory.updateMedication(medicineName, newStock, newLowStockAlert);
+            MedicationInventoryInterface.updateMedication(medicineName, newStock, newLowStockAlert);
             return true;
         } catch (Exception e) {
             System.err.println("Error updating medication: " + e.getMessage());
@@ -97,7 +101,7 @@ public class Administrator extends User {
 
     // Replenishment Methods
     public void viewReplenishRequests() {
-        medicationInventory.displayReplenishRequests();
+        MedicationInventoryInterface.displayReplenishRequests();
     }
 
     public boolean approveReplenishRequest(String medicineName) {
@@ -106,7 +110,7 @@ public class Administrator extends User {
                 System.out.println("Medicine name cannot be empty!");
                 return false;
             }
-            return medicationInventory.approveReplenishRequests(medicineName);
+            return MedicationInventoryInterface.approveReplenishRequests(medicineName);
         } catch (Exception e) {
             System.err.println("Error approving replenishment request: " + e.getMessage());
             return false;
