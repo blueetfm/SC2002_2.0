@@ -7,27 +7,22 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 public class StaffManager implements StaffInterface {
-    //staff list csv 
-    private String csvFilePath;
+    private static String csvFilePath;
     private static final String CSV_HEADER = "Staff ID,Name,Role,Gender,Age";
-
-    //user list csv
-    private String userListPath;
+    private static String userListPath;
     private static final String USER_CSV_HEADER = "Hospital ID,Password";
     
     public StaffManager(String csvFilePath) {
-        this.csvFilePath = csvFilePath;
-        this.userListPath = csvFilePath.replace("Staff_List.csv", "User_list.csv");
+        StaffManager.csvFilePath = csvFilePath;
+        StaffManager.userListPath = csvFilePath.replace("Staff_List.csv", "User_list.csv");
         File file = new File(csvFilePath);
         if (!file.exists()) {
             CSVHandler.writeCSVLines(CSV_HEADER.split(","), new String[]{}, csvFilePath);
         }
     }
 
-    //handles staff list csv operations
-    private synchronized List<Staff> readAllStaff() {
+    private static synchronized List<Staff> readAllStaff() {
         List<Staff> staffList = new ArrayList<>();
         List<List<String>> records = CSVHandler.readCSVLines(csvFilePath);
 
@@ -47,7 +42,7 @@ public class StaffManager implements StaffInterface {
         return staffList;
     }
 
-    private synchronized void writeAllStaff(List<Staff> staffList) {
+    private static synchronized void writeAllStaff(List<Staff> staffList) {
         String[] headers = CSV_HEADER.split(",");
         String[] lines = new String[staffList.size()];
         for (int i = 0; i < staffList.size(); i++) {
@@ -63,8 +58,7 @@ public class StaffManager implements StaffInterface {
         }
     }
 
-    //handles user list csv operations
-    private synchronized List<String[]> readUserList() {
+    private static synchronized List<String[]> readUserList() {
         List<String[]> userList = new ArrayList<>();
         List<List<String>> records = CSVHandler.readCSVLines(userListPath);
         
@@ -78,7 +72,7 @@ public class StaffManager implements StaffInterface {
         return userList;
     }
 
-    private synchronized void writeUserList(List<String[]> userList) {
+    private static synchronized void writeUserList(List<String[]> userList) {
         String[] headers = USER_CSV_HEADER.split(",");
         String[] lines = new String[userList.size()];
         for (int i = 0; i < userList.size(); i++) {
@@ -93,7 +87,7 @@ public class StaffManager implements StaffInterface {
         }
     }
 
-    public Staff getStaffByID(String staffId) {
+    public static Staff getStaffByID(String staffId) {
         List<Staff> staffList = readAllStaff();
         return staffList.stream()
             .filter(staff -> staff.getStaffID().equals(staffId))
@@ -101,9 +95,7 @@ public class StaffManager implements StaffInterface {
             .orElse(null);
     }
 
-
-    @Override
-    public synchronized boolean addStaff(String name, String role, String gender, int age) {
+    public static synchronized boolean addStaff(String name, String role, String gender, int age) {
         try {
             String staffID = generateHospitalID(role);
             String defaultPassword = "password123";
@@ -126,8 +118,7 @@ public class StaffManager implements StaffInterface {
         }
     }
 
-    @Override
-    public synchronized void removeStaff(String StaffID) {
+    public static synchronized void removeStaff(String StaffID) {
         List<Staff> staffList = readAllStaff();
         boolean removed = staffList.removeIf(staff -> staff.getStaffID().equals(StaffID));
         
@@ -146,8 +137,7 @@ public class StaffManager implements StaffInterface {
         }
     }
 
-    @Override
-    public synchronized boolean updateStaff(String staffID, String name, String role, String gender, int age) {
+    public static synchronized boolean updateStaff(String staffID, String name, String role, String gender, int age) {
         List<Staff> staffList = readAllStaff();
         boolean updated = false;
         
@@ -166,8 +156,7 @@ public class StaffManager implements StaffInterface {
         return false;
     }
 
-    @Override
-    public void viewStaffList() {
+    public static void viewStaffList() {
         System.out.println("Staff List");
         System.out.println("--------------------");
         List<Staff> staffList = readAllStaff();
@@ -185,7 +174,7 @@ public class StaffManager implements StaffInterface {
         }
     }
 
-    public synchronized boolean updatePassword(String hospitalID, String newPassword) {
+    public static synchronized boolean updatePassword(String hospitalID, String newPassword) {
         List<String[]> userList = readUserList();
         boolean updated = false;
         
@@ -204,7 +193,7 @@ public class StaffManager implements StaffInterface {
         return false;
     }
 
-    public String getCurrentPassword(String hospitalID) {
+    public static String getCurrentPassword(String hospitalID) {
         List<String[]> userList = readUserList();
         for (String[] user : userList) {
             if (user[0].equals(hospitalID)) {
@@ -214,7 +203,7 @@ public class StaffManager implements StaffInterface {
         return null;
     }
 
-    private String generateHospitalID(String role) {
+    private static String generateHospitalID(String role) {
         List<Staff> staffList = readAllStaff();
         String prefix;
         switch (role.toLowerCase()) {
