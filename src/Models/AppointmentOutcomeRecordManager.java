@@ -63,6 +63,10 @@ public class AppointmentOutcomeRecordManager implements AppointmentOutcomeRecord
 		try {
 			AppointmentOutcomeRecord newAOR = new AppointmentOutcomeRecord(appointmentID, date, service, medicine, status, notes);
 			AORList.add(newAOR);
+			int result = updateCSV();
+			if (result == 0) {
+				System.err.println("Exiting Creation due to error.");
+			}
 			return 1;			
 		} catch (Exception e) {
 			System.err.println(" Creating AppointmentOutcomeRecord failed. ");
@@ -70,5 +74,25 @@ public class AppointmentOutcomeRecordManager implements AppointmentOutcomeRecord
 		}
 	}
 	
-//	public static int updateCSV()
+	public static int updateCSV() {
+		try {
+			List<String> lines = new ArrayList<String>();
+			for (AppointmentOutcomeRecord AOR : AORList) {
+				String input = AOR.getAppointmentID() + "," 
+						+ AOR.getDate().toString() + "," 
+						+ AOR.getService().toString() + "," 
+						+ AOR.getMedicine() + "," 
+						+ AOR.getStatus().toString() + "," 
+						+ AOR.getNotes();
+				lines.add(input);
+			}
+			String[] headers = {"Appointment ID","Date","Service","Medicine","Prescription Status","Notes"};
+			CSVHandler.writeCSVLines(headers, lines.toArray(new String[0]), "data/AppointmentOutcomeRecord_List.csv");
+			return 1;	
+		} catch (Exception e) {
+			System.err.println("Failed to update csv.");
+			return 0;
+		}
+
+	}
 }

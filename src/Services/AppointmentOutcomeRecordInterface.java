@@ -24,4 +24,8 @@ public interface AppointmentOutcomeRecordInterface {
 	public static int createAppointmentOutcomeRecord(String appointmentID, LocalDate date, Enums.Service service, String medicine, PrescriptionStatus status, String notes) {
 		return AppointmentOutcomeRecordManager.createAppointmentOutcomeRecord(appointmentID, date, service, medicine, status, notes);
 	}
+	
+	public static int updateCSV() {
+		return AppointmentOutcomeRecordManager.updateCSV();
+	}
 }
