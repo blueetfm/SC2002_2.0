@@ -3,16 +3,16 @@ package Models;
 public class Administrator extends User {
     private final String name;
     private final String gender;
-    private final StaffList staffList;
-    private final MedicationInventory medicationInventory;
+    private final StaffManager staffList;
+    private final MedicationInventoryManager medicationInventory;
 
     public Administrator(String hospitalID, String password, String role, 
                      String name, String gender) {
         super(hospitalID, password, role);
         this.name = name;
         this.gender = gender;
-        this.staffList = new StaffList("data/Staff_List.csv");
-        this.medicationInventory = MedicationInventory.getInstance(
+        this.staffList = new StaffManager("data/Staff_List.csv");
+        this.medicationInventory = MedicationInventoryManager.getInstance(
             "data/Medicine_List.csv", 
             "data/Medication_Replenish_Requests.csv"
         );
