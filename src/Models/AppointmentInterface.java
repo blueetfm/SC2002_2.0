@@ -50,7 +50,7 @@ public interface AppointmentInterface {
     public static int cancelAppointment(String appointmentID){
         return 0;
     }
-    public static int recordAppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate outcomeDate, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
+    public static int recordAppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate outcomeDate, Enums.Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
         return 0;
     }
 }

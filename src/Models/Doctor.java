@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import Enums.PrescriptionStatus;
+import Enums.Service;
 import Utils.DateTimeFormatUtils;
 import Views.DoctorMenu;
 
@@ -63,7 +64,14 @@ public class Doctor extends User{
 		Scanner case6Scanner = new Scanner(System.in);
 		String case6Choice;
 		case6Choice = case6Scanner.nextLine();
-		return 0;
+		List<TimeSlot> timeSlotList = TimeSlotInterface.getTimeSlotsByDoctorID(case6Choice);
+		for (TimeSlot slot : timeSlotList) {
+			if (slot.doctorID.equals(case6Choice)) {
+				TimeSlotInterface.printTimeSlot(slot);				
+			}
+		}
+		case6Scanner.close();
+		return 1;
 	}
 	
 	public int recordAppointmentOutcome() {
