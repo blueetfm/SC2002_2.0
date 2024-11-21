@@ -1,6 +1,10 @@
-package Models;
+package Services;
 
 import Enums.Service;
+import Models.Appointment;
+import Models.AppointmentManager;
+import Models.AppointmentOutcomeRecord;
+
 import java.time.LocalDate;
 import java.util.List;
 

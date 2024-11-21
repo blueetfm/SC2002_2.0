@@ -15,6 +15,11 @@ public class DoctorMenu implements Menu {
 	private Doctor currentDoctor;
 	private boolean isRunning; 
 	
+	public DoctorMenu() {
+		isRunning = true;
+		initializeDoctor();
+	}
+	
 	private void initializeDoctor() {
 		String loggedInID = UserMenu.getLoggedInHospitalID();
         
