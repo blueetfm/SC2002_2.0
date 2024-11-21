@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import Enums.PrescriptionStatus;
+import Enums.ScheduleStatus;
 import Enums.Service;
 import Utils.DateTimeFormatUtils;
 import Views.DoctorMenu;
@@ -61,6 +62,20 @@ public class Doctor extends User{
 		String case5Choice;
 		case5Choice = case5Scanner.nextLine();
 		List<TimeSlot> timeSlotList = TimeSlotInterface.getTimeSlotsByDoctorID(case5Choice);
+		for (TimeSlot i : timeSlotList) {
+			if (i.getScheduleStatus().equals(ScheduleStatus.PENDING)) {
+				System.out.println("Accept? (Y/N): ");
+				String acceptChar = case5Scanner.nextLine();
+				if (acceptChar.equals("Y")) {
+					i.setScheduleStatus(ScheduleStatus.RESERVED);
+				} else if (acceptChar.equals("N")) {
+					i.setScheduleStatus(ScheduleStatus.CANCELLED);
+				} else {
+					System.out.println("Invalid Input. No action is done.");
+				}
+			}
+		}
+		case5Scanner.close();
 		return 0;
 	}
 	
@@ -91,6 +106,7 @@ public class Doctor extends User{
 		System.out.print("Enter notes for appointment: ");
 		String notes = case7Scanner.next();
 		int recordResult = AppointmentInterface.recordAppointmentOutcomeRecord(appointmentID, patientID, date, service, medication, PrescriptionStatus.valueOf("PENDING"), notes);
+		case7Scanner.close();
 		return recordResult;
 	}
 	
