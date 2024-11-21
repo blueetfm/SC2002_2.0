@@ -126,7 +126,7 @@ public class Doctor extends User{
 		System.out.print("Enter contact number: ");
 		String contactNumber = case8Scanner.next();
 		case8Scanner.close();
-		return PatientManager.createPatient(patientID, "", "patient", name, date, gender, contactNumber, "", bloodType);
+		return PatientInterface.createPatient(patientID, "", "patient", name, date, gender, contactNumber, "", bloodType);
 	}
 	
 	public int dischargePatient() {
@@ -134,10 +134,16 @@ public class Doctor extends User{
 		System.out.print("Enter Patient ID to delete: ");
 		String case9Choice = case9Scanner.next();
 		case9Scanner.close();
-		return PatientManager.deletePatient(case9Choice);
+		return PatientInterface.deletePatient(case9Choice);
 	}
 	
-	public int logout() {
-		return 0;
+	public boolean logout() {
+		try {
+            System.out.println("Logging out doctor: " + this.name);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error during logout: " + e.getMessage());
+            return false;
+        }
 	}
 }

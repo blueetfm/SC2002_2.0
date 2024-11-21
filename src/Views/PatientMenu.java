@@ -135,14 +135,12 @@ public class PatientMenu implements Menu {
 	}
 
 	private void handleScheduleAppointment() {
-		// Collect user input for doctor and timeslot ID
 		System.out.println("Enter doctor ID:");
 		String doctorID = sc.nextLine();
 		
 		System.out.println("Enter timeslot ID:");
 		String timeslotID = sc.nextLine();
 		
-		// Schedule the appointment
 		boolean succeed = currentPatient.scheduleAppointment(doctorID, timeslotID);
 		if (succeed) {
 			System.out.println("Appointment scheduled successfully!");
@@ -152,14 +150,12 @@ public class PatientMenu implements Menu {
 	}
 
 	private void handleRescheduleAppointment() {
-		// Collect user input for old appointment ID and new timeslot ID
 		System.out.println("Enter your old appointment ID:");
 		String oldAppointmentID = sc.nextLine();
 		
 		System.out.println("Enter new timeslot ID:");
 		String newTimeSlotID = sc.nextLine();
-		
-		// Reschedule the appointment
+
 		boolean succeed = currentPatient.rescheduleAppointment(oldAppointmentID, newTimeSlotID);
 		if (succeed) {
 			System.out.println("Appointment rescheduled successfully!");
@@ -221,6 +217,7 @@ public class PatientMenu implements Menu {
 	// Handles logout
 	private void handleLogout() {
 		System.out.println("Program terminating...");
+		currentPatient.logout();
 		patientManager.updatePatient();
 		isRunning = false; // Stop the menu loop
 	}

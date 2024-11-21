@@ -71,8 +71,14 @@ public class Patient extends User {
 		return appointment_outcomes;
 	}
 
-	public int logout() {
-		return 1;
+	public boolean logout() {
+		try {
+            System.out.println("Logging out pharmacist: " + this.name);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error during logout: " + e.getMessage());
+            return false;
+        }
 	}
 
     // Update personal information(only non-medical info)
