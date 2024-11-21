@@ -12,6 +12,7 @@ public class StaffManager implements StaffInterface {
     private static final String CSV_HEADER = "Staff ID,Name,Role,Gender,Age";
     private static String userListPath;
     private static final String USER_CSV_HEADER = "Hospital ID,Password";
+    private static boolean isInitialized = false;
     
     public StaffManager(String csvFilePath) {
         StaffManager.csvFilePath = csvFilePath;
@@ -19,6 +20,18 @@ public class StaffManager implements StaffInterface {
         File file = new File(csvFilePath);
         if (!file.exists()) {
             CSVHandler.writeCSVLines(CSV_HEADER.split(","), new String[]{}, csvFilePath);
+        }
+    }
+
+    public static synchronized void initialize(String path) {
+        if (!isInitialized) {
+            csvFilePath = path;
+            userListPath = path.replace("Staff_List.csv", "User_list.csv");
+            File file = new File(csvFilePath);
+            if (!file.exists()) {
+                CSVHandler.writeCSVLines(CSV_HEADER.split(","), new String[]{}, csvFilePath);
+            }
+            isInitialized = true;
         }
     }
 

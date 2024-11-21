@@ -5,7 +5,7 @@ import java.util.List;
 public class Administrator extends User {
     private String name;
     private String gender;
-    private StaffManager staffManager;
+    // private StaffManager staffManager;
     private MedicationInventoryManager medicationInventory;
 
     public Administrator(String hospitalID, String password, String role, 
@@ -13,8 +13,8 @@ public class Administrator extends User {
         super(hospitalID, password, role);
         this.name = name;
         this.gender = gender;
-        this.staffManager = new StaffManager("data/Staff_List.csv");
-        this.medicationInventory = MedicationInventoryManager.getInstance(
+        StaffManager.initialize("data/Staff_List.csv"); 
+        MedicationInventoryManager.initialize(
             "data/Medicine_List.csv", 
             "data/Medication_Replenish_Requests.csv"
         );
@@ -22,16 +22,16 @@ public class Administrator extends User {
 
     // Staff Management Methods
     public void viewStaffList() {
-        staffManager.viewStaffList();
+        StaffInterface.viewStaffList();
     }
 
     public boolean addStaff(String name, String role, String gender, int age) {
-        return staffManager.addStaff(name, role, gender, age);
+        return StaffInterface.addStaff(name, role, gender, age);
     }
 
     public boolean removeStaff(String staffID) {
         try {
-            staffManager.removeStaff(staffID);
+            StaffInterface.removeStaff(staffID);
             return true;
         } catch (Exception e) {
             System.err.println("Error removing staff: " + e.getMessage());
@@ -40,11 +40,11 @@ public class Administrator extends User {
     }
 
     public boolean updateStaff(String staffId, String name, String role, String gender, int age) {
-        return staffManager.updateStaff(staffId, name, role, gender, age);
+        return StaffInterface.updateStaff(staffId, name, role, gender, age);
     }
 
     public Staff getStaffByID(String staffId) {
-        return staffManager.getStaffByID(staffId);
+        return StaffInterface.getStaffByID(staffId);
     }
 
 
@@ -120,7 +120,7 @@ public class Administrator extends User {
                 System.out.println("Hospital ID and password cannot be empty!");
                 return false;
             }
-            return staffManager.updatePassword(hospitalID, newPassword);
+            return StaffInterface.updatePassword(hospitalID, newPassword);
         } catch (Exception e) {
             System.err.println("Error updating password: " + e.getMessage());
             return false;
@@ -128,7 +128,7 @@ public class Administrator extends User {
     }
 
     public String getUserPassword(String hospitalID) {
-        return staffManager.getCurrentPassword(hospitalID);
+        return StaffInterface.getCurrentPassword(hospitalID);
     }
     
     

@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MedicationInventoryManager implements MedicationInventoryInterface {
-    private static MedicationInventoryManager instance;
-    private final String csvFilePath;
-    private final String requestsFilePath;
-    private final List<Medication> medicationList;
-    private final List<ReplenishRequest> replenishRequests;
+    private static String csvFilePath;
+    private static String requestsFilePath;
+    private static final List<Medication> medicationList = new ArrayList<>();
+    private static final List<ReplenishRequest> replenishRequests = new ArrayList<>();
+    private static boolean isInitialized = false;
 
     // Inner class to handle replenishment
     private static class ReplenishRequest {
@@ -29,23 +29,17 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         }
     }
 
-    private MedicationInventoryManager(String medicationCsvPath, String requestsCsvPath) {
-        this.csvFilePath = medicationCsvPath;
-        this.requestsFilePath = requestsCsvPath;
-        this.medicationList = new ArrayList<>();
-        this.replenishRequests = new ArrayList<>();
-        loadMedications();
-        loadReplenishRequests();
-    }
-
-    public static synchronized MedicationInventoryManager getInstance(String medicationCsvPath, String requestsCsvPath) {
-        if (instance == null) {
-            instance = new MedicationInventoryManager(medicationCsvPath, requestsCsvPath);
+    public static synchronized void initialize(String medicationCsvPath, String requestsCsvPath) {
+        if (!isInitialized) {
+            csvFilePath = medicationCsvPath;
+            requestsFilePath = requestsCsvPath;
+            loadMedications();
+            loadReplenishRequests();
+            isInitialized = true;
         }
-        return instance;
     }
 
-    private synchronized void loadMedications() {
+    private static synchronized void loadMedications() {
         medicationList.clear();
         List<List<String>> records = CSVHandler.readCSVLines(csvFilePath);
         
@@ -61,7 +55,7 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         }
     }
 
-    private synchronized void loadReplenishRequests() {
+    private static synchronized void loadReplenishRequests() {
         replenishRequests.clear();
         List<List<String>> records = CSVHandler.readCSVLines(requestsFilePath);
         
@@ -79,7 +73,7 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         }
     }
 
-    private synchronized void saveMedicationList() {
+    private static synchronized void saveMedicationList() {
         String[] headers = {"Medicine Name", "Initial Stock", "Low Stock Level Alert"};
         String[] lines = medicationList.stream()
                                      .map(Medication::toCSVString)
@@ -87,7 +81,7 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         CSVHandler.writeCSVLines(headers, lines, csvFilePath);
     }
 
-    private synchronized void saveReplenishRequests() {
+    private static synchronized void saveReplenishRequests() {
         String[] headers = {"Medicine Name", "Requested Quantity", "Status"};
         String[] lines = replenishRequests.stream()
                                         .map(ReplenishRequest::toCSVString)
@@ -95,8 +89,7 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         CSVHandler.writeCSVLines(headers, lines, requestsFilePath);
     }
 
-    @Override
-    public synchronized void viewMedicationInventory() {
+    public static synchronized void viewMedicationInventory() {
         System.out.println("\nCurrent Inventory");
         System.out.println("--------------------");
         for (Medication med : medicationList) {
@@ -104,8 +97,7 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         }
     }
 
-    @Override
-    public synchronized void addMedication(String medicineName, int initialStock, int lowStockAlert) {
+    public static synchronized void addMedication(String medicineName, int initialStock, int lowStockAlert) {
         if (medicineName == null || medicineName.trim().isEmpty()) {
             System.out.println("Medication name cannot be empty");
             return;
@@ -121,8 +113,7 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         System.out.println("Successfully added new medication: " + medicineName);
     }
 
-    @Override
-    public synchronized void removeMedication(String medicineName) {
+    public static synchronized void removeMedication(String medicineName) {
         boolean removed = medicationList.removeIf(med -> med.getName().equals(medicineName));
         
         if (removed) {
@@ -135,8 +126,7 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         }
     }
 
-    @Override
-    public synchronized void updateMedication(String medicineName, Integer newStock, Integer newLowStockAlert) {
+    public static synchronized void updateMedication(String medicineName, Integer newStock, Integer newLowStockAlert) {
         boolean updated = false;
         
         for (int i = 0; i < medicationList.size(); i++) {
@@ -159,8 +149,7 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         }
     }
 
-    @Override
-    public synchronized boolean prescribeMedication(String medicationName, int quantity) {
+    public static synchronized boolean prescribeMedication(String medicationName, int quantity) {
         boolean prescribed = false;
         
         for (int i = 0; i < medicationList.size(); i++) {
@@ -189,8 +178,7 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         return prescribed;
     }
 
-    @Override
-    public synchronized void submitReplenishRequest(String medicationName, int quantity) {
+    public static synchronized void submitReplenishRequest(String medicationName, int quantity) {
         if (!medicationList.stream().anyMatch(med -> med.getName().equals(medicationName))) {
             System.out.println("Medication not found: " + medicationName);
             return;
@@ -215,8 +203,7 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         System.out.println("Replenish request submitted to administrator.");
     }
 
-    @Override
-    public synchronized void displayReplenishRequests() {
+    public static synchronized void displayReplenishRequests() {
         System.out.println("\nReplenishment Requests:");
         System.out.println("----------------------");
         for (ReplenishRequest request : replenishRequests) {
@@ -225,8 +212,7 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         }
     }
 
-    @Override
-    public synchronized boolean approveReplenishRequests(String medicineName) {
+    public static synchronized boolean approveReplenishRequests(String medicineName) {
         ReplenishRequest request = replenishRequests.stream()
             .filter(r -> r.medicineName.equals(medicineName))
             .findFirst()
@@ -259,20 +245,14 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         return true;
     }
 
-    public static void clearInstance() {
-        if (instance != null) {
-            instance.medicationList.clear();
-            instance.replenishRequests.clear();
-            instance = null;
+    public static void refreshData() {
+        if (isInitialized) {
+            loadMedications();
+            loadReplenishRequests();
         }
     }
 
-    public synchronized void refreshData() {
-        loadMedications();
-        loadReplenishRequests();
-    }
-
-    public boolean hasReplenishRequests() {
+    public static boolean hasReplenishRequests() {
         return !replenishRequests.isEmpty();
     }
 }
