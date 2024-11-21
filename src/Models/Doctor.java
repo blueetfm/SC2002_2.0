@@ -200,6 +200,7 @@ public class Doctor extends User {
                 name = nameInput;
             } else {
                 System.out.println("Invalid name. Please enter a single name or a full name (e.g., 'Alicia' or 'Alicia Smith').");
+            }
         }
         LocalDate date = null;
         while (date == null) {
