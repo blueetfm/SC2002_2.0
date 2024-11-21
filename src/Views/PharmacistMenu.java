@@ -14,6 +14,7 @@ public class PharmacistMenu implements Menu {
         this.scanner = new Scanner(System.in);
         this.isRunning = true;
         initializePharmacist();
+        new AppointmentOutcomeRecordManager();
     }
 
     // Assumption that UserMenu.java already checks the person is a Pharmacist
@@ -144,13 +145,7 @@ public class PharmacistMenu implements Menu {
     }
 
     private void handleAppointmentView() {
-        System.out.print("Enter Appointment ID to view: ");
-        String appointmentID = scanner.nextLine().trim();
-        if (validateInput(appointmentID)) {
-            currentPharmacist.viewAppointmentOutcome(appointmentID);
-        } else {
-            System.out.println("Invalid appointment ID");
-        }
+    	currentPharmacist.viewAppointmentOutcomes();
     }
 
     private void handleReplenishmentRequest() {

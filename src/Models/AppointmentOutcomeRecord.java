@@ -3,64 +3,73 @@ import Enums.*;
 import java.time.*;
 
 public class AppointmentOutcomeRecord {
-    protected String appointmentID;
-    protected String patientID;
-    protected LocalDate date;
-    protected Service service;
-    protected String medication;
-    protected PrescriptionStatus prescriptionStatus;
-    protected String notes;
-
-    public AppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate date, 
-                                   Service service, String medication, 
-                                   PrescriptionStatus prescriptionStatus, String notes) {
-        this.appointmentID = appointmentID;
-        this.patientID = patientID;
-        this.date = date;
-        this.service = (service != null) ? service : Service.CONSULTATION; // Default to CONSULTATION if null
-        this.medication = medication;
-        this.prescriptionStatus = prescriptionStatus;
-        this.notes = notes;
-    }
-
-    // setters
-    public void setPrescriptionStatus(PrescriptionStatus prescriptionStatus) {
-        this.prescriptionStatus = prescriptionStatus;
-    }
-    
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
-
-    // getters
-    public String getAppointmentID(){
-        return this.appointmentID;
-    }
-
-    public String getPatientID(){
-        return this.patientID;
-    }
-
-    public LocalDate getDate(){
-        return this.date;
-    }
-
-    public Service getService(){
-        return this.service;
-    }
-
-    public String getMedication(){
-        return this.medication;
-    }
-
-    public PrescriptionStatus getPrescriptionStatus(){
-        return this.prescriptionStatus;
-    }
-
-    public String getNotes(){
-        return this.notes;
-    }
-    
-
-
+	private String appointmentID;
+	private LocalDate date;
+	private Enums.Service service;
+	private String medicine;
+	private PrescriptionStatus status;
+	private String notes;
+	
+	public AppointmentOutcomeRecord(String appointmentID, LocalDate date, Enums.Service service, String medicine, PrescriptionStatus status, String notes) {
+		this.appointmentID = appointmentID;
+		this.date = date;
+		this.service = service;
+		this.medicine = medicine;
+		this.status = status;
+		this.notes = notes;
+	}
+	
+	public String getAppointmentID() {
+		return this.appointmentID;
+	}
+	
+	public LocalDate getDate() {
+		return this.date;
+	}
+	
+	public Enums.Service getService() {
+		return this.service;
+	}
+	
+	public String getMedicine() {
+		return this.medicine;
+	}
+	
+	public PrescriptionStatus getStatus() {
+		return this.status;
+	}
+	
+	public String getNotes() {
+		return this.notes;
+	}
+	
+	public String setAppointmentID(String appointmentID) {
+		this.appointmentID = appointmentID;
+		return this.appointmentID;
+	}
+	
+	public LocalDate setDate(LocalDate date) {
+		this.date = date;
+		return this.date;
+	}
+	
+	public Enums.Service setService(Enums.Service service) {
+		this.service = service;
+		return this.service;
+	}
+	
+	public String setMedicine(String medicine) {
+		this.medicine = medicine;
+		return this.medicine;
+	}
+	
+	public PrescriptionStatus setStatus(PrescriptionStatus status) {
+		this.status = status;
+		return this.status;
+	}
+	
+	public String setNotes(String notes) {
+		this.notes = notes;
+		return this.notes;
+	}
 }
