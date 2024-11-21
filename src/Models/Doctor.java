@@ -57,6 +57,10 @@ public class Doctor extends User{
 	}
 	
 	public int acceptOrDeclineAppointmentRequests() {
+		Scanner case5Scanner = new Scanner(System.in);
+		String case5Choice;
+		case5Choice = case5Scanner.nextLine();
+		List<TimeSlot> timeSlotList = TimeSlotInterface.getTimeSlotsByDoctorID(case5Choice);
 		return 0;
 	}
 	
@@ -64,11 +68,9 @@ public class Doctor extends User{
 		Scanner case6Scanner = new Scanner(System.in);
 		String case6Choice;
 		case6Choice = case6Scanner.nextLine();
-		List<TimeSlot> timeSlotList = TimeSlotInterface.getTimeSlotsByDoctorID(case6Choice);
-		for (TimeSlot slot : timeSlotList) {
-			if (slot.doctorID.equals(case6Choice)) {
-				TimeSlotInterface.printTimeSlot(slot);				
-			}
+		List<Appointment> appointmentList = AppointmentInterface.getAppointmentsByDoctorID(case6Choice);
+		for (Appointment i : appointmentList) {
+			
 		}
 		case6Scanner.close();
 		return 1;

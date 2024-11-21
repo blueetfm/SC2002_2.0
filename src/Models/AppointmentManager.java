@@ -254,5 +254,17 @@ public class AppointmentManager {
         } else {
             return 0;
         }
-    }    
+    }   
+    
+    public static void printAppointment(Appointment appointment) {
+    	System.out.println("\n=====================================");
+    	System.out.printf("Appointment ID: %s\n", appointment.getAppointmentID());
+    	System.out.printf("Patient ID: %s\n", appointment.getPatientID());
+    	System.out.printf("Doctor ID: %s\n", appointment.getDoctorID());
+    	System.out.print("Date: "); System.out.println(appointment.getDate());
+    	System.out.printf("Time Slot ID: %s\n", appointment.getTimeSlotID());
+    	System.out.printf("Status: %s\n", appointment.getStatus().toString());
+    	System.out.println("=====================================");
+    	
+    }
 }

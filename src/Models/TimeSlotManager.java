@@ -192,12 +192,12 @@ public class TimeSlotManager implements TimeSlotInterface{
 	
 	public static void printTimeSlot(TimeSlot slot) {
 		System.out.println("\n=====================================");
-		System.out.printf("Time Slot ID: %s\n", slot.timeSlotID);
-		System.out.printf("Doctor ID: %s\n", slot.doctorID);
-		System.out.printf("Patient ID: %s\n", slot.patientID);
-		System.out.printf("Date: %s\n", slot.date);
-		System.out.printf("Time: %s\n", slot.time);
-		System.out.printf("Schedule Status: %s\n", slot.scheduleStatus);
+		System.out.printf("Time Slot ID: %s\n", slot.getTimeSlotID());
+		System.out.printf("Doctor ID: %s\n", slot.getDoctorID());
+		System.out.printf("Patient ID: %s\n", slot.getPatientID());
+		System.out.printf("Date: %s\n", slot.getDate());
+		System.out.printf("Time: %s\n", slot.getTime());
+		System.out.printf("Schedule Status: %s\n", slot.getScheduleStatus());
 		System.out.println("=====================================");
 	}
 	
