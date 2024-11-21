@@ -2,6 +2,8 @@
 package Views;
 
 import Models.*;
+import Services.AppointmentOutcomeRecordInterface;
+
 import java.io.*;
 import java.util.Scanner;
 
@@ -139,6 +141,10 @@ public class PharmacistMenu implements Menu {
         String appointmentID = scanner.nextLine().trim();
         if (validateInput(appointmentID)) {
             currentPharmacist.updatePrescriptionStatus(appointmentID);
+            int result = AppointmentOutcomeRecordInterface.updateCSV();
+            if (result == 0) {
+            	System.err.println("Exiting Handle Prescription Status from Error.");
+            }
         } else {
             System.out.println("Invalid appointment ID");
         }

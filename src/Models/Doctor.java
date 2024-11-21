@@ -16,6 +16,7 @@ import Services.PatientInterface;
 import Services.TimeSlotInterface;
 import Utils.DateTimeFormatUtils;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -159,8 +160,16 @@ public class Doctor extends User {
         String appointmentID = case7Scanner.next();
         System.out.print("Enter Hospital ID of Patient: ");
         String patientID = case7Scanner.next();
-        System.out.print("Enter date of appointment in the form 'YYYY-MM-DD': ");
-        LocalDate date = LocalDate.parse(case7Scanner.next(), DateTimeFormatUtils.DATE_FORMATTER);
+        LocalDate date = null;
+        while (date == null) {
+            System.out.print("Enter date of appointment in the form 'YYYY-MM-DD': ");
+            String dateInput = case7Scanner.next();
+            try {
+                date = LocalDate.parse(dateInput, DateTimeFormatUtils.DATE_FORMATTER);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please enter the date in 'YYYY-MM-DD' format.");
+            }
+        }
         System.out.print("Enter service provided: ");
         Enums.Service service = Enums.Service.valueOf(case7Scanner.next().toUpperCase());
         System.out.print("Enter medication prescribed: ");
@@ -183,10 +192,26 @@ public class Doctor extends User {
         String patientID = case8Scanner.next();
         System.out.print("Enter Name of Patient: ");
         String name = case8Scanner.next();
-        System.out.print("Enter date of birth 'YYYY-MM-DD': ");
-        LocalDate date = LocalDate.parse(case8Scanner.next(), DateTimeFormatUtils.DATE_FORMATTER);
-        System.out.print("Enter Gender of Patient: ");
-        String gender = case8Scanner.next();
+         LocalDate date = null;
+        while (date == null) {
+            System.out.print("Enter date of birth 'YYYY-MM-DD': ");
+            String dateInput = case8Scanner.next();
+            try {
+                date = LocalDate.parse(dateInput, DateTimeFormatUtils.DATE_FORMATTER);
+            } catch (DateTimeParseException e) {
+                System.out.println("Invalid date format. Please enter the date in 'YYYY-MM-DD' format.");
+            }
+        }
+        String gender = null;
+        while (gender == null) {
+            System.out.print("Enter Gender of Patient: ");
+            String genderInput = case8Scanner.next().toLowerCase(); // Normalize input to lowercase
+            if (genderInput.equals("male") || genderInput.equals("female")) {
+                gender = genderInput; // Assign valid gender
+            } else {
+                System.out.println("Invalid input. Please enter 'male' or 'female'.");
+            }
+        }
         System.out.print("Enter patient blood type: ");
         String bloodType = case8Scanner.next();
         System.out.print("Enter contact number: ");

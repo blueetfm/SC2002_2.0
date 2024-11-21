@@ -1,16 +1,30 @@
 package Models;
 
 import Utils.CSVHandler;
-import Utils.CSVHandler;
+import Services.MedicalRecordInterface;
 import java.util.ArrayList;
 import java.util.List;
 
-import Services.MedicalRecordInterface;
-
+/**
+ * The {@code MedicalRecordManager} class is responsible for managing the medical records
+ * of patients. It provides methods to create, update, read, and delete medical records,
+ * as well as manage persistence by reading and writing records to a CSV file.
+ * It implements the {@link MedicalRecordInterface} interface.
+ * @author SCSCGroup4
+ * @version 1.0
+ * @since 2024-11-21
+ */
 public class MedicalRecordManager implements MedicalRecordInterface {
-	private static MedicalRecordManager instance;
+
+    private static MedicalRecordManager instance;
     public static List<MedicalRecord> medicalRecordList;
 
+    /**
+     * Constructs a new {@code MedicalRecordManager} instance.
+     * This constructor reads the medical records from the CSV file and initializes
+     * the {@code medicalRecordList} by parsing the data from the file. It ensures that
+     * existing records are merged and new records are added properly.
+     */
     public MedicalRecordManager() {
         MedicalRecordManager.medicalRecordList = new ArrayList<MedicalRecord>();
 
@@ -50,14 +64,28 @@ public class MedicalRecordManager implements MedicalRecordInterface {
             }
         }
     }
-    
+
+    /**
+     * Gets the singleton instance of the {@code MedicalRecordManager}. If the instance
+     * does not exist, it creates a new one. This method ensures that only one instance
+     * of the manager exists throughout the application's lifecycle.
+     *
+     * @return The singleton instance of the {@code MedicalRecordManager}.
+     */
     public static synchronized MedicalRecordManager getMedicalRecordList() {
-    	if (instance.equals(null)) {
-    		instance = new MedicalRecordManager();
-    	}
-    	return instance;
+        if (instance == null) {
+            instance = new MedicalRecordManager();
+        }
+        return instance;
     }
 
+    /**
+     * Updates the medical records CSV file with the current data in {@code medicalRecordList}.
+     * The method writes all the records to the CSV file in a format with headers "ID", "Diagnosis",
+     * "Medication", and "Treatment".
+     *
+     * @return 0 to indicate the successful update of the CSV file.
+     */
     public static int updateCSV() {
         List<String> record = new ArrayList<>();
         for (MedicalRecord indivRecord : medicalRecordList) {
@@ -84,12 +112,25 @@ public class MedicalRecordManager implements MedicalRecordInterface {
         return 0;
     }
 
+    /**
+     * Creates a new medical record for a patient with the given patient ID.
+     * If a record already exists for the patient, the method does nothing.
+     *
+     * @param patientID The ID of the patient for whom the medical record is to be created.
+     * @return The newly created {@link MedicalRecord} object for the patient.
+     */
     public static MedicalRecord createMedicalRecord(String patientID) {
         MedicalRecord newRecord = new MedicalRecord(patientID);
         medicalRecordList.add(newRecord);
         return newRecord;
     }
- 
+
+    /**
+     * Reads and prints all the medical records stored in {@code medicalRecordList}.
+     * The method prints the patient ID, diagnosis, medication, and treatment for each record.
+     *
+     * @return 1 to indicate successful reading and printing of all medical records.
+     */
     public static int readAllMedicalRecords() {
         for (MedicalRecord record : medicalRecordList) {
             String ID = record.patientID;
@@ -106,6 +147,14 @@ public class MedicalRecordManager implements MedicalRecordInterface {
         return 1;
     }
 
+    /**
+     * Reads and prints the medical records for a specific patient identified by the patient ID.
+     * If no records are found for the given patient ID, the method prints an error message.
+     *
+     * @param patientID The ID of the patient whose medical records are to be retrieved.
+     * @return The number of records found and printed for the given patient. Returns -1 for invalid IDs,
+     *         and 0 if no records are found for the patient.
+     */
     public static int readMedicalRecordsByPatientID(String patientID) {
         if (patientID == null || patientID.trim().isEmpty()) {
             System.out.println("Invalid patient ID");
@@ -129,13 +178,24 @@ public class MedicalRecordManager implements MedicalRecordInterface {
             }
         }
 
-        if (found==0) {
+        if (found == 0) {
             System.out.println("No records found for patient ID: " + patientID);
             return 0;
         }
         return found;
     }
 
+    /**
+     * Updates the medical record for a given patient identified by the patient ID.
+     * If no record exists for the patient, a new record is created. The method adds a new diagnosis,
+     * medication, and treatment to the patient's existing record.
+     *
+     * @param patientID The ID of the patient whose medical record is to be updated.
+     * @param diagnosis The diagnosis to be added to the medical record.
+     * @param medication The medication to be added to the medical record.
+     * @param treatment The treatment to be added to the medical record.
+     * @return The updated or newly created {@link MedicalRecord} object.
+     */
     public static MedicalRecord updateMedicalRecord(
         String patientID,
         String diagnosis,
@@ -153,12 +213,19 @@ public class MedicalRecordManager implements MedicalRecordInterface {
         return newRecord;
     }
 
+    /**
+     * Deletes the medical record for a patient identified by the patient ID.
+     * If no record exists for the patient, the method returns false.
+     *
+     * @param patientID The ID of the patient whose medical record is to be deleted.
+     * @return True if the medical record was successfully deleted, false otherwise.
+     */
     public static boolean deleteMedicalRecord(String patientID) {
         if (patientID == null || patientID.trim().isEmpty()) {
             return false;
         }
 
-        return medicalRecordList.removeIf(record ->
+        return medicalRecordList.removeIf(record -> 
             record.patientID.equals(patientID)
         );
     }

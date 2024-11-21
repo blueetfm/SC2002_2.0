@@ -7,16 +7,33 @@ import Views.UserMenu;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
+/**
+ * Manages the patient profiles in the system.
+ * This class handles CRUD operations on the patient database, 
+ * such as retrieving, creating, updating, and deleting patient profiles.
+ * It also manages the loading and saving of patient data to a CSV file.
+ * @author SCSCGroup4
+ * @version 1.0
+ * @since 2024-11-21
+ */
 public class PatientManager implements PatientInterface {
     private static PatientManager instance;
     protected static List<Patient> patientList;
 
+    /**
+     * Constructs a new PatientManager instance and initializes the patient list.
+     */
     public PatientManager(){
         this.patientList = new ArrayList<>();
     }
 
+    /**
+     * Returns the singleton instance of the PatientManager.
+     * If the instance does not exist, it creates a new one.
+     *
+     * @return the singleton instance of PatientManager
+     */
     public static PatientManager getInstance(){
         if (instance == null){
             instance = new PatientManager();
@@ -24,13 +41,25 @@ public class PatientManager implements PatientInterface {
         return instance;
     }
     
+    /**
+     * Retrieves all patients from the database and initializes the patient list.
+     * This method fetches data from the CSV file and returns the list of patients.
+     *
+     * @return a list of all patients
+     */
     public static List<Patient> getAllPatients() {
-        PatientManager.patientList=PatientManager.initializeObjects();
+        PatientManager.patientList = PatientManager.initializeObjects();
         System.out.println(patientList);
-
-    	return PatientManager.patientList;
+        return PatientManager.patientList;
     }
 
+    /**
+     * Retrieves a patient profile based on the hospital ID.
+     * Access is restricted if the logged-in user is a patient and attempts to view another patient's profile.
+     *
+     * @param hospitalID the ID of the patient to retrieve
+     * @return the patient object if found, or null if no match is found or access is denied
+     */
     public static Patient getPatient(String hospitalID) {
         String loggedInID = UserMenu.getLoggedInHospitalID(); 
         boolean isPatient = loggedInID.startsWith("P") && (loggedInID.length() == 5);
@@ -40,7 +69,7 @@ public class PatientManager implements PatientInterface {
             return null;
         }
     
-        for (Patient patient: patientList) {
+        for (Patient patient : patientList) {
             if (patient.getPatientID().equals(hospitalID)) {
                 System.out.println("Patient profile already exists.");
                 return patient;
@@ -50,10 +79,26 @@ public class PatientManager implements PatientInterface {
         return null;
     }
 
+    /**
+     * Creates a new patient profile and stores it in the system.
+     * If a patient with the same ID already exists, it prevents creating a new profile.
+     * The patient data is saved to the patient list and written to the CSV file.
+     *
+     * @param hospitalID the ID of the new patient
+     * @param password the password for the new patient
+     * @param role the role of the new patient
+     * @param name the name of the new patient
+     * @param birthDate the birth date of the new patient
+     * @param gender the gender of the new patient
+     * @param phoneNum the phone number of the new patient
+     * @param email the email of the new patient
+     * @param bloodType the blood type of the new patient
+     * @return 1 if the patient was created successfully, 0 if the patient already exists
+     */
     public static int createPatient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String bloodType) {
         String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
         List<String> allLines = new ArrayList<>();
-        for (Patient patient: patientList) {
+        for (Patient patient : patientList) {
             if (patient.getPatientID().equals(hospitalID)) {
                 System.out.println("Patient profile already exists.");
                 return 0;
@@ -85,6 +130,12 @@ public class PatientManager implements PatientInterface {
         return 1;
     }
 
+    /**
+     * Reads a patient profile and displays their details.
+     * Access is restricted if the logged-in user is a patient and attempts to view another patient's profile.
+     *
+     * @param hospitalID the ID of the patient to read
+     */
     public static void readPatient(String hospitalID) {
         String loggedInID = UserMenu.getLoggedInHospitalID(); 
         boolean isPatient = loggedInID.startsWith("P") && (loggedInID.length() == 5);
@@ -94,26 +145,30 @@ public class PatientManager implements PatientInterface {
             return;
         }
     
-        for (Patient patient: patientList) {
-        if (patient.getPatientID().equals(hospitalID)) {
-            System.out.println("\n====== Patient Profile ======");
-            System.out.println("Patient ID: " + patient.getPatientID());
-            System.out.println("Name: " + patient.getName());
-            System.out.println("Date of Birth: " + patient.getDateOfBirth());
-            System.out.println("Gender: " + patient.getGender());
-            System.out.println("Blood Type: " + patient.getBloodType());
-            System.out.println("Contact Information: " + patient.getPhoneNum());
-            System.out.println("Medical Records: " + MedicalRecordInterface.readMedicalRecordsByPatientID(patient.getPatientID()));
-            System.out.println("===========================\n");
-        }
+        for (Patient patient : patientList) {
+            if (patient.getPatientID().equals(hospitalID)) {
+                System.out.println("\n====== Patient Profile ======");
+                System.out.println("Patient ID: " + patient.getPatientID());
+                System.out.println("Name: " + patient.getName());
+                System.out.println("Date of Birth: " + patient.getDateOfBirth());
+                System.out.println("Gender: " + patient.getGender());
+                System.out.println("Blood Type: " + patient.getBloodType());
+                System.out.println("Contact Information: " + patient.getPhoneNum());
+                System.out.println("Medical Records: " + MedicalRecordInterface.readMedicalRecordsByPatientID(patient.getPatientID()));
+                System.out.println("===========================\n");
+            }
         }
     }
 
+    /**
+     * Initializes the patient list by reading data from the CSV file.
+     * This method populates the patient list with Patient objects created from the CSV file content.
+     *
+     * @return a list of Patient objects initialized from the CSV file
+     */
     public static List<Patient> initializeObjects() {
-        // Initialize the list to store patient objects
         List<Patient> patients = new ArrayList<>();
         
-        // Read the CSV file into a List of List of Strings (rows and columns)
         List<List<String>> allLines = CSVHandler.readCSVLines("data/Patient_List.csv");
     
         if (allLines.isEmpty()) {
@@ -121,32 +176,27 @@ public class PatientManager implements PatientInterface {
             return patients;
         }
     
-        // Skip the header row (assuming the first row contains headers)
         for (int i = 1; i < allLines.size(); i++) {
             List<String> row = allLines.get(i);
     
             try {
-                // Ensure the row has the expected number of columns
                 if (row.size() < 7) {
                     System.err.println("Skipping incomplete record at line " + (i + 1) + ": " + String.join(",", row));
                     continue;
                 }
     
-                // Parse each column into its corresponding field
                 String patientID = row.get(0).trim().toUpperCase();
                 String name = row.get(1).trim();
-                LocalDate dateOfBirth = LocalDate.parse(row.get(2).trim()); // Ensure date format matches
+                LocalDate dateOfBirth = LocalDate.parse(row.get(2).trim());
                 String gender = row.get(3).trim();
                 String bloodType = row.get(4).trim();
                 String email = row.get(5).trim();
                 String phoneNum = row.get(6).trim();
     
-                // Create a Patient object and add it to the list
                 Patient patient = new Patient(patientID, name, dateOfBirth, gender, bloodType, email, phoneNum);
                 patients.add(patient);
     
             } catch (Exception e) {
-                // Handle any errors during parsing
                 System.err.println("Error parsing record at line " + (i + 1) + ": " + e.getMessage());
                 System.err.println("Record content: " + String.join(",", row));
             }
@@ -154,8 +204,14 @@ public class PatientManager implements PatientInterface {
     
         return patients;
     }
-    
 
+    /**
+     * Updates the details of an existing patient in the database.
+     * The updated patient data is written back to the CSV file.
+     *
+     * @param updatedPatient the patient object with updated details
+     * @return 1 if the patient was successfully updated, 0 if the patient was not found
+     */
     public static int updatePatient(Patient updatedPatient) {
         String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Email", "Contact Information"};
         
@@ -204,7 +260,19 @@ public class PatientManager implements PatientInterface {
     }
     
     
-
+    /**
+    * Deletes a patient profile from the patient list and the corresponding CSV file.
+    * <p>
+    * The method searches for a patient with the given hospital ID. If the patient is found,
+    * the profile is removed from the internal list of patients, and the updated list is saved
+    * back to the CSV file. If the patient is not found, a message is displayed indicating
+    * that no matching profile was found.
+    * </p>
+    *
+    * @param hospitalID The hospital ID of the patient to be deleted.
+    * @return 1 if the patient profile was successfully deleted and the CSV file was updated,
+    *         0 if no matching patient profile was found.
+    */
     public static int deletePatient(String hospitalID) {
         String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
 
