@@ -212,7 +212,7 @@ public class AdministratorMenu implements Menu {
         String staffId = getValidInput("Staff ID");
         
         // Get current staff details
-        Staff currentStaff = currentAdmin.getStaffById(staffId);
+        Staff currentStaff = currentAdmin.getStaffByID(staffId);
         
         if (currentStaff == null) {
             System.out.println("Staff not found!");
