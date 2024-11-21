@@ -16,15 +16,17 @@ import Views.PatientMenu;
 
 
 public class Patient extends User {
-	protected String name;
-	protected LocalDate birthDate;
-	protected String gender;
-	protected String phoneNum;
-	protected String email;
-    protected String patientID;
-    protected String bloodType;
+	private String name;
+	private LocalDate birthDate;
+	private String gender;
+	private String phoneNum;
+	private String email;
+    private String patientID;
+    private String bloodType;
 
-    public Patient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String bloodType, List<MedicalRecord> medicalHistory){
+    public Patient(String hospitalID, String password, String role, String name, 
+						LocalDate birthDate, String gender, String phoneNum, String email,
+						String bloodType, List<MedicalRecord> medicalHistory){
         super(hospitalID, password, role);
         this.name = name;
         this.birthDate = birthDate;
