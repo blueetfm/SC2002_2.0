@@ -5,12 +5,12 @@ import java.time.*;
 import Enums.*;
 
 public class TimeSlot {
-	String timeSlotID;
-	String doctorID;
-	String patientID;
-	LocalDate date;
-	LocalTime time;
-	ScheduleStatus scheduleStatus;
+	protected String timeSlotID;
+	protected String doctorID;
+	protected String patientID;
+	protected LocalDate date;
+	protected LocalTime time;
+	protected ScheduleStatus scheduleStatus;
 	
 	public TimeSlot(String timeSlotID, String doctorID, String patientID, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
 		this.timeSlotID = timeSlotID;
@@ -59,7 +59,6 @@ public class TimeSlot {
 		this.patientID = patientID;
 		return;
 	}
-	
 	
 	public void setDate(LocalDate date) {
 		this.date = date;

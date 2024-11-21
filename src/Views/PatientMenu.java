@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 import Models.Patient;
 import Models.PatientManager;
+import Utils.DateTimeFormatUtils;
 import Models.PatientInterface;
 import Models.AppointmentOutcomeRecord;
 import Models.Appointment;
@@ -31,21 +32,21 @@ public class PatientMenu implements Menu {
 	private void initializePatient() {
 		try {
 			String loggedInID = UserMenu.getLoggedInHospitalID();
-			System.out.println("Logged In Hospital ID: " + loggedInID);  // Debugging line
+			System.out.println("Logged In Hospital ID: " + loggedInID);  
 	
 			BufferedReader reader = new BufferedReader(new FileReader("data/Patient_List.csv"));
-			System.out.println("Patient list CSV file opened successfully.");  // Debugging line
+			System.out.println("Patient list CSV file opened successfully.");  
 			reader.readLine(); // Skip header
-			System.out.println("Header skipped.");  // Debugging line
+			System.out.println("Header skipped.");  
 	
 			String line;
 			while ((line = reader.readLine()) != null) {
-				System.out.println("Reading line: " + line);  // Debugging line
+				System.out.println("Reading line: " + line);  
 				String[] patientDetails = line.split(",");
 				System.out.println(patientDetails[0].toUpperCase()); 
 				// Check if patient ID matches
 				if (patientDetails[0].equals(loggedInID.toUpperCase())) {
-					System.out.println("Patient found: " + patientDetails[1]);  // Debugging line
+					System.out.println("Patient found: " + patientDetails[1]);  
 	
 					this.currentPatient = new Patient(
 						loggedInID,                           // Hospital ID
@@ -60,7 +61,7 @@ public class PatientMenu implements Menu {
 						new ArrayList<>()                     // Empty Medical History
 					);
 					this.currentPatient.getBloodType();
-					System.out.println("Patient object created successfully.");  // Debugging line
+					System.out.println("Patient object created successfully.");  
 					break;
 				}
 			}
@@ -103,7 +104,6 @@ public class PatientMenu implements Menu {
 		sc.close();
 	}
 
-	// Handles viewing medical records
 	private void handleViewMedicalRecord() {
 		boolean succeed = currentPatient.viewMedicalRecord();
 		if (!succeed) {
@@ -111,7 +111,6 @@ public class PatientMenu implements Menu {
 		}
 	}
 
-	// Handles updating personal information
 	private void handleUpdatePersonalInfo() {
 		System.out.println("\nEnter field to update:");
 		System.out.println("1: Phone number");
@@ -134,8 +133,6 @@ public class PatientMenu implements Menu {
 		}
 	}
 
-	// Handles scheduling an appointment
-	// Handles scheduling an appointment
 	private void handleScheduleAppointment() {
 		// Collect user input for doctor and timeslot ID
 		System.out.println("Enter doctor ID:");
@@ -153,7 +150,6 @@ public class PatientMenu implements Menu {
 		}
 	}
 
-	// Handles rescheduling an appointment
 	private void handleRescheduleAppointment() {
 		// Collect user input for old appointment ID and new timeslot ID
 		System.out.println("Enter your old appointment ID:");
@@ -172,7 +168,6 @@ public class PatientMenu implements Menu {
 	}
 
 
-	// Handles canceling an appointment
 	private void handleCancelAppointment() {
 		boolean succeed = currentPatient.cancelAppointment();
 		if (succeed) {
@@ -181,8 +176,16 @@ public class PatientMenu implements Menu {
 			System.out.println("Failed to cancel the appointment. Please try again.");
 		}
 	}
+
+	private void printAppointmentOutcomeRecord(AppointmentOutcomeRecord appointmentOutcomeRecord){
+        System.out.println("--------------------");
+        System.out.println("Date of Appointment: " + appointmentOutcomeRecord.getDate().format(DateTimeFormatUtils.DATE_FORMATTER));
+        System.out.println("Service provided: " + appointmentOutcomeRecord.getService());
+        System.out.println("Prescribed Medication: " + appointmentOutcomeRecord.getMedication());
+        System.out.println("--------------------");
+        return;
+    }
 	
-	// Handles viewing available appointment slots
 	private void handleViewAvailableAppointmentSlots() {
 		boolean succeed = currentPatient.viewAvailableAppointmentSlots();
 		if (!succeed) {
@@ -190,7 +193,6 @@ public class PatientMenu implements Menu {
 		}
 	}
 
-	// Handles viewing scheduled appointments
 	private void handleViewScheduledAppointments() {
 		List<Appointment> appointments = currentPatient.viewScheduledAppointments();
 		// Check if the list is null or empty
@@ -217,7 +219,7 @@ public class PatientMenu implements Menu {
 		} else {
 			// If records exist, loop through the list and print each record's details
 			for (AppointmentOutcomeRecord record : appointment_outcomes) {
-				record.printDetails();  // Calling the printDetails() method from AppointmentOutcomeRecord
+				printAppointmentOutcomeRecord(record);
 			}
 		}
 	}
@@ -229,4 +231,6 @@ public class PatientMenu implements Menu {
 		patientManager.updatePatient();
 		isRunning = false; // Stop the menu loop
 	}
+
+	
 }

@@ -17,7 +17,7 @@ public class Staff {
     }
 
     //validation methods:
-    private boolean isValidStaffID(String staffID) {
+    public boolean isValidStaffID(String staffID) {
         if (staffID == null || staffID.length() != 4) return false;
         char prefix = staffID.charAt(0);
         String numbers = staffID.substring(1);

@@ -55,7 +55,6 @@ public class Medication {
 		return lowStockThreshold;
 	}
 
-
 	public void setCurrentStock(int stock) {
 		this.stock = stock;
 	}
