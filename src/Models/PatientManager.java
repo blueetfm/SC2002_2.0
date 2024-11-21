@@ -1,5 +1,6 @@
 package Models;
 
+import Services.MedicalRecordInterface;
 import Services.PatientInterface;
 import Utils.CSVHandler;
 import Views.UserMenu;
@@ -102,42 +103,10 @@ public class PatientManager implements PatientInterface {
             System.out.println("Gender: " + patient.getGender());
             System.out.println("Blood Type: " + patient.getBloodType());
             System.out.println("Contact Information: " + patient.getPhoneNum());
+            System.out.println("Medical Records: " + MedicalRecordInterface.readMedicalRecordsByPatientID(patient.getPatientID()));
             System.out.println("===========================\n");
-            
-            System.out.println("View More:");
-            System.out.println("[1] Medical History");
-            System.out.println("[2] Appointments");
-            System.out.println("[3] Appointment Outcomes");
-            System.out.println("[0] Back to Previous Menu");
-            System.out.print("Enter your choice: ");
-            
-            Scanner scanner = new Scanner(System.in);
-            int choice = scanner.nextInt();
-            
-            switch(choice) {
-                case 1:
-                    System.out.println("\nViewing Medical History...");
-                    // Add method call to view medical history
-                    break;
-                case 2:
-                    System.out.println("\nViewing Appointments...");
-                    // Add method call to view appointments
-                    break;
-                case 3:
-                    System.out.println("\nViewing Appointment Outcomes...");
-                    // Add method call to view appointment outcomes
-                    break;
-                case 0:
-                	scanner.close();
-                    return;
-                default:
-                    System.out.println("Invalid choice!");
-                }
-                scanner.nextLine();
-            }
         }
-
-        System.out.println("No matching patient profile ID.");
+        }
     }
 
     public static List<Patient> initializeObjects() {

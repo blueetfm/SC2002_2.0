@@ -11,6 +11,10 @@ public class MedicalRecord {
 		this.recordList = new ArrayList<Record>();
 	}
 	
+	public String getPatientID() {
+		return this.patientID;
+	}
+
 	public int addRecord(MedicalRecord medicalRecord, String diagnosis, String medication, String treatment) {
 		Record record = new Record(diagnosis, medication, treatment);
 		medicalRecord.recordList.add(record);

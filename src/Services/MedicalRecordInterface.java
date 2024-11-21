@@ -1,6 +1,7 @@
 package Services;
 
 import Models.MedicalRecord;
+import Models.MedicalRecordManager;
 
 public interface MedicalRecordInterface {
 
@@ -17,7 +18,7 @@ public interface MedicalRecordInterface {
 	}
 	
 	public static int readMedicalRecordsByPatientID(String patientID) {
-		return 0;
+		return MedicalRecordManager.readMedicalRecordsByPatientID(patientID);
 	}
 	
 	public static MedicalRecord updateMedicalRecord(

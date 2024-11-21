@@ -49,6 +49,7 @@ public class Patient extends User {
 //	methods return 0 if no error, else returns 1
 
     public boolean viewMedicalRecord(){
+		MedicalRecordManager medical = new MedicalRecordManager();
 		MedicalRecordInterface.readMedicalRecordsByPatientID(this.patientID);
 		return true;
     }

@@ -9,7 +9,7 @@ import Services.MedicalRecordInterface;
 
 public class MedicalRecordManager implements MedicalRecordInterface {
 	private static MedicalRecordManager instance;
-    private static List<MedicalRecord> medicalRecordList;
+    public static List<MedicalRecord> medicalRecordList;
 
     public MedicalRecordManager() {
         MedicalRecordManager.medicalRecordList = new ArrayList<MedicalRecord>();
@@ -112,10 +112,10 @@ public class MedicalRecordManager implements MedicalRecordInterface {
             return -1;
         }
 
-        boolean found = false;
+        int found = 0;
         for (MedicalRecord record : medicalRecordList) {
-            if (record.patientID.equals(patientID)) {
-                found = true;
+            if (patientID.equals(record.getPatientID())) {
+                found++;
                 String ID = record.patientID;
                 for (Record obj : record.recordList) {
                     System.out.printf(
@@ -129,11 +129,11 @@ public class MedicalRecordManager implements MedicalRecordInterface {
             }
         }
 
-        if (!found) {
+        if (found==0) {
             System.out.println("No records found for patient ID: " + patientID);
             return 0;
         }
-        return 1;
+        return found;
     }
 
     public static MedicalRecord updateMedicalRecord(
