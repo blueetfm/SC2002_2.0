@@ -164,7 +164,6 @@ public class PatientMenu implements Menu {
 		}
 	}
 
-
 	private void handleCancelAppointment() {
 		boolean succeed = currentPatient.cancelAppointment();
 		if (succeed) {
@@ -173,8 +172,6 @@ public class PatientMenu implements Menu {
 			System.out.println("Failed to cancel the appointment. Please try again.");
 		}
 	}
-
-	
 	
 	private void handleViewAvailableAppointmentSlots() {
 		boolean succeed = currentPatient.viewAvailableAppointmentSlots();
@@ -196,7 +193,6 @@ public class PatientMenu implements Menu {
 		return;
 	}
 
-	// Handles viewing past appointment outcome records
 	private void handleViewPastAppointmentOutcomeRecords() {
 		// Get the list of appointment outcome records for the current patient
 		List<AppointmentOutcomeRecord> appointment_outcomes = currentPatient.viewAppointmentOutcomeRecords();
@@ -213,8 +209,6 @@ public class PatientMenu implements Menu {
 		}
 	}
 	
-
-	// Handles logout
 	private void handleLogout() {
 		System.out.println("Program terminating...");
 		currentPatient.logout();
@@ -222,5 +216,4 @@ public class PatientMenu implements Menu {
 		isRunning = false; // Stop the menu loop
 	}
 
-	
 }

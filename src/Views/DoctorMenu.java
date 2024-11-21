@@ -57,7 +57,6 @@ public class DoctorMenu implements Menu {
 			
 			switch (choice) {
 			case 1: 
-//				View Patient Medical Records
 				result = currentDoctor.viewPatientMedicalRecords();
 				if (result == 1) {
 					System.out.println("Task completed successfully.");
@@ -65,7 +64,6 @@ public class DoctorMenu implements Menu {
 					System.out.println("Task failed.");
 				}
 			case 2: 
-//				Update Patient Medical Records
 				result = currentDoctor.updatePatientMedicalRecords();
 				if (result == 1) {
 					System.out.println("Task completed successfully.");
@@ -73,7 +71,6 @@ public class DoctorMenu implements Menu {
 					System.out.println("Task failed.");
 				}
 			case 3: 
-//				View Personal Schedule
 				result = currentDoctor.viewPersonalSchedule();
 				if (result == 1) {
 					System.out.println("Task completed successfully.");
@@ -81,7 +78,6 @@ public class DoctorMenu implements Menu {
 					System.out.println("Task failed.");
 				}
 			case 4: 
-//				Set Availability for Appointments
 				result = currentDoctor.setAppointmentAvailability();
 				if (result == 1) {
 					System.out.println("Task completed successfully.");
@@ -89,7 +85,6 @@ public class DoctorMenu implements Menu {
 					System.out.println("Task failed.");
 				}		
 			case 5: 
-//				Accept or Decline Appointment Requests
 				result = currentDoctor.acceptOrDeclineAppointmentRequests();
 				if (result == 1) {
 					System.out.println("Task completed successfully.");
@@ -110,15 +105,6 @@ public class DoctorMenu implements Menu {
 				} else {
 					System.out.println("Task failed.");
 				}
-
-				// if (AppointmentManager.recordAppointmentOutcomeRecord(appointmentID, hospitalID, date, 
-				// 	service, medication, PrescriptionStatus.PENDING, notes)){
-				// 		System.out.println("Appointment Outcome Record created successfully!");
-				// } else {
-				// 	System.out.println("Appointment Outcome Record already exists for this appointment.");
-					
-				// };
-
 				break;
 			case 8: 
 				result = currentDoctor.registerPatient();
