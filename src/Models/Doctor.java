@@ -25,10 +25,12 @@ public class Doctor extends User{
 	
 	public int viewPatientMedicalRecords() {
 		List<Patient> patientList = PatientInterface.getAllPatients();
+		System.out.println("\n=====================================");
 		for (Patient patient : patientList) {
 			String ID = patient.getHospitalID();
 			PatientInterface.readPatient(ID);
 		}
+		System.out.println("=====================================");
 		return 1;
 	}
 	
