@@ -57,4 +57,8 @@ public interface AppointmentInterface {
     public static void printAppointment(Appointment appointment) {
     	AppointmentManager.printAppointment(appointment);
     }
+
+    public static void printAppointmentOutcomeRecord(AppointmentOutcomeRecord appointmentOutcomeRecord){
+        AppointmentManager.printAppointmentOutcomeRecord(appointmentOutcomeRecord);
+    }
 }

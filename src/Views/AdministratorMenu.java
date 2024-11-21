@@ -332,7 +332,7 @@ public class AdministratorMenu implements Menu {
                 String appointmentID = scanner.nextLine();
                 Appointment appointment = currentAdmin.viewAppointmentDetailsByID(appointmentID);
                 if (appointment != null) {
-                    printAppointment(appointment);
+                    AppointmentManager.printAppointment(appointment);
                 } else {
                     System.out.println("No appointment found with the provided ID.");
                 }
@@ -344,7 +344,7 @@ public class AdministratorMenu implements Menu {
                 List<Appointment> appointmentsByPatient = currentAdmin.viewAppointmentDetailsByPatientID(patientID);
                 if (!appointmentsByPatient.isEmpty()) {
                     for (Appointment appt : appointmentsByPatient) {
-                        printAppointment(appt);
+                        AppointmentManager.printAppointment(appt);
                     }
                 } else {
                     System.out.println("No appointments found for the provided Patient ID.");
@@ -357,7 +357,7 @@ public class AdministratorMenu implements Menu {
                 List<Appointment> appointmentsByDoctor = currentAdmin.viewAppointmentDetailsByDoctorID(doctorID);
                 if (!appointmentsByDoctor.isEmpty()) {
                     for (Appointment appt : appointmentsByDoctor) {
-                        printAppointment(appt);
+                        AppointmentManager.printAppointment(appt);
                     }
                 } else {
                     System.out.println("No appointments found for the provided Doctor ID.");
@@ -368,18 +368,6 @@ public class AdministratorMenu implements Menu {
                 System.out.println("Invalid choice. Please try again.");
                 break;
         }
-    }
-
-    private void printAppointment(Appointment appointment){
-        System.out.println("--------------------");
-        System.out.println("Appointment ID: " + appointment.getAppointmentID());
-        System.out.println("Patient ID: " + appointment.getPatientID());
-        System.out.println("Doctor ID: " + appointment.getDoctorID());
-        System.out.println("Date: " + appointment.getDate().format(DateTimeFormatUtils.DATE_FORMATTER));
-        System.out.println("Time Slot ID: " + appointment.getTimeSlotID());
-        System.out.println("Status: " + appointment.getStatus().name());
-        System.out.println("--------------------");
-        return;
     }
 
     private void handleInventoryManagement() {

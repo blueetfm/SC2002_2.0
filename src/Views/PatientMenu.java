@@ -13,6 +13,7 @@ import Utils.DateTimeFormatUtils;
 import Models.PatientInterface;
 import Models.AppointmentOutcomeRecord;
 import Models.Appointment;
+import Models.AppointmentManager;
 
 public class PatientMenu implements Menu {
 
@@ -20,6 +21,7 @@ public class PatientMenu implements Menu {
 	private Patient currentPatient;
 	private boolean isRunning;
 	private PatientInterface patientManager;
+	private AppointmentManager appointmentManager;
 
 	public PatientMenu() {
 		this.sc = new Scanner(System.in);
@@ -176,26 +178,8 @@ public class PatientMenu implements Menu {
 			System.out.println("Failed to cancel the appointment. Please try again.");
 		}
 	}
-	private void printAppointment(Appointment appointment){
-        System.out.println("--------------------");
-        System.out.println("Appointment ID: " + appointment.getAppointmentID());
-        System.out.println("Patient ID: " + appointment.getPatientID());
-        System.out.println("Doctor ID: " + appointment.getDoctorID());
-        System.out.println("Date: " + appointment.getDate().format(DateTimeFormatUtils.DATE_FORMATTER));
-        System.out.println("Time Slot ID: " + appointment.getTimeSlotID());
-        System.out.println("Status: " + appointment.getStatus().name());
-        System.out.println("--------------------");
-        return;
-    }
 
-	private void printAppointmentOutcomeRecord(AppointmentOutcomeRecord appointmentOutcomeRecord){
-        System.out.println("--------------------");
-        System.out.println("Date of Appointment: " + appointmentOutcomeRecord.getDate().format(DateTimeFormatUtils.DATE_FORMATTER));
-        System.out.println("Service provided: " + appointmentOutcomeRecord.getService());
-        System.out.println("Prescribed Medication: " + appointmentOutcomeRecord.getMedication());
-        System.out.println("--------------------");
-        return;
-    }
+	
 	
 	private void handleViewAvailableAppointmentSlots() {
 		boolean succeed = currentPatient.viewAvailableAppointmentSlots();
@@ -211,7 +195,7 @@ public class PatientMenu implements Menu {
 			System.out.println("No past appointment outcome records found.");
 		} else {
 			for (Appointment record : appointments) {
-				printAppointment(record);
+				AppointmentManager.printAppointment(record);
 			}
 		}
 		return;
@@ -229,7 +213,7 @@ public class PatientMenu implements Menu {
 		} else {
 			// If records exist, loop through the list and print each record's details
 			for (AppointmentOutcomeRecord record : appointment_outcomes) {
-				printAppointmentOutcomeRecord(record);
+				AppointmentManager.printAppointmentOutcomeRecord(record);
 			}
 		}
 	}

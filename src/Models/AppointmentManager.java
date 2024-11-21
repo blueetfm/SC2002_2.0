@@ -283,6 +283,14 @@ public class AppointmentManager {
     	System.out.printf("Time Slot ID: %s\n", appointment.getTimeSlotID());
     	System.out.printf("Status: %s\n", appointment.getStatus().toString());
     	System.out.println("=====================================");
-    	
+    }
+
+    public static void printAppointmentOutcomeRecord(AppointmentOutcomeRecord appointmentOutcomeRecord){
+        System.out.println("--------------------");
+        System.out.println("Date of Appointment: " + appointmentOutcomeRecord.getDate().format(DateTimeFormatUtils.DATE_FORMATTER));
+        System.out.println("Service provided: " + appointmentOutcomeRecord.getService());
+        System.out.println("Prescribed Medication: " + appointmentOutcomeRecord.getMedication());
+        System.out.println("--------------------");
+        return;
     }
 }
