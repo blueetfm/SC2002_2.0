@@ -92,7 +92,7 @@ public class PharmacistMenu implements Menu {
                     handleAppointmentView();
                     break;
                 case 2:
-                    currentPharmacist.updatePrescriptionStatus();
+                    handlePrescriptionStatus();
                     break;
                 case 3:
                     currentPharmacist.viewMedicationInventory();
@@ -130,6 +130,16 @@ public class PharmacistMenu implements Menu {
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid number.");
             }
+        }
+    }
+
+    private void handlePrescriptionStatus(){
+        System.out.print("Enter Appointment ID to view: ");
+        String appointmentID = scanner.nextLine().trim();
+        if (validateInput(appointmentID)) {
+            currentPharmacist.updatePrescriptionStatus(appointmentID);
+        } else {
+            System.out.println("Invalid appointment ID");
         }
     }
 

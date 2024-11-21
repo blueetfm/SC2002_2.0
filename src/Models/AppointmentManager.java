@@ -288,7 +288,7 @@ public class AppointmentManager {
     public static void printAppointmentOutcomeRecord(AppointmentOutcomeRecord appointmentOutcomeRecord){
         System.out.println("--------------------");
         System.out.println("Date of Appointment: " + appointmentOutcomeRecord.getDate().format(DateTimeFormatUtils.DATE_FORMATTER));
-        System.out.println("Service provided: " + appointmentOutcomeRecord.getService());
+        System.out.println("Service provided: " + appointmentOutcomeRecord.getService().name());
         System.out.println("Prescribed Medication: " + appointmentOutcomeRecord.getMedication());
         System.out.println("--------------------");
         return;

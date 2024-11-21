@@ -1,5 +1,7 @@
 package Models;
 
+import Enums.*;
+
 public class Pharmacist extends User {
     protected String name;
     protected String gender;
@@ -8,7 +10,6 @@ public class Pharmacist extends User {
         super(hospitalID, password, role);
         this.name = name;
         this.gender = gender;
-        // Initialize MedicationInventoryManager with provided paths
         MedicationInventoryManager.initialize(medicineListPath, requestsPath);
     }
 
@@ -22,15 +23,31 @@ public class Pharmacist extends User {
         }
     }
 
-    public boolean updatePrescriptionStatus() {
-        // to implement prescription update logic here
-        System.out.println("Prescription update functionality not implemented yet");
-        return false;
+    public boolean updatePrescriptionStatus(String appointmentID) {
+        try {
+            AppointmentOutcomeRecord appointmentOutcomeRecord = AppointmentManager.getAppointmentOutcomeRecordByID(appointmentID);
+            if (appointmentOutcomeRecord == null){
+                System.out.println("Appointment does not exist.");
+                return false;
+            } else if (appointmentOutcomeRecord.getPrescriptionStatus().name().equals("DISPENSED")){
+                System.out.println("Prescription has already been dispensed.");
+                return false;
+            }
+            appointmentOutcomeRecord.setPrescriptionStatus(PrescriptionStatus.DISPENSED);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error viewing appointment: " + e.getMessage());
+            return false;
+        }
     }
 
     public boolean viewAppointmentOutcome(String appointmentID) {
         try {
             AppointmentOutcomeRecord appointmentOutcomeRecord = AppointmentManager.getAppointmentOutcomeRecordByID(appointmentID);
+            if (appointmentOutcomeRecord == null){
+                System.out.println("Appointment does not exist.");
+                return false;
+            }
             AppointmentManager.printAppointmentOutcomeRecord(appointmentOutcomeRecord);
             return true;
         } catch (Exception e) {
@@ -56,7 +73,6 @@ public class Pharmacist extends User {
     public boolean logout() {
         try {
             System.out.println("Logging out pharmacist: " + this.name);
-            // Add any cleanup logic here
             return true;
         } catch (Exception e) {
             System.err.println("Error during logout: " + e.getMessage());
