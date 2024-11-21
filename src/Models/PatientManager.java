@@ -60,7 +60,7 @@ public class PatientManager implements PatientInterface {
                 patient.getDateOfBirth(),
                 patient.getGender(),
                 patient.getBloodType(),
-                patient.getContactInformation()
+                patient.getPhoneNum()
             );
             allLines.add(line);
         }
@@ -72,7 +72,7 @@ public class PatientManager implements PatientInterface {
            newPatient.getDateOfBirth(),
            newPatient.getGender(),
            newPatient.getBloodType(),
-           newPatient.getContactInformation()
+           newPatient.getPhoneNum()
         );
         allLines.add(newLine);
         String[] lines = allLines.toArray(new String[0]);
@@ -98,7 +98,7 @@ public class PatientManager implements PatientInterface {
             System.out.println("Date of Birth: " + patient.getDateOfBirth());
             System.out.println("Gender: " + patient.getGender());
             System.out.println("Blood Type: " + patient.getBloodType());
-            System.out.println("Contact Information: " + patient.getContactInformation());
+            System.out.println("Contact Information: " + patient.getPhoneNum());
             System.out.println("===========================\n");
             
             System.out.println("View More:");
@@ -146,7 +146,7 @@ public class PatientManager implements PatientInterface {
                 patient.getDateOfBirth(),
                 patient.getGender(),
                 patient.getBloodType(),
-                patient.getContactInformation()
+                patient.getPhoneNum()
             );
             allLines.add(line);
         }
@@ -170,7 +170,7 @@ public class PatientManager implements PatientInterface {
                     patient.getDateOfBirth(),
                     patient.getGender(),
                     patient.getBloodType(),
-                    patient.getContactInformation()
+                    patient.getPhoneNum()
                 );
                 remainingLines.add(line);
             } else {

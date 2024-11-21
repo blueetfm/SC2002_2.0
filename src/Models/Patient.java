@@ -72,8 +72,8 @@ public class Patient extends User {
 		return true;
 	}
 
-	public List<Appointment>  viewScheduledAppointments() {
-		List<Appointment>  appointments = AppointmentManager.getAppointmentsByPatientID(this.patientID);
+	public List<Appointment> viewScheduledAppointments() {
+		List<Appointment> appointments = AppointmentManager.getAppointmentsByPatientID(this.patientID);
 		return appointments;
 	}
 
@@ -85,8 +85,6 @@ public class Patient extends User {
 	public int logout() {
 		return 1;
 	}
-
-
 
     // Update personal information(only non-medical info)
     public void setPhoneNum(String phoneNum){
@@ -148,9 +146,6 @@ public class Patient extends User {
 	}
     public String getBloodType() {
 		return this.bloodType;
-	}
-	public String getContactInformation() {
-		return this.phoneNum;
 	}
 
 }
