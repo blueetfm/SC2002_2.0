@@ -23,12 +23,12 @@ public class PatientMenu implements Menu {
 			// patient class - just setters
 			System.out.println("3: View Available Appointment Slots"); 
 			// patient class
-				// TimeSlotManager: Returns list of all available appointment slots
+				// TimeSlotManager: Returns list of all available TIMESLOTS by TIMESLOT ID
 
 			System.out.println("4: Schedule an Appointment"); 
 			// patient class
 				// TimeSlotManager: Check availability 
-				// AppointmentManager: Create new Appointment
+				// AppointmentManager: Create new Appointment **** FETCH PATIENT ID BY currentPatient.getPatientID()******
 
 			System.out.println("5: Reschedule an Appointment"); 
 			// patient class

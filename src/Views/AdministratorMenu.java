@@ -365,7 +365,7 @@ public class AdministratorMenu implements Menu {
         System.out.println("Patient ID: " + appointment.getPatientID());
         System.out.println("Doctor ID: " + appointment.getDoctorID());
         System.out.println("Date: " + appointment.getDate().format(DateTimeFormatUtils.DATE_FORMATTER));
-        System.out.println("Time: " + appointment.getTimeSlot().format(DateTimeFormatUtils.TIME_FORMATTER));
+        System.out.println("Time Slot ID: " + appointment.getTimeSlotID());
         System.out.println("Status: " + appointment.getStatus().name());
         System.out.println("--------------------");
         return;

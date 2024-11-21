@@ -19,16 +19,16 @@ public class Appointment {
     protected String patientID; 
     protected String doctorID;
     protected LocalDate date;
-    protected LocalTime timeSlot;
+    protected String timeSlotID;
     protected AppointmentStatus status;
     protected AppointmentOutcomeRecord outcomeRecord; 
 
-    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, LocalTime timeSlot, AppointmentStatus status, AppointmentOutcomeRecord outcomeRecord){
+    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, String timeSlotID, AppointmentStatus status, AppointmentOutcomeRecord outcomeRecord){
         this.appointmentID = appointmentID;
         this.patientID = patientID;
         this.doctorID = doctorID;
         this.date = date;
-        this.timeSlot = timeSlot;
+        this.timeSlotID = timeSlotID;
         this.status = AppointmentStatus.AVAILABLE;
         this.outcomeRecord = null;
     }
@@ -64,8 +64,8 @@ public class Appointment {
         return this.date;
     }
 
-    public LocalTime getTimeSlot(){
-        return this.timeSlot;
+    public String getTimeSlotID(){
+        return this.timeSlotID;
     }
 
     public AppointmentStatus getStatus(){
@@ -74,22 +74,5 @@ public class Appointment {
 
     public AppointmentOutcomeRecord getOutcomeRecord(){
         return this.outcomeRecord;
-    }
-
-
-    // public boolean isAvailable(){
-    //     return availability;
-    // }
-
-    // public void scheduleAppointment(){
-    //     if (this.isAvailable()) {
-    //         this.availability = false;
-    //         return;
-    //     } else {
-
-    //     }
-    // }
-
-
-    
+    }    
 }
