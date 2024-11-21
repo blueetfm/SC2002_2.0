@@ -1,80 +1,220 @@
 package Views;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
 import Models.Patient;
 import Models.PatientManager;
 import Models.PatientInterface;
+import Models.AppointmentOutcomeRecord;
+import Models.Appointment;
 
 public class PatientMenu implements Menu {
-	private String hospitalID;
-	private PatientInterface patientManager = PatientManager.getInstance();
-	private Patient patient = patientManager.getPatient(hospitalID);
-	public PatientMenu(String hospitalID) {
-		this.hospitalID = hospitalID;
+
+	private final Scanner sc;
+	private Patient currentPatient;
+	private boolean isRunning;
+	private PatientInterface patientManager;
+
+	public PatientMenu() {
+		this.sc = new Scanner(System.in);
+		this.patientManager = PatientManager.getInstance();
+		this.isRunning = true;
+		initializePatient();
 	}
+
+	// Initializes a patient object with the info from the patient list CSV
+	private void initializePatient() {
+		try {
+			String loggedInID = UserMenu.getLoggedInHospitalID();
+
+			BufferedReader reader = new BufferedReader(new FileReader("data/Patient_List.csv"));
+			reader.readLine(); // Skip header
+
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String[] patientDetails = line.split(",");
+				if (patientDetails[0].equals(loggedInID)) {
+					this.currentPatient = new Patient(
+						loggedInID,                           // Hospital ID
+						"",                                   // Password not needed
+						"administrator",                      // Role
+						patientDetails[1],                    // Name
+						LocalDate.parse(patientDetails[2]),   // Date of Birth
+						patientDetails[3],                    // Gender
+						patientDetails[5],                    // Phone Number
+						patientDetails[6],                    // Email
+						patientDetails[4],                    // Blood Type
+						new ArrayList<>()                     // Empty Medical History
+					);
+					break;
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			System.err.println("Error reading patient data: " + e.getMessage());
+		} catch (Exception e) {
+			System.err.println("Error initializing patient: " + e.getMessage());
+		}
+	}
+
 	public void showMenu() {
-		int choice;
-		Scanner sc = new Scanner(System.in);
-		do {
-			System.out.println("Perform the following methods:");
+		while (isRunning) {
+			System.out.println("Patient Menu:");
 			System.out.println("1: View Medical Record");
-			// patient class
-				// MedicalRecord: Returns list of medical record
 			System.out.println("2: Update Personal Information");
-			// patient class - just setters
-			System.out.println("3: View Available Appointment Slots"); 
-			// patient class
-				// TimeSlotManager: Returns list of all available TIMESLOTS by TIMESLOT ID
-
-			System.out.println("4: Schedule an Appointment"); 
-			// patient class
-				// TimeSlotManager: Check availability 
-				// AppointmentManager: Create new Appointment **** FETCH PATIENT ID BY currentPatient.getPatientID()******
-
-			System.out.println("5: Reschedule an Appointment"); 
-			// patient class
-				// AppointmentManager: Cancel old appointment + Create new appointment
-				// TimeSlotManager: Change availability of old and new timeslots
-
-			System.out.println("6: Cancel an Appointment"); 
-			// patient class
-				// AppointmentManager: Cancel old appointment
-				// TimeSlotManager: Change availability of old timeslot
-
-			System.out.println("7: View Scheduled Appointments");  
-			// patient class
-				// AppointmentManager: Fetch all appointments and sort by 'Availability Status'
-
-			System.out.println("8: View Past Appointment Outcome Records"); 
-			// patient class
-				// AppointmentManager: Fetch all appointments by Patient ID and print out AOR
+			System.out.println("3: View Available Appointment Slots");
+			System.out.println("4: Schedule an Appointment");
+			System.out.println("5: Reschedule an Appointment");
+			System.out.println("6: Cancel an Appointment");
+			System.out.println("7: View Scheduled Appointments");
+			System.out.println("8: View Past Appointment Outcome Records");
 			System.out.println("9: Logout");
-			choice = sc.nextInt();
-			
+
+			int choice = sc.nextInt();
+			sc.nextLine(); // Consume newline character
+
 			switch (choice) {
+				case 1: handleViewMedicalRecord(); break;
+				case 2: handleUpdatePersonalInfo(); break;
+				case 3: handleViewAvailableAppointmentSlots(); break;
+				case 4: handleScheduleAppointment(); break;
+				case 5: handleRescheduleAppointment(); break;
+				case 6: handleCancelAppointment(); break;
+				case 7: handleViewScheduledAppointments(); break;
+				case 8: handleViewPastAppointmentOutcomeRecords(); break;
+				case 9: handleLogout(); break;
+				default: System.out.println("Invalid choice. Please try again."); break;
+			}
+		}
+		sc.close();
+	}
+
+	// Handles viewing medical records
+	private void handleViewMedicalRecord() {
+		currentPatient.viewMedicalRecord();
+	}
+
+	// Handles updating personal information
+	private void handleUpdatePersonalInfo() {
+		System.out.println("\nEnter field to update:");
+		System.out.println("1: Phone number");
+		System.out.println("2: Email");
+		int choice = sc.nextInt();
+		sc.nextLine(); // Consume newline character
+		switch (choice) {
 			case 1: 
+				System.out.println("Enter your new phone number:");
+				String newPhoneNumber = sc.nextLine();
+				currentPatient.setPhoneNum(newPhoneNumber);
 				break;
 			case 2: 
+				System.out.println("Enter your new email address:");
+				String newEmail = sc.nextLine();
+				currentPatient.setEmail(newEmail);
 				break;
-			case 3: 
-				break;
-			case 4: 
-				break;
-			case 5: 
-				break;
-			case 6: 
-				break;
-			case 7: 
-				break;
-			case 8: 
-			
-				break;
-			case 9: 
-				System.out.println("Program terminating ….");
 			default:
-				break;
+				System.out.println("Invalid choice.");
+		}
+	}
+
+	// Handles scheduling an appointment
+	// Handles scheduling an appointment
+	private void handleScheduleAppointment() {
+		// Collect user input for doctor and timeslot ID
+		System.out.println("Enter doctor ID:");
+		String doctorID = sc.nextLine();
+		
+		System.out.println("Enter timeslot ID:");
+		String timeslotID = sc.nextLine();
+		
+		// Schedule the appointment
+		boolean succeed = currentPatient.scheduleAppointment(doctorID, timeslotID);
+		if (succeed) {
+			System.out.println("Appointment scheduled successfully!");
+		} else {
+			System.out.println("Failed to schedule the appointment. Please try again.");
+		}
+	}
+
+	// Handles rescheduling an appointment
+	private void handleRescheduleAppointment() {
+		// Collect user input for old appointment ID and new timeslot ID
+		System.out.println("Enter your old appointment ID:");
+		String oldAppointmentID = sc.nextLine();
+		
+		System.out.println("Enter new timeslot ID:");
+		String newTimeSlotID = sc.nextLine();
+		
+		// Reschedule the appointment
+		boolean succeed = currentPatient.rescheduleAppointment(oldAppointmentID, newTimeSlotID);
+		if (succeed) {
+			System.out.println("Appointment rescheduled successfully!");
+		} else {
+			System.out.println("Failed to reschedule the appointment. Please try again.");
+		}
+	}
+
+
+	// Handles canceling an appointment
+	private void handleCancelAppointment() {
+		boolean succeed = currentPatient.cancelAppointment();
+		if (succeed) {
+			System.out.println("Appointment canceled successfully!");
+		} else {
+			System.out.println("Failed to cancel the appointment. Please try again.");
+		}
+	}
+	
+	// Handles viewing available appointment slots
+	private void handleViewAvailableAppointmentSlots() {
+		boolean succeed = currentPatient.viewAvailableAppointmentSlots();
+		if (!succeed) {
+	
+		}
+	}
+
+	// Handles viewing scheduled appointments
+	private void handleViewScheduledAppointments() {
+		List<Appointment> appointments = currentPatient.viewScheduledAppointments();
+		// Check if the list is null or empty
+		if (appointments == null || appointments.isEmpty()) {
+			// If no records found, display a message
+			System.out.println("No past appointment outcome records found.");
+		} else {
+			// If records exist, loop through the list and print each record's details
+			for (Appointment record : appointments) {
+				record.printDetails();  // Calling the printDetails() method from AppointmentOutcomeRecord
 			}
-		} while (choice < 9);
-		sc.close();
-        return;
+		}
+	}
+
+	// Handles viewing past appointment outcome records
+	private void handleViewPastAppointmentOutcomeRecords() {
+		// Get the list of appointment outcome records for the current patient
+		List<AppointmentOutcomeRecord> appointment_outcomes = currentPatient.viewAppointmentOutcomeRecords();
+		
+		// Check if the list is null or empty
+		if (appointment_outcomes == null || appointment_outcomes.isEmpty()) {
+			// If no records found, display a message
+			System.out.println("No past appointment outcome records found.");
+		} else {
+			// If records exist, loop through the list and print each record's details
+			for (AppointmentOutcomeRecord record : appointment_outcomes) {
+				record.printDetails();  // Calling the printDetails() method from AppointmentOutcomeRecord
+			}
+		}
+	}
+	
+
+	// Handles logout
+	private void handleLogout() {
+		System.out.println("Program terminating...");
+		patientManager.updatePatient();
+		isRunning = false; // Stop the menu loop
 	}
 }

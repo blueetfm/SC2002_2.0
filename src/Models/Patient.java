@@ -3,6 +3,9 @@ package Models;
 import java.util.*;
 import java.time.*;
 import Views.PatientMenu;
+import Models.MedicalRecordManager;
+import Models.AppointmentOutcomeRecord;
+import Models.Appointment;
 
 // Patients can view their own medical record, which consists of:
 // - Patient ID, Name, Date of Birth, Gender
@@ -24,9 +27,14 @@ public class Patient extends User {
     private String patientID;
     private String bloodType;
 
-    public Patient(String hospitalID, String password, String role, String name, 
-						LocalDate birthDate, String gender, String phoneNum, String email,
-						String bloodType, List<MedicalRecord> medicalHistory){
+	private MedicalRecordManager medicalRecordManager = new MedicalRecordManager();
+	private TimeSlotInterface timeSlotManager;
+	private AppointmentManager appointmentManager;
+
+    public Patient(String hospitalID, 
+	String password, String role, String name, 
+	LocalDate birthDate, String gender, String phoneNum, String email,
+	String bloodType, List<MedicalRecord> medicalHistory){
         super(hospitalID, password, role);
         this.name = name;
         this.birthDate = birthDate;
@@ -40,37 +48,41 @@ public class Patient extends User {
 //	methods return 0 if no error, else returns 1
 
     public void viewMedicalRecord(){
-		
+		MedicalRecordInterface.readMedicalRecordsByPatientID(this.patientID);
     }
 
-	public int viewAvailableAppointmentSlots() {
-		return 0;
+	public boolean viewAvailableAppointmentSlots() {
+		TimeSlotInterface.getTimeSlotsByPatientID(this.patientID);
+		return true;
 	}
 
-	public int scheduleAppointment() {
-		return 0;
+	public boolean scheduleAppointment(String doctorID, String timeslotID) {
+		AppointmentManager.scheduleAppointment(this.patientID, doctorID, timeslotID);
+		return true;
 	}
 
-	public int rescheduleAppointment() {
-		return 0;
+	public boolean rescheduleAppointment(String oldAppointmentID, String newTimeSlotID) {
+		AppointmentManager.rescheduleAppointment(oldAppointmentID, newTimeSlotID);
+		return true;
 	}
 
-	public int cancelAppointment() {
-		return 0;
+	public boolean cancelAppointment() {
+		AppointmentManager.cancelAppointment(this.patientID);
+		return true;
 	}
 
-	public int viewScheduledAppointments() {
-		return 0;
+	public List<Appointment>  viewScheduledAppointments() {
+		List<Appointment>  appointments = AppointmentManager.getAppointmentsByPatientID(this.patientID);
+		return appointments;
 	}
 
-	public int viewAppointmentOutcomeRecords() {
-		return 0;
+	public List<AppointmentOutcomeRecord> viewAppointmentOutcomeRecords() {
+		List<AppointmentOutcomeRecord> appointment_outcomes = AppointmentManager.getAppointmentOutcomeRecordsByPatientID(this.patientID);
+		return appointment_outcomes;
 	}
-
-
 
 	public int logout() {
-		return 0;
+		return 1;
 	}
 
 
