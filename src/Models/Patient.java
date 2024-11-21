@@ -7,17 +7,6 @@ import Models.MedicalRecordManager;
 import Models.AppointmentOutcomeRecord;
 import Models.Appointment;
 
-// Patients can view their own medical record, which consists of:
-// - Patient ID, Name, Date of Birth, Gender
-// - Contact Information (e.g., phone number, email address)
-// - Blood Type
-// - Past Diagnoses and Treatments
-// ○ Patients can update non-medical personal information such as email address and
-// contact number.
-// ○ Patients are not allowed to modify the past diagnoses, prescribed medications,
-// treatments or blood type..
-
-
 public class Patient extends User {
 	private String name;
 	private LocalDate birthDate;
@@ -34,7 +23,7 @@ public class Patient extends User {
     public Patient(String hospitalID, 
 	String password, String role, String name, 
 	LocalDate birthDate, String gender, String phoneNum, String email,
-	String bloodType, List<MedicalRecord> medicalHistory){
+	String bloodType){
         super(hospitalID, password, role);
         this.name = name;
         this.birthDate = birthDate;

@@ -118,12 +118,13 @@ public class Doctor extends User{
 		String name = case8Scanner.next();
 		System.out.print("Enter date of birth 'YYYY-MM-DD': ");
 		LocalDate date = LocalDate.parse(case8Scanner.next(), DateTimeFormatUtils.DATE_FORMATTER);
-		System.out.print("Enter service provided: ");
-		Enums.Service service = Enums.Service.valueOf(case7Scanner.next().toUpperCase());
-		System.out.print("Enter medication prescribed: ");
-		String medication = case7Scanner.next();
-		System.out.print("Enter notes for appointment: ");
-		String notes = case7Scanner.next();		
+		System.out.print("Enter Gender of Patient: ");
+		String gender = case8Scanner.next();
+		System.out.print("Enter patient blood type: ");
+		String bloodType = case8Scanner.next();
+		System.out.print("Enter contact number: ");
+		String contactNumber = case8Scanner.next();
+		PatientManager.createPatient(patientID, "", "patient", name, date, gender, contactNumber, "", bloodType);
 		return 0;
 	}
 	

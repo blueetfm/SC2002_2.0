@@ -30,11 +30,8 @@ public class Pharmacist extends User {
 
     public boolean viewAppointmentOutcome(String appointmentID) {
         try {
-            if (appointmentID == null || appointmentID.trim().isEmpty()) {
-                System.out.println("Invalid appointment ID");
-                return false;
-            }
-            // AppointmentOutcomeRecordList.getInstance().readAppointmentOutcomeRecord(appointmentID);
+            AppointmentOutcomeRecord appointmentOutcomeRecord = AppointmentManager.getAppointmentOutcomeRecordByID(appointmentID);
+            AppointmentManager.printAppointmentOutcomeRecord(appointmentOutcomeRecord);
             return true;
         } catch (Exception e) {
             System.err.println("Error viewing appointment: " + e.getMessage());
