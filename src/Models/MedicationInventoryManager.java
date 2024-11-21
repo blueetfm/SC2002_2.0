@@ -1,5 +1,6 @@
 package Models;
 
+import Enums.ReplenishStatus;
 import Utils.CSVHandler;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,10 +9,33 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
     private static MedicationInventoryManager instance;
     private final String csvFilePath;
     private final String requestsFilePath;
+    private final List<Medication> medicationList;
+    private final List<ReplenishRequest> replenishRequests;
+
+    // Inner class to handle replenishment
+    private static class ReplenishRequest {
+        private final String medicineName;
+        private int quantity;
+        private ReplenishStatus status;
+
+        public ReplenishRequest(String medicineName, int quantity, ReplenishStatus status) {
+            this.medicineName = medicineName;
+            this.quantity = quantity;
+            this.status = status;
+        }
+
+        public String toCSVString() {
+            return String.format("%s,%d,%s", medicineName, quantity, status.name());
+        }
+    }
 
     private MedicationInventoryManager(String medicationCsvPath, String requestsCsvPath) {
         this.csvFilePath = medicationCsvPath;
         this.requestsFilePath = requestsCsvPath;
+        this.medicationList = new ArrayList<>();
+        this.replenishRequests = new ArrayList<>();
+        loadMedications();
+        loadReplenishRequests();
     }
 
     public static synchronized MedicationInventoryManager getInstance(String medicationCsvPath, String requestsCsvPath) {
@@ -20,70 +44,89 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
         }
         return instance;
     }
-    
-    @Override
-    public void viewMedicationInventory() {
-        System.out.println("\nCurrent Inventory");
-        System.out.println("--------------------");
+
+    private synchronized void loadMedications() {
+        medicationList.clear();
         List<List<String>> records = CSVHandler.readCSVLines(csvFilePath);
         
         for (int i = 1; i < records.size(); i++) {
             List<String> record = records.get(i);
             if (record.size() == 3) {
-                Medication med = new Medication(
+                medicationList.add(new Medication(
                     record.get(0).trim(),
                     Integer.parseInt(record.get(1).trim()),
                     Integer.parseInt(record.get(2).trim())
-                );
-                System.out.println(med);
+                ));
             }
         }
     }
-    
+
+    private synchronized void loadReplenishRequests() {
+        replenishRequests.clear();
+        List<List<String>> records = CSVHandler.readCSVLines(requestsFilePath);
+        
+        for (int i = 1; i < records.size(); i++) {
+            List<String> record = records.get(i);
+            if (record.size() >= 2) {
+                ReplenishStatus status = record.size() > 2 ? 
+                    ReplenishStatus.valueOf(record.get(2)) : ReplenishStatus.PENDING;
+                replenishRequests.add(new ReplenishRequest(
+                    record.get(0).trim(),
+                    Integer.parseInt(record.get(1).trim()),
+                    status
+                ));
+            }
+        }
+    }
+
+    private synchronized void saveMedicationList() {
+        String[] headers = {"Medicine Name", "Initial Stock", "Low Stock Level Alert"};
+        String[] lines = medicationList.stream()
+                                     .map(Medication::toCSVString)
+                                     .toArray(String[]::new);
+        CSVHandler.writeCSVLines(headers, lines, csvFilePath);
+    }
+
+    private synchronized void saveReplenishRequests() {
+        String[] headers = {"Medicine Name", "Requested Quantity", "Status"};
+        String[] lines = replenishRequests.stream()
+                                        .map(ReplenishRequest::toCSVString)
+                                        .toArray(String[]::new);
+        CSVHandler.writeCSVLines(headers, lines, requestsFilePath);
+    }
+
     @Override
-    public void addMedication(String medicineName, int initialStock, int lowStockAlert) {
+    public synchronized void viewMedicationInventory() {
+        System.out.println("\nCurrent Inventory");
+        System.out.println("--------------------");
+        for (Medication med : medicationList) {
+            System.out.println(med);
+        }
+    }
+
+    @Override
+    public synchronized void addMedication(String medicineName, int initialStock, int lowStockAlert) {
         if (medicineName == null || medicineName.trim().isEmpty()) {
             System.out.println("Medication name cannot be empty");
             return;
         }
-        
-        List<List<String>> records = CSVHandler.readCSVLines(csvFilePath);
-        
-        for (List<String> record : records) {
-            if (record.get(0).trim().equalsIgnoreCase(medicineName.trim())) {
-                System.out.println("Medication already exists: " + medicineName);
-                return;
-            }
+
+        if (medicationList.stream().anyMatch(med -> med.getName().equalsIgnoreCase(medicineName.trim()))) {
+            System.out.println("Medication already exists: " + medicineName);
+            return;
         }
-        
-        String[] lines = {String.format("%s,%d,%d", medicineName.trim(), initialStock, lowStockAlert)};
-        CSVHandler.writeCSVLines(null, lines, csvFilePath);
+
+        medicationList.add(new Medication(medicineName.trim(), initialStock, lowStockAlert));
+        saveMedicationList();
         System.out.println("Successfully added new medication: " + medicineName);
     }
 
     @Override
-    public void removeMedication(String medicineName) {
-        List<List<String>> records = CSVHandler.readCSVLines(csvFilePath);
-        List<String> updatedLines = new ArrayList<>();
-        boolean found = false;
+    public synchronized void removeMedication(String medicineName) {
+        boolean removed = medicationList.removeIf(med -> med.getName().equals(medicineName));
         
-        updatedLines.add(String.join(",", records.get(0)));
-        
-        for (int i = 1; i < records.size(); i++) {
-            List<String> record = records.get(i);
-            if (!record.get(0).trim().equals(medicineName)) {
-                updatedLines.add(String.join(",", record));
-            } else {
-                found = true;
-            }
-        }
-        
-        if (found) {
-            CSVHandler.writeCSVLines(
-                null,
-                updatedLines.toArray(new String[0]),
-                csvFilePath
-            );
+        if (removed) {
+            saveMedicationList();
             System.out.println("Removed medication: " + medicineName);
             System.out.println("\n===Updated Inventory===");
             viewMedicationInventory();
@@ -93,36 +136,23 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
     }
 
     @Override
-    public void updateMedication(String medicineName, Integer newStock, Integer newLowStockAlert) {
-        List<List<String>> records = CSVHandler.readCSVLines(csvFilePath);
-        List<String> updatedLines = new ArrayList<>();
-        boolean found = false;
+    public synchronized void updateMedication(String medicineName, Integer newStock, Integer newLowStockAlert) {
+        boolean updated = false;
         
-        updatedLines.add(String.join(",", records.get(0)));
-        
-        for (int i = 1; i < records.size(); i++) {
-            List<String> record = records.get(i);
-            if (record.get(0).trim().equals(medicineName)) {
-                int currentStock = Integer.parseInt(record.get(1));
-                int currentLowStock = Integer.parseInt(record.get(2));
+        for (int i = 0; i < medicationList.size(); i++) {
+            Medication med = medicationList.get(i);
+            if (med.getName().equals(medicineName)) {
+                int currentStock = (newStock != null) ? newStock : med.getCurrentStock();
+                int lowStockLevel = (newLowStockAlert != null) ? newLowStockAlert : med.getLowStockThreshold();
                 
-                int updatedStock = (newStock != null) ? newStock : currentStock;
-                int updatedLowStock = (newLowStockAlert != null) ? newLowStockAlert : currentLowStock;
-                
-                Medication updatedMed = new Medication(medicineName, updatedStock, updatedLowStock);
-                updatedLines.add(updatedMed.toCSVString());
-                found = true;
-            } else {
-                updatedLines.add(String.join(",", record));
+                medicationList.set(i, new Medication(medicineName, currentStock, lowStockLevel));
+                updated = true;
+                break;
             }
         }
         
-        if (found) {
-            CSVHandler.writeCSVLines(
-                null,
-                updatedLines.toArray(new String[0]),
-                csvFilePath
-            );
+        if (updated) {
+            saveMedicationList();
             System.out.println("Updated quantities for medication: " + medicineName);
         } else {
             System.out.println("Medication not found: " + medicineName);
@@ -130,44 +160,28 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
     }
 
     @Override
-    public boolean prescribeMedication(String medicationName, int quantity) {
-        List<List<String>> records = CSVHandler.readCSVLines(csvFilePath);
-        List<String> updatedLines = new ArrayList<>();
+    public synchronized boolean prescribeMedication(String medicationName, int quantity) {
         boolean prescribed = false;
         
-        updatedLines.add(String.join(",", records.get(0)));
-        
-        for (int i = 1; i < records.size(); i++) {
-            List<String> record = records.get(i);
-            if (record.get(0).trim().equals(medicationName)) {
-                Medication med = new Medication(
-                    record.get(0).trim(),
-                    Integer.parseInt(record.get(1).trim()),
-                    Integer.parseInt(record.get(2).trim())
-                );
-                
+        for (int i = 0; i < medicationList.size(); i++) {
+            Medication med = medicationList.get(i);
+            if (med.getName().equals(medicationName)) {
                 prescribed = med.prescribe(quantity);
                 if (prescribed) {
-                    updatedLines.add(med.toCSVString());
+                    medicationList.set(i, med);
                     System.out.println("Prescribed " + quantity + " units of " + medicationName);
                     if (med.isLowStock()) {
                         System.out.println("Warning: " + medicationName + " is now low in stock!");
                     }
                 } else {
-                    updatedLines.add(String.join(",", record));
                     System.out.println("Insufficient stock for prescription");
                 }
-            } else {
-                updatedLines.add(String.join(",", record));
+                break;
             }
         }
         
         if (prescribed) {
-            CSVHandler.writeCSVLines(
-                null,
-                updatedLines.toArray(new String[0]),
-                csvFilePath
-            );
+            saveMedicationList();
         } else {
             System.out.println("Medication not found: " + medicationName);
         }
@@ -176,120 +190,89 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
     }
 
     @Override
-    public void submitReplenishRequest(String medicationName, int quantity) {
-        List<List<String>> inventoryRecords = CSVHandler.readCSVLines(csvFilePath);
-        boolean medicationExists = false;
-        
-        for (int i = 1; i < inventoryRecords.size(); i++) {
-            if (inventoryRecords.get(i).get(0).equals(medicationName)) {
-                medicationExists = true;
-                break;
-            }
-        }
-        
-        if (!medicationExists) {
+    public synchronized void submitReplenishRequest(String medicationName, int quantity) {
+        if (!medicationList.stream().anyMatch(med -> med.getName().equals(medicationName))) {
             System.out.println("Medication not found: " + medicationName);
             return;
         }
 
-        List<List<String>> requestRecords = CSVHandler.readCSVLines(requestsFilePath);
-        List<String> updatedLines = new ArrayList<>();
+        // Update existing request or add new one
         boolean updated = false;
-        
-        updatedLines.add(String.join(",", requestRecords.get(0)));
-        
-        for (int i = 1; i < requestRecords.size(); i++) {
-            List<String> record = requestRecords.get(i);
-            if (record.get(0).equals(medicationName)) {
-                updatedLines.add(String.format("%s,%d", medicationName, quantity));
+        for (ReplenishRequest request : replenishRequests) {
+            if (request.medicineName.equals(medicationName)) {
+                request.quantity = quantity;
+                request.status = ReplenishStatus.PENDING;
                 updated = true;
-            } else {
-                updatedLines.add(String.join(",", record));
+                break;
             }
         }
 
         if (!updated) {
-            updatedLines.add(String.format("%s,%d", medicationName, quantity));
+            replenishRequests.add(new ReplenishRequest(medicationName, quantity, ReplenishStatus.PENDING));
         }
 
-        CSVHandler.writeCSVLines(
-            null,
-            updatedLines.toArray(new String[0]),
-            requestsFilePath
-        );
+        saveReplenishRequests();
         System.out.println("Replenish request submitted to administrator.");
     }
 
     @Override
-    public void displayReplenishRequests() {
+    public synchronized void displayReplenishRequests() {
         System.out.println("\nReplenishment Requests:");
         System.out.println("----------------------");
-        List<List<String>> records = CSVHandler.readCSVLines(requestsFilePath);
-        
-        for (int i = 1; i < records.size(); i++) {
-            List<String> record = records.get(i);
-            if (record.size() == 2) {
-                System.out.println(record.get(0) + ": " + record.get(1));
-            }
+        for (ReplenishRequest request : replenishRequests) {
+            System.out.printf("%s: %d units (Status: %s)%n", 
+                request.medicineName, request.quantity, request.status);
         }
     }
 
     @Override
-    public boolean approveReplenishRequests(String medicineName) {
-        List<List<String>> requestRecords = CSVHandler.readCSVLines(requestsFilePath);
-        List<List<String>> inventoryRecords = CSVHandler.readCSVLines(csvFilePath);
-        List<String> updatedRequests = new ArrayList<>();
-        boolean requestFound = false;
-        int requestedQuantity = 0;
+    public synchronized boolean approveReplenishRequests(String medicineName) {
+        ReplenishRequest request = replenishRequests.stream()
+            .filter(r -> r.medicineName.equals(medicineName))
+            .findFirst()
+            .orElse(null);
 
-        updatedRequests.add(String.join(",", requestRecords.get(0)));
-        for (int i = 1; i < requestRecords.size(); i++) {
-            List<String> record = requestRecords.get(i);
-            if (record.get(0).equals(medicineName)) {
-                requestFound = true;
-                requestedQuantity = Integer.parseInt(record.get(1));
-            } else {
-                updatedRequests.add(String.join(",", record));
-            }
-        }
-
-        if (!requestFound) {
-            System.out.println("No replenish request found for: " + medicineName);
+        if (request == null || request.status == ReplenishStatus.APPROVED) {
+            System.out.println("No pending replenish request found for: " + medicineName);
             return false;
         }
 
-        List<String> updatedInventory = new ArrayList<>();
-        boolean updated = false;
-        
-        updatedInventory.add(String.join(",", inventoryRecords.get(0)));
-        for (int i = 1; i < inventoryRecords.size(); i++) {
-            List<String> record = inventoryRecords.get(i);
-            if (record.get(0).equals(medicineName)) {
-                int currentStock = Integer.parseInt(record.get(1));
-                int lowStockLevel = Integer.parseInt(record.get(2));
-                Medication med = new Medication(medicineName, currentStock, lowStockLevel);
-                med.replenish(requestedQuantity);
-                updatedInventory.add(med.toCSVString());
-                updated = true;
-            } else {
-                updatedInventory.add(String.join(",", record));
-            }
-        }
+        Medication medication = medicationList.stream()
+            .filter(med -> med.getName().equals(medicineName))
+            .findFirst()
+            .orElse(null);
 
-        if (!updated) {
+        if (medication == null) {
             System.out.println("Medication no longer exists in inventory");
             return false;
         }
 
-        CSVHandler.writeCSVLines(null, updatedRequests.toArray(new String[0]), requestsFilePath);
-        CSVHandler.writeCSVLines(null, updatedInventory.toArray(new String[0]), csvFilePath);
+        // Update medication stock
+        medication.replenish(request.quantity);
+        
+        // Update status and save
+        request.status = ReplenishStatus.APPROVED;
+        saveMedicationList();
+        saveReplenishRequests();
 
-        System.out.println("Approved replenishment of " + requestedQuantity + " units for " + medicineName);
+        System.out.println("Approved replenishment of " + request.quantity + " units for " + medicineName);
         return true;
     }
 
+    public static void clearInstance() {
+        if (instance != null) {
+            instance.medicationList.clear();
+            instance.replenishRequests.clear();
+            instance = null;
+        }
+    }
+
+    public synchronized void refreshData() {
+        loadMedications();
+        loadReplenishRequests();
+    }
+
     public boolean hasReplenishRequests() {
-        List<List<String>> records = CSVHandler.readCSVLines(requestsFilePath);
-        return records.size() > 1;
+        return !replenishRequests.isEmpty();
     }
 }

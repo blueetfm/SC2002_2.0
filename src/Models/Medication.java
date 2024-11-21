@@ -43,11 +43,11 @@ public class Medication {
     }
 	
 	// getters and setters
-	public String getMedicineName() {
+	public String getName() {
 		return medicineName;
 	}
 
-	public int getStock() {
+	public int getCurrentStock() {
 		return stock;
 	}
 
@@ -56,7 +56,7 @@ public class Medication {
 	}
 
 
-	public void setStock(int stock) {
+	public void setCurrentStock(int stock) {
 		this.stock = stock;
 	}
 

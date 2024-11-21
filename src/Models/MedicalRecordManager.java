@@ -1,11 +1,12 @@
 package Models;
 
 import Utils.CSVHandler;
+import Utils.CSVHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MedicalRecordManager {
-
+public class MedicalRecordManager implements MedicalRecordInterface {
+	private static MedicalRecordManager instance;
     private static List<MedicalRecord> medicalRecordList;
 
     public MedicalRecordManager() {
@@ -46,10 +47,16 @@ public class MedicalRecordManager {
                 }
             }
         }
-        MedicalRecordManager.medicalRecordList = medicalRecordList;
+    }
+    
+    public static synchronized MedicalRecordManager getMedicalRecordList() {
+    	if (instance.equals(null)) {
+    		instance = new MedicalRecordManager();
+    	}
+    	return instance;
     }
 
-    public int updateCSV() {
+    public static int updateCSV() {
         List<String> record = new ArrayList<>();
         for (MedicalRecord indivRecord : medicalRecordList) {
             String ID = indivRecord.patientID;
@@ -75,13 +82,13 @@ public class MedicalRecordManager {
         return 0;
     }
 
-    public MedicalRecord createMedicalRecord(String patientID) {
+    public static MedicalRecord createMedicalRecord(String patientID) {
         MedicalRecord newRecord = new MedicalRecord(patientID);
         medicalRecordList.add(newRecord);
         return newRecord;
     }
-
-    public int readAllMedicalRecords() {
+ 
+    public static int readAllMedicalRecords() {
         for (MedicalRecord record : medicalRecordList) {
             String ID = record.patientID;
             for (Record obj : record.recordList) {
@@ -97,7 +104,7 @@ public class MedicalRecordManager {
         return 1;
     }
 
-    public int readMedicalRecordsByPatientID(String patientID) {
+    public static int readMedicalRecordsByPatientID(String patientID) {
         if (patientID == null || patientID.trim().isEmpty()) {
             System.out.println("Invalid patient ID");
             return -1;
@@ -127,7 +134,7 @@ public class MedicalRecordManager {
         return 1;
     }
 
-    public MedicalRecord updateMedicalRecord(
+    public static MedicalRecord updateMedicalRecord(
         String patientID,
         String diagnosis,
         String medication,
@@ -139,13 +146,12 @@ public class MedicalRecordManager {
                 return record;
             }
         }
-        // If no record found, create new one
         MedicalRecord newRecord = createMedicalRecord(patientID);
         newRecord.addRecord(newRecord, diagnosis, medication, treatment);
         return newRecord;
     }
 
-    public boolean deleteMedicalRecord(String patientID) {
+    public static boolean deleteMedicalRecord(String patientID) {
         if (patientID == null || patientID.trim().isEmpty()) {
             return false;
         }

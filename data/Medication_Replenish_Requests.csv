@@ -1,3 +1,4 @@
-Medicine Name,Requested Quantity
-Ibuprofen,20
-Paracetamol,200
+Medicine Name,Requested Quantity,Status
+Ibuprofen,20,APPROVED
+Paracetamol,200,PENDING
+Amoxicillin,10,PENDING

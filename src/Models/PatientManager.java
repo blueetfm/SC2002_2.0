@@ -10,7 +10,7 @@ import Utils.CSVHandler;
 
 public class PatientManager implements PatientInterface {
     private static PatientManager instance;
-    protected ArrayList<Patient> patientList;
+    protected static ArrayList<Patient> patientList;
 
     public PatientManager(){
         this.patientList = new ArrayList<>();
@@ -22,9 +22,12 @@ public class PatientManager implements PatientInterface {
         }
         return instance;
     }
+    
+    public static List<Patient> getAllPatients() {
+    	return PatientManager.patientList;
+    }
 
-    @ Override
-    public Patient getPatient(String hospitalID) {
+    public static Patient getPatient(String hospitalID) {
         String loggedInID = UserMenu.getLoggedInHospitalID(); 
         boolean isPatient = loggedInID.startsWith("P") && (loggedInID.length() == 5);
     
@@ -77,7 +80,7 @@ public class PatientManager implements PatientInterface {
         System.out.println("Patient successfully created!"); 
     }
 
-    public void readPatient(String hospitalID) {
+    public static void readPatient(String hospitalID) {
         String loggedInID = UserMenu.getLoggedInHospitalID(); 
         boolean isPatient = loggedInID.startsWith("P") && (loggedInID.length() == 5);
     
@@ -121,6 +124,7 @@ public class PatientManager implements PatientInterface {
                     // Add method call to view appointment outcomes
                     break;
                 case 0:
+                	scanner.close();
                     return;
                 default:
                     System.out.println("Invalid choice!");
