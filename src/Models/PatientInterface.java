@@ -10,7 +10,9 @@ public interface PatientInterface {
     public static void readPatient(String hospitalID) {
 	};
     public void updatePatient();
-    public void deletePatient(String hospitalID);
+    public static int deletePatient(String hospitalID) {
+		return PatientManager.deletePatient(hospitalID);
+	}
     public static Patient getPatient(String hospitalID) {
 		return null;
 	}

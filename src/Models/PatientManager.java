@@ -156,7 +156,7 @@ public class PatientManager implements PatientInterface {
         System.out.println("Patient database successfully updated!"); 
     }
 
-    public void deletePatient(String hospitalID) {
+    public static int deletePatient(String hospitalID) {
         String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
 
         List<String> remainingLines = new ArrayList<>();
@@ -183,7 +183,8 @@ public class PatientManager implements PatientInterface {
             String[] lines = remainingLines.toArray(new String[0]);
             CSVHandler.writeCSVLines(headers, lines, "data/Patient_List.csv"); 
             System.out.println("Successfully deleted patient profile.");
-            return;}
+            return 1;}
         System.out.println("No matching patient profile ID.");
+        return 0;
     }
 }

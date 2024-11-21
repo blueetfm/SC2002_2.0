@@ -129,7 +129,10 @@ public class Doctor extends User{
 	}
 	
 	public int dischargePatient() {
-		return 0;
+		Scanner case9Scanner = new Scanner(System.in);
+		System.out.print("Enter Patient ID to delete: ");
+		String case9Choice = case9Scanner.next();
+		return PatientManager.deletePatient(case9Choice);
 	}
 	
 	public int logout() {
