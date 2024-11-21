@@ -12,10 +12,10 @@ import Models.TimeSlot;
 
 public class TimeSlotManager implements TimeSlotInterface{
 	private static TimeSlotManager instance;
-	private static List<TimeSlot> timeSlotList;
+	private static List<TimeSlot> timeSlots;
 	
 	private TimeSlotManager() throws IOException {
-		timeSlotList = new ArrayList<TimeSlot>();
+		timeSlots = new ArrayList<TimeSlot>();
 
 		BufferedReader br = new BufferedReader(new FileReader("../data/TimeSlot_List.csv"));
 		String line;
@@ -30,12 +30,12 @@ public class TimeSlotManager implements TimeSlotInterface{
                 LocalTime time = LocalTime.parse(row[4].trim());
                 ScheduleStatus scheduleStatus = ScheduleStatus.valueOf(row[5].trim().toUpperCase());
                 TimeSlot timeSlot = new TimeSlot(staffID, patientID, name, date, time, scheduleStatus);
-                timeSlotList.add(timeSlot);
+                timeSlots.add(timeSlot);
             }	
 		}
 	}
 
-	public static TimeSlotManager getTimeSlotList() throws IOException {
+	public static TimeSlotManager gettimeSlots() throws IOException {
 		if (instance == null) {
 			instance = new TimeSlotManager();
 		}	
@@ -43,7 +43,7 @@ public class TimeSlotManager implements TimeSlotInterface{
 	}
 	
 	public static int getTimeSlot(String name) {
-		for (TimeSlot timeSlot : timeSlotList) {
+		for (TimeSlot timeSlot : timeSlots) {
 			if (timeSlot.getName().equals(name)) { 
 				return 1;
 			}
@@ -52,8 +52,8 @@ public class TimeSlotManager implements TimeSlotInterface{
 	}
 	
 	public static List<TimeSlot> getTimeSlots() throws IOException {
-		TimeSlotManager.getTimeSlotList();
-		return TimeSlotManager.timeSlotList;
+		TimeSlotManager.gettimeSlots();
+		return TimeSlotManager.timeSlots;
 	}
 	
 	public int addTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
@@ -62,15 +62,15 @@ public class TimeSlotManager implements TimeSlotInterface{
 			return 0;
 		}
 		TimeSlot newSlot = new TimeSlot(staffID, patientID, name, date, time, scheduleStatus);
-		timeSlotList.add(newSlot);
+		timeSlots.add(newSlot);
 		System.out.println("Time Slot added.");
 		return 1;
 	}
 	
 	public int deleteTimeSlot(String name) {
-		for (TimeSlot timeSlot : timeSlotList) {
+		for (TimeSlot timeSlot : timeSlots) {
 			if (timeSlot.getName().equals(name)) { 
-				timeSlotList.remove(timeSlot);
+				timeSlots.remove(timeSlot);
 				System.out.println("Time Slot removed.");
 				return 1;
 			}
@@ -80,7 +80,7 @@ public class TimeSlotManager implements TimeSlotInterface{
 	}
 	
 	public int editTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
-		for (TimeSlot timeSlot : timeSlotList) {
+		for (TimeSlot timeSlot : timeSlots) {
 			if (timeSlot.getName().equals(name)) { 
 				deleteTimeSlot(name);
 				addTimeSlot(staffID, patientID, name, date, time, scheduleStatus);
@@ -94,7 +94,7 @@ public class TimeSlotManager implements TimeSlotInterface{
 	
 	public List<TimeSlot> getTimeSlotByStaffID(String ID) {
 		List<TimeSlot> outputList = new ArrayList<TimeSlot>();
-		for (TimeSlot timeSlot : timeSlotList) {
+		for (TimeSlot timeSlot : timeSlots) {
 			if (timeSlot.getStaffID().equals(ID)) { 
 				outputList.add(timeSlot);
 			}
@@ -105,7 +105,7 @@ public class TimeSlotManager implements TimeSlotInterface{
 	
 	public List<TimeSlot> getTimeSlotByPatientID(String ID) {
 		List<TimeSlot> outputList = new ArrayList<TimeSlot>();
-		for (TimeSlot timeSlot : timeSlotList) {
+		for (TimeSlot timeSlot : timeSlots) {
 			if (timeSlot.getPatientID().equals(ID)) { 
 				outputList.add(timeSlot);
 			}
