@@ -10,7 +10,7 @@ import java.util.Scanner;
 
 public class PatientManager implements PatientInterface {
     private static PatientManager instance;
-    protected static ArrayList<Patient> patientList;
+    protected static List<Patient> patientList;
 
     public PatientManager(){
         this.patientList = new ArrayList<>();
@@ -24,6 +24,9 @@ public class PatientManager implements PatientInterface {
     }
     
     public static List<Patient> getAllPatients() {
+        PatientManager.patientList=PatientManager.initializeObjects();
+        System.out.println(patientList);
+
     	return PatientManager.patientList;
     }
 
@@ -130,11 +133,59 @@ public class PatientManager implements PatientInterface {
                 default:
                     System.out.println("Invalid choice!");
                 }
+                scanner.nextLine();
             }
         }
 
         System.out.println("No matching patient profile ID.");
     }
+
+    public static List<Patient> initializeObjects() {
+        // Initialize the list to store patient objects
+        List<Patient> patients = new ArrayList<>();
+        
+        // Read the CSV file into a List of List of Strings (rows and columns)
+        List<List<String>> allLines = CSVHandler.readCSVLines("data/Patient_List.csv");
+    
+        if (allLines.isEmpty()) {
+            System.out.println("No records found in Patient_List.csv.");
+            return patients;
+        }
+    
+        // Skip the header row (assuming the first row contains headers)
+        for (int i = 1; i < allLines.size(); i++) {
+            List<String> row = allLines.get(i);
+    
+            try {
+                // Ensure the row has the expected number of columns
+                if (row.size() < 7) {
+                    System.err.println("Skipping incomplete record at line " + (i + 1) + ": " + String.join(",", row));
+                    continue;
+                }
+    
+                // Parse each column into its corresponding field
+                String patientID = row.get(0).trim().toUpperCase();
+                String name = row.get(1).trim();
+                LocalDate dateOfBirth = LocalDate.parse(row.get(2).trim()); // Ensure date format matches
+                String gender = row.get(3).trim();
+                String bloodType = row.get(4).trim();
+                String email = row.get(5).trim();
+                String phoneNum = row.get(6).trim();
+    
+                // Create a Patient object and add it to the list
+                Patient patient = new Patient(patientID, name, dateOfBirth, gender, bloodType, email, phoneNum);
+                patients.add(patient);
+    
+            } catch (Exception e) {
+                // Handle any errors during parsing
+                System.err.println("Error parsing record at line " + (i + 1) + ": " + e.getMessage());
+                System.err.println("Record content: " + String.join(",", row));
+            }
+        }
+    
+        return patients;
+    }
+    
 
     public static int updatePatient(Patient updatedPatient) {
         String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Email", "Contact Information"};

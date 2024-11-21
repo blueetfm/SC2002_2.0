@@ -2,6 +2,7 @@ package Models;
 
 import Services.MedicalRecordInterface;
 import Services.TimeSlotInterface;
+import Services.AppointmentInterface;
 import java.time.*;
 import java.util.*;
 
@@ -32,6 +33,19 @@ public class Patient extends User {
         this.bloodType = bloodType;
     }
 
+	public Patient(String hospitalID, String name, 
+	LocalDate birthDate, String gender, String phoneNum, String email,
+	String bloodType){
+		super(hospitalID,"", name);
+        this.name = name;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.phoneNum = phoneNum;
+        this.email = email;
+        this.patientID = hospitalID;
+        this.bloodType = bloodType;
+    }
+
 //	methods return 0 if no error, else returns 1
 
     public boolean viewMedicalRecord(){
@@ -40,31 +54,38 @@ public class Patient extends User {
     }
 
 	public boolean viewAvailableAppointmentSlots() {
+		TimeSlotInterface.initializeObjects();
 		TimeSlotInterface.getTimeSlotsByPatientID(this.patientID);
 		return true;
 	}
 
 	public boolean scheduleAppointment(String doctorID, String timeslotID) {
-		AppointmentManager.scheduleAppointment(this.patientID, doctorID, timeslotID);
+		TimeSlotInterface.initializeObjects();
+		AppointmentInterface.initializeObjects();
+		AppointmentInterface.scheduleAppointment(this.patientID, doctorID, timeslotID);
 		return true;
 	}
 
 	public boolean rescheduleAppointment(String oldAppointmentID, String newTimeSlotID) {
-		AppointmentManager.rescheduleAppointment(oldAppointmentID, newTimeSlotID);
+		AppointmentInterface.initializeObjects();
+		AppointmentInterface.rescheduleAppointment(oldAppointmentID, newTimeSlotID);
 		return true;
 	}
 
 	public boolean cancelAppointment() {
-		AppointmentManager.cancelAppointment(this.patientID);
+		AppointmentInterface.initializeObjects();
+		AppointmentInterface.cancelAppointment(this.patientID);
 		return true;
 	}
 
 	public List<Appointment> viewScheduledAppointments() {
-		List<Appointment> appointments = AppointmentManager.getAppointmentsByPatientID(this.patientID);
+		AppointmentInterface.initializeObjects();
+		List<Appointment> appointments = AppointmentInterface.getAppointmentsByPatientID(this.patientID);
 		return appointments;
 	}
 
 	public List<AppointmentOutcomeRecord> viewAppointmentOutcomeRecords() {
+		AppointmentInterface.initializeObjects();
 		List<AppointmentOutcomeRecord> appointment_outcomes = AppointmentManager.getAppointmentOutcomeRecordsByPatientID(this.patientID);
 		return appointment_outcomes;
 	}
