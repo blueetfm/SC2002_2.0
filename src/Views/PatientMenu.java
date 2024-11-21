@@ -176,6 +176,17 @@ public class PatientMenu implements Menu {
 			System.out.println("Failed to cancel the appointment. Please try again.");
 		}
 	}
+	private void printAppointment(Appointment appointment){
+        System.out.println("--------------------");
+        System.out.println("Appointment ID: " + appointment.getAppointmentID());
+        System.out.println("Patient ID: " + appointment.getPatientID());
+        System.out.println("Doctor ID: " + appointment.getDoctorID());
+        System.out.println("Date: " + appointment.getDate().format(DateTimeFormatUtils.DATE_FORMATTER));
+        System.out.println("Time Slot ID: " + appointment.getTimeSlotID());
+        System.out.println("Status: " + appointment.getStatus().name());
+        System.out.println("--------------------");
+        return;
+    }
 
 	private void printAppointmentOutcomeRecord(AppointmentOutcomeRecord appointmentOutcomeRecord){
         System.out.println("--------------------");
@@ -197,14 +208,13 @@ public class PatientMenu implements Menu {
 		List<Appointment> appointments = currentPatient.viewScheduledAppointments();
 		// Check if the list is null or empty
 		if (appointments == null || appointments.isEmpty()) {
-			// If no records found, display a message
 			System.out.println("No past appointment outcome records found.");
 		} else {
-			// If records exist, loop through the list and print each record's details
 			for (Appointment record : appointments) {
-				record.printDetails();  // Calling the printDetails() method from AppointmentOutcomeRecord
+				printAppointment(record);
 			}
 		}
+		return;
 	}
 
 	// Handles viewing past appointment outcome records

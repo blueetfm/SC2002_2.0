@@ -41,12 +41,7 @@ public class Appointment {
         this.outcomeRecord = outcomeRecord;
         this.status = AppointmentStatus.COMPLETED;
     }
-
-    public void printDetails() {
-        System.out.println("Date of Appointment: " + date.toString());
-
-    }
-
+    
     // getters
     public String getAppointmentID(){
         return this.appointmentID;
