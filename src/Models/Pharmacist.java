@@ -1,7 +1,3 @@
-package Models;
-
-import Enums.*;
-
 /**
  * Represents a pharmacist in the hospital system. 
  * The `Pharmacist` class extends the `User` class and contains methods for interacting 
@@ -10,6 +6,11 @@ import Enums.*;
  * @version 1.0
  * @since 2024-11-21
  */
+package Models;
+
+import Enums.*;
+
+
 public class Pharmacist extends User {
     protected String name;
     protected String gender;
