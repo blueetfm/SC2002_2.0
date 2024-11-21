@@ -90,7 +90,7 @@ public class UserMenu implements Menu {
         
         if (hospitalIDUpper.startsWith("P") && (hospitalID.length() == 5)) {
             System.out.println("Showing Patient Menu");
-            new PatientMenu(hospitalID).showMenu();
+            new PatientMenu().showMenu();
         } else if (hospitalIDUpper.startsWith("P") && (hospitalID.length() == 4)) {
             new PharmacistMenu().showMenu();
         } else if (hospitalIDUpper.startsWith("D")) {

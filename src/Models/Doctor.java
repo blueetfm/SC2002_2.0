@@ -1,40 +1,49 @@
 package Models;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Scanner;
 
 import Views.DoctorMenu;
 
 public class Doctor extends User{
 	protected String name;
-	protected LocalDate birthDate;
 	protected String gender;
-	protected String phoneNum;
-	protected String email;
-    protected String staffID;
 
-	public Doctor(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String staffID) {
+	public Doctor(String hospitalID, String password, String role, String name, String gender) {
 		super(hospitalID, password, role);
         this.name = name;
-        this.birthDate = birthDate;
         this.gender = gender;
-        this.phoneNum = phoneNum;
-        this.email = email;
-        this.staffID = staffID;
 		// TODO Auto-generated constructor stub
 	}
 
 //	methods return 0 if no error, else returns 1
 	
 	public int viewPatientMedicalRecords() {
-		return 0;
+		List<Patient> patientList = PatientInterface.getAllPatients();
+		for (Patient patient : patientList) {
+			String ID = patient.getHospitalID();
+			PatientInterface.readPatient(ID);
+		}
+		return 1;
 	}
 	
 	public int updatePatientMedicalRecords() {
-		return 0;
+		Scanner case2Scanner = new Scanner(System.in);
+		String case2Choice;
+		case2Choice = case2Scanner.nextLine();
+		PatientInterface.getPatient(case2Choice);
+		case2Scanner.close();
+		return 1;
 	}
 	
 	public int viewPersonalSchedule() {
-		return 0;
+		Scanner case3Scanner = new Scanner(System.in);
+		String case3Choice;
+		case3Choice = case3Scanner.nextLine();
+		TimeSlotInterface.getTimeSlotsByDoctorID(case3Choice);
+		case3Scanner.close();
+		return 1;
 	}
 	
 	public int setAppointmentAvailability() {
