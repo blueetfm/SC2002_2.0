@@ -53,7 +53,7 @@ public class AppointmentManager {
                 String doctorID = record.get(2);
                 LocalDate date = LocalDate.parse(record.get(3), DateTimeFormatUtils.DATE_FORMATTER);
                 LocalTime timeSlot = LocalTime.parse(record.get(4), DateTimeFormatUtils.TIME_FORMATTER);
-                Enums.Status status = Enums.Status.valueOf(record.get(5).toUpperCase());
+                Enums.AppointmentStatus status = Enums.AppointmentStatus.valueOf(record.get(5).toUpperCase());
     
                 // parsing appointment outcome record
                 LocalDate outcomeDate = LocalDate.parse(record.get(6), DateTimeFormatUtils.DATE_FORMATTER); 

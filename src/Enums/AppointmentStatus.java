@@ -1,9 +1,9 @@
 package Enums;
 
-public enum Status {
+public enum AppointmentStatus {
     AVAILABLE, 
+    REQUESTED,
     CONFIRMED, 
     CANCELED, 
     COMPLETED;
-
 }

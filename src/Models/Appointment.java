@@ -20,26 +20,26 @@ public class Appointment {
     protected String doctorID;
     protected LocalDate date;
     protected LocalTime timeSlot;
-    protected Status status;
+    protected AppointmentStatus status;
     protected AppointmentOutcomeRecord outcomeRecord; 
 
-    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, LocalTime timeSlot, Status status, AppointmentOutcomeRecord outcomeRecord){
+    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, LocalTime timeSlot, AppointmentStatus status, AppointmentOutcomeRecord outcomeRecord){
         this.appointmentID = appointmentID;
         this.patientID = patientID;
         this.doctorID = doctorID;
         this.date = date;
         this.timeSlot = timeSlot;
-        this.status = Status.AVAILABLE;
+        this.status = AppointmentStatus.AVAILABLE;
         this.outcomeRecord = null;
     }
 
     // setters
-    public void setStatus(Enums.Status status){
+    public void setStatus(Enums.AppointmentStatus status){
         this.status = status;
     }
     public void setAppointmentOutcomeRecord(AppointmentOutcomeRecord outcomeRecord){
         this.outcomeRecord = outcomeRecord;
-        this.status = Status.COMPLETED;
+        this.status = AppointmentStatus.COMPLETED;
     }
 
     public void printDetails() {
@@ -68,7 +68,7 @@ public class Appointment {
         return this.timeSlot;
     }
 
-    public Status getStatus(){
+    public AppointmentStatus getStatus(){
         return this.status;
     }
 
