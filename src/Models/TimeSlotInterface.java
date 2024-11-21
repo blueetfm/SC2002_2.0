@@ -36,5 +36,6 @@ public interface TimeSlotInterface {
 		return null;
 	}
 
-    
+	public static void printTimeSlot(TimeSlot slot) {
+	}
 }

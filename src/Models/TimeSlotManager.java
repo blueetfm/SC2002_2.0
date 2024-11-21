@@ -190,4 +190,15 @@ public class TimeSlotManager implements TimeSlotInterface{
 		return false;
 	}
 	
+	public static void printTimeSlot(TimeSlot slot) {
+		System.out.println("\n=====================================");
+		System.out.printf("Time Slot ID: %s\n", slot.timeSlotID);
+		System.out.printf("Doctor ID: %s\n", slot.doctorID);
+		System.out.printf("Patient ID: %s\n", slot.patientID);
+		System.out.printf("Date: %s\n", slot.date);
+		System.out.printf("Time: %s\n", slot.time);
+		System.out.printf("Schedule Status: %s\n", slot.scheduleStatus);
+		System.out.println("=====================================");
+	}
+	
 }
