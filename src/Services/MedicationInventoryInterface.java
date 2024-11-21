@@ -1,4 +1,6 @@
-package Models;
+package Services;
+
+import Models.MedicationInventoryManager;
 
 public interface MedicationInventoryInterface {
     static void initialize(String medicationCsvPath, String requestsCsvPath) {

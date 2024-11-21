@@ -1,12 +1,12 @@
 package Models;
 
+import Services.PatientInterface;
+import Utils.CSVHandler;
+import Views.UserMenu;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
-import Views.UserMenu;
-import Utils.CSVHandler;
 
 public class PatientManager implements PatientInterface {
     private static PatientManager instance;

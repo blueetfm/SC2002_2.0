@@ -1,4 +1,6 @@
-package Models;
+package Services;
+
+import Models.MedicalRecord;
 
 public interface MedicalRecordInterface {
 

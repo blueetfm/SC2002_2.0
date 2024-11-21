@@ -1,5 +1,7 @@
 package Models;
 
+import Services.MedicationInventoryInterface;
+import Services.StaffInterface;
 import java.util.List;
 
 public class Administrator extends User {

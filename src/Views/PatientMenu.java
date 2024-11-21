@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 import Models.Patient;
 import Models.PatientManager;
+import Services.PatientInterface;
 import Utils.DateTimeFormatUtils;
-import Models.PatientInterface;
 import Models.AppointmentOutcomeRecord;
 import Models.Appointment;
 import Models.AppointmentManager;

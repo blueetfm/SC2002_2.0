@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import Models.TimeSlot;
+import Services.TimeSlotInterface;
 import Utils.CSVHandler;
 import Utils.DateTimeFormatUtils;
 

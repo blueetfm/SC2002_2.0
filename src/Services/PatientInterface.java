@@ -1,7 +1,10 @@
-package Models;
+package Services;
 
 import java.time.LocalDate;
 import java.util.List;
+
+import Models.Patient;
+import Models.PatientManager;
 
 public interface PatientInterface {
     public static int createPatient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String bloodType) {

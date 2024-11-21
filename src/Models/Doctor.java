@@ -1,14 +1,14 @@
 package Models;
 
+import Enums.PrescriptionStatus;
+import Enums.ScheduleStatus;
+import Services.AppointmentInterface;
+import Services.PatientInterface;
+import Services.TimeSlotInterface;
+import Utils.DateTimeFormatUtils;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
-
-import Enums.PrescriptionStatus;
-import Enums.ScheduleStatus;
-import Enums.Service;
-import Utils.DateTimeFormatUtils;
-import Views.DoctorMenu;
 
 public class Doctor extends User{
 	protected String name;

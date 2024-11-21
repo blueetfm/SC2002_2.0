@@ -1,4 +1,7 @@
-package Models;
+package Services;
+
+import Models.Staff;
+import Models.StaffManager;
 
 public interface StaffInterface {
     public static boolean addStaff(String name, String role, String gender, int age) {

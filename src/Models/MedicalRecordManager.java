@@ -5,6 +5,8 @@ import Utils.CSVHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import Services.MedicalRecordInterface;
+
 public class MedicalRecordManager implements MedicalRecordInterface {
 	private static MedicalRecordManager instance;
     private static List<MedicalRecord> medicalRecordList;

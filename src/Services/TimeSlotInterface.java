@@ -1,4 +1,4 @@
-package Models;
+package Services;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import Enums.ScheduleStatus;
+import Models.TimeSlot;
 
 public interface TimeSlotInterface {
 	static List<TimeSlot> initializeObjects(){

@@ -1,11 +1,9 @@
 package Models;
 
-import java.util.*;
+import Services.MedicalRecordInterface;
+import Services.TimeSlotInterface;
 import java.time.*;
-import Views.PatientMenu;
-import Models.MedicalRecordManager;
-import Models.AppointmentOutcomeRecord;
-import Models.Appointment;
+import java.util.*;
 
 public class Patient extends User {
 	private String name;
