@@ -50,7 +50,14 @@ public class Doctor extends User{
 		return 0;
 	}
 	
+	public int acceptOrDeclineAppointmentRequests() {
+		return 0;
+	}
+	
 	public int viewUpcomingAppointments() {
+		Scanner case5Scanner = new Scanner(System.in);
+		String case5Choice;
+		case5Choice = case5Scanner.nextLine();
 		return 0;
 	}
 	
