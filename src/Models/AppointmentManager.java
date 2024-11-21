@@ -224,22 +224,22 @@ public class AppointmentManager {
     }
 
     // Cancel appointment
-    public static boolean cancelAppointment(String appointmentID){
+    public static int cancelAppointment(String appointmentID){
         Appointment appointment = getAppointmentByID(appointmentID);
         if (appointment == null){
             System.out.println("Appointment cannot be found.");
-            return false;
+            return 0;
         }
         String oldTimeSlotID = appointment.getTimeSlotID();
         TimeSlot oldTimeSlot = TimeSlotManager.getTimeSlotByID(oldTimeSlotID);
         
         oldTimeSlot.setScheduleStatus(ScheduleStatus.AVAILABLE);
         appointment.setStatus(AppointmentStatus.CANCELLED);
-        return true; 
+        return 1; 
     }
     
 
-    public static boolean recordAppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate outcomeDate, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
+    public static int recordAppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate outcomeDate, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
         Appointment appointment = getAppointmentByID(appointmentID);
 
         if (appointment.outcomeRecord == null){
@@ -249,10 +249,10 @@ public class AppointmentManager {
             appointment.outcomeRecord = outcomeRecord;
 
             updateCSV(appointments);
-            return true;
+            return 1;
 
         } else {
-            return false;
+            return 0;
         }
     }    
 }

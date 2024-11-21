@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+import Enums.PrescriptionStatus;
 import Utils.DateTimeFormatUtils;
 import Views.DoctorMenu;
 
@@ -76,8 +77,8 @@ public class Doctor extends User{
 		String medication = case7Scanner.next();
 		System.out.print("Enter notes for appointment: ");
 		String notes = case7Scanner.next();
-//		AppointmentInterface.recordAppointmentOutcomeRecord(appointmentID, patientID, date, service, medication, PrescriptionStatus.valueOf("PENDING"), notes);
-		return 0;
+		int recordResult = AppointmentInterface.recordAppointmentOutcomeRecord(appointmentID, patientID, date, service, medication, PrescriptionStatus.valueOf("PENDING"), notes);
+		return recordResult;
 	}
 	
 	public int registerPatient() {

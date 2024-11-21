@@ -47,10 +47,10 @@ public interface AppointmentInterface {
     }
 
     // Cancel appointment
-    public static boolean cancelAppointment(String appointmentID){
-        return false;
+    public static int cancelAppointment(String appointmentID){
+        return 0;
     }
-    public static boolean recordAppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate outcomeDate, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
-        return false;
+    public static int recordAppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate outcomeDate, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
+        return 0;
     }
 }
