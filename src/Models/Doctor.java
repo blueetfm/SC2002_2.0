@@ -192,7 +192,6 @@ public class Doctor extends User {
         String patientID = case8Scanner.next().toUpperCase();
         System.out.print("Enter Name of Patient: ");
         String name = null;
-        System.out.print("Enter Name of Patient: ");
         case8Scanner.nextLine(); 
         while (name == null) {
             String nameInput = case8Scanner.nextLine();
