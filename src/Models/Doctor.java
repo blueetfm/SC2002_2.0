@@ -43,7 +43,10 @@ public class Doctor extends User{
 		Scanner case3Scanner = new Scanner(System.in);
 		String case3Choice;
 		case3Choice = case3Scanner.nextLine();
-		TimeSlotInterface.getTimeSlotsByDoctorID(case3Choice);
+		List<TimeSlot> timeSlotList = TimeSlotInterface.getTimeSlotsByDoctorID(case3Choice);
+		for (TimeSlot slot : timeSlotList) {
+			TimeSlotInterface.printTimeSlot(slot);
+		}
 		case3Scanner.close();
 		return 1;
 	}
