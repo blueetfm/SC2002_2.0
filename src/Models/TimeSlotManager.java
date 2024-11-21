@@ -67,7 +67,7 @@ public class TimeSlotManager implements TimeSlotInterface{
 		return timeSlots;
 	}
 
-	public static int initializeCSVLines(List<TimeSlot> timeSlots){
+	public static int updateCSV(List<TimeSlot> timeSlots){
 		List<String> records = new ArrayList<>();
 
 		for (TimeSlot timeSlot : timeSlots) {
@@ -172,6 +172,8 @@ public class TimeSlotManager implements TimeSlotInterface{
 		TimeSlot timeSlot = getTimeSlotByID(timeSlotID);
 		if (timeSlot != null && !timeSlot.getPatientID().equals("")){
 			timeSlot.setPatientID(patientID);
+
+			updateCSV(timeSlots);
 			return true;
 		}
 		return false;
@@ -181,6 +183,8 @@ public class TimeSlotManager implements TimeSlotInterface{
 		TimeSlot timeSlot = getTimeSlotByID(timeSlotID);
 		if (timeSlot != null){
 			timeSlot.setScheduleStatus(scheduleStatus);
+
+			updateCSV(timeSlots);
 			return true;
 		}
 		return false;

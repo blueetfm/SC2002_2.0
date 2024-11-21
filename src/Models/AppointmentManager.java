@@ -84,7 +84,7 @@ public class AppointmentManager {
     }
 
     // Function to transform objects back into CSV lines
-    public static int initializeCSVLines(List<Appointment> appointments){
+    public static int updateCSV(List<Appointment> appointments){
         List<String> records = new ArrayList<>();
 
         for (Appointment appointment : appointments) {
@@ -195,7 +195,7 @@ public class AppointmentManager {
                 );
             appointment.outcomeRecord = outcomeRecord;
 
-            initializeCSVLines(appointments);
+            updateCSV(appointments);
             return true;
 
         } else {
