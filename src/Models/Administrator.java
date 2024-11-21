@@ -143,8 +143,8 @@ public class Administrator extends User {
         return appointments;
     }
 
-    public List<Appointment> viewAppointmentDetailsByDoctorID(String doctorID) {
-        List<Appointment> appointments = AppointmentManager.getAppointmentsByDoctorID(doctorID);
+    public List<Appointment> viewAppointmentDetailsByDoctorID(String patientID) {
+        List<Appointment> appointments = AppointmentManager.getAppointmentsByPatientID(patientID);
         return appointments;
     }
 

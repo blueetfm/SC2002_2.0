@@ -3,6 +3,8 @@ package Views;
 import java.io.*;
 import java.util.Scanner;
 
+import Models.AppointmentManager;
+
 public class UserMenu implements Menu {
     protected static String loggedInHospitalID;
     private boolean isSystemRunning;
@@ -84,14 +86,16 @@ public class UserMenu implements Menu {
     }
 
     private void routeToAppropriateMenu(String hospitalID) {
-        if (hospitalID.startsWith("P") && (hospitalID.length() == 5)) {
+        String hospitalIDUpper = hospitalID.toUpperCase();
+        
+        if (hospitalIDUpper.startsWith("P") && (hospitalID.length() == 5)) {
             System.out.println("Showing Patient Menu");
             new PatientMenu(hospitalID).showMenu();
-        } else if (hospitalID.startsWith("P") && (hospitalID.length() == 4)) {
+        } else if (hospitalIDUpper.startsWith("P") && (hospitalID.length() == 4)) {
             new PharmacistMenu().showMenu();
-        } else if (hospitalID.startsWith("D")) {
+        } else if (hospitalIDUpper.startsWith("D")) {
             new DoctorMenu().showMenu();
-        } else if (hospitalID.startsWith("A")) {
+        } else if (hospitalIDUpper.startsWith("A")) {
             new AdministratorMenu().showMenu();
         }
     }

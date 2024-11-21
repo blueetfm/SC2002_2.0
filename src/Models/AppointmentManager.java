@@ -31,6 +31,7 @@ public class AppointmentManager {
     public static synchronized AppointmentManager getInstance() {
         if (instance == null) {
             instance = new AppointmentManager();
+            
         }
         return instance;
     }
@@ -172,6 +173,7 @@ public class AppointmentManager {
         while (iterator.hasNext()) {
             Appointment appointment = iterator.next();
             if (appointment.getAppointmentID().equals(appointmentID)) {
+                appointment.setStatus(AppointmentStatus.CANCELED);
                 iterator.remove(); 
                 return true; 
             }
@@ -202,11 +204,5 @@ public class AppointmentManager {
         } else {
             return false;
         }
-    }
-
-
-    /*Pharmacist Menu Stuff*/
-    
-
-    
+    }    
 }

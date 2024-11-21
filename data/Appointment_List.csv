@@ -1,2 +1,2 @@
 Appointment ID,Patient ID,Doctor ID,Date,Time Slot,Status,Outcome Date,Service,Medication,Prescription Status,Notes
-..............................,completed, 'blah blah'
+APT001,P1001,D001,2024-11-21,14:00,CONFIRMED,2024-11-21,CONSULTATION,Domperidone,DISPENSED,Nil
