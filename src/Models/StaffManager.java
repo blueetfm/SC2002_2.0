@@ -93,7 +93,7 @@ public class StaffManager implements StaffInterface {
         }
     }
 
-    public Staff getStaffById(String staffId) {
+    public Staff getStaffByID(String staffId) {
         List<Staff> staffList = readAllStaff();
         return staffList.stream()
             .filter(staff -> staff.getStaffID().equals(staffId))

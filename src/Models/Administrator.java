@@ -3,10 +3,10 @@ package Models;
 import java.util.List;
 
 public class Administrator extends User {
-    private final String name;
-    private final String gender;
-    private final StaffManager staffManager;
-    private final MedicationInventoryManager medicationInventory;
+    private String name;
+    private String gender;
+    private StaffManager staffManager;
+    private MedicationInventoryManager medicationInventory;
 
     public Administrator(String hospitalID, String password, String role, 
                      String name, String gender) {
@@ -43,8 +43,8 @@ public class Administrator extends User {
         return staffManager.updateStaff(staffId, name, role, gender, age);
     }
 
-    public Staff getStaffById(String staffId) {
-        return staffManager.getStaffById(staffId);
+    public Staff getStaffByID(String staffId) {
+        return staffManager.getStaffByID(staffId);
     }
 
 
