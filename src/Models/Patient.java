@@ -8,9 +8,9 @@
  */
 package Models;
 
+import Services.AppointmentInterface;
 import Services.MedicalRecordInterface;
 import Services.TimeSlotInterface;
-import Services.AppointmentInterface;
 import java.time.*;
 import java.util.*;
 
@@ -70,7 +70,7 @@ public class Patient extends User {
     /**
      * Manages appointments for the patient.
      */
-    private AppointmentManager appointmentManager;
+    // private AppointmentManager appointmentManager;
 
     /**
      * Constructs a new {@code Patient} object with the specified details.
@@ -139,11 +139,11 @@ public class Patient extends User {
      *
      * @return {@code true} if the appointment slots are successfully viewed, otherwise {@code false}.
      */
-    public boolean viewAvailableAppointmentSlots() {
-        TimeSlotInterface.initializeObjects();
-        TimeSlotInterface.getTimeSlotsByPatientID(this.patientID);
-        return true;
-    }
+    // public boolean viewAvailableAppointmentSlots() {
+    //     TimeSlotInterface.initializeObjects();
+    //     TimeSlotInterface.getTimeSlotsByPatientID(this.patientID);
+    //     return true;
+    // }
 
     /**
      * Schedules an appointment for the patient.
@@ -166,22 +166,22 @@ public class Patient extends User {
      * @param newTimeSlotID    The ID of the new time slot.
      * @return {@code true} if the appointment is successfully rescheduled, otherwise {@code false}.
      */
-    public boolean rescheduleAppointment(String oldAppointmentID, String newTimeSlotID) {
-        AppointmentInterface.initializeObjects();
-        AppointmentInterface.rescheduleAppointment(oldAppointmentID, newTimeSlotID);
-        return true;
-    }
+    // public boolean rescheduleAppointment(String oldAppointmentID, String newTimeSlotID) {
+    //     AppointmentInterface.initializeObjects();
+    //     AppointmentInterface.rescheduleAppointment(oldAppointmentID, newTimeSlotID);
+    //     return true;
+    // }
 
     /**
      * Cancels an existing appointment for the patient.
      *
      * @return {@code true} if the appointment is successfully canceled, otherwise {@code false}.
      */
-    public boolean cancelAppointment() {
-        AppointmentInterface.initializeObjects();
-        AppointmentInterface.cancelAppointment(this.patientID);
-        return true;
-    }
+    // public boolean cancelAppointment() {
+    //     AppointmentInterface.initializeObjects();
+    //     AppointmentInterface.cancelAppointment(this.patientID);
+    //     return true;
+    // }
 
     /**
      * Views the scheduled appointments for this patient.
@@ -199,11 +199,11 @@ public class Patient extends User {
      *
      * @return A list of {@code AppointmentOutcomeRecord} objects representing the outcome of the patient's appointments.
      */
-    public List<AppointmentOutcomeRecord> viewAppointmentOutcomeRecords() {
-        AppointmentInterface.initializeObjects();
-        List<AppointmentOutcomeRecord> appointment_outcomes = AppointmentManager.getAppointmentOutcomeRecordsByPatientID(this.patientID);
-        return appointment_outcomes;
-    }
+    // public List<AppointmentOutcomeRecord> viewAppointmentOutcomeRecords() {
+    //     AppointmentInterface.initializeObjects();
+    //     List<AppointmentOutcomeRecord> appointment_outcomes = AppointmentManager.getAppointmentOutcomeRecordsByPatientID(this.patientID);
+    //     return appointment_outcomes;
+    // }
 
     /**
      * Logs out the patient from the system.

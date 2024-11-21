@@ -12,7 +12,6 @@ package Models;
 
 import Services.MedicationInventoryInterface;
 import Services.StaffInterface;
-import java.util.List;
 
 
 public class Administrator extends User {
@@ -256,10 +255,10 @@ public class Administrator extends User {
      * @param appointmentID The ID of the appointment to view.
      * @return The Appointment object associated with the given ID.
      */
-    public Appointment viewAppointmentDetailsByID(String appointmentID) {
-        Appointment appointment = AppointmentManager.getAppointmentByID(appointmentID);
-        return appointment;
-    }
+    // public Appointment viewAppointmentDetailsByID(String appointmentID) {
+    //     Appointment appointment = AppointmentManager.getAppointmentByID(appointmentID);
+    //     return appointment;
+    // }
 
     /**
      * Views all appointments for a given patient by their ID.
@@ -267,10 +266,10 @@ public class Administrator extends User {
      * @param patientID The ID of the patient whose appointments are to be viewed.
      * @return A list of appointments for the specified patient.
      */
-    public List<Appointment> viewAppointmentDetailsByPatientID(String patientID) {
-        List<Appointment> appointments = AppointmentManager.getAppointmentsByPatientID(patientID);
-        return appointments;
-    }
+    // public List<Appointment> viewAppointmentDetailsByPatientID(String patientID) {
+    //     List<Appointment> appointments = AppointmentManager.getAppointmentsByPatientID(patientID);
+    //     return appointments;
+    // }
 
     /**
      * Views all appointments for a given doctor by their ID.
@@ -278,10 +277,10 @@ public class Administrator extends User {
      * @param doctorID The ID of the doctor whose appointments are to be viewed.
      * @return A list of appointments for the specified doctor.
      */
-    public List<Appointment> viewAppointmentDetailsByDoctorID(String doctorID) {
-        List<Appointment> appointments = AppointmentManager.getAppointmentsByDoctorID(doctorID);
-        return appointments;
-    }
+    // public List<Appointment> viewAppointmentDetailsByDoctorID(String doctorID) {
+    //     List<Appointment> appointments = AppointmentManager.getAppointmentsByDoctorID(doctorID);
+    //     return appointments;
+    // }
 
     public boolean logout() {
         try {

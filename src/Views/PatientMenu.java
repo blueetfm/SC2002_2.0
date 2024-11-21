@@ -1,19 +1,21 @@
 package Views;
+import Enums.AppointmentStatus;
+import Enums.ScheduleStatus;
+import Models.Appointment;
+import Models.AppointmentOutcomeRecord;
+import Models.Patient;
+import Models.PatientManager;
+import Models.TimeSlot;
+import Services.AppointmentInterface;
+import Services.PatientInterface;
+import Services.TimeSlotInterface;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import Models.Patient;
-import Models.PatientManager;
-import Services.PatientInterface;
-import Utils.DateTimeFormatUtils;
-import Models.AppointmentOutcomeRecord;
-import Models.Appointment;
-import Models.AppointmentManager;
 
 public class PatientMenu implements Menu {
 
@@ -21,7 +23,7 @@ public class PatientMenu implements Menu {
 	private Patient currentPatient;
 	private boolean isRunning;
 	private PatientInterface patientManager;
-	private AppointmentManager appointmentManager;
+	// private AppointmentManager appointmentManager;
 
 	public PatientMenu() {
 		this.sc = new Scanner(System.in);
@@ -135,63 +137,158 @@ public class PatientMenu implements Menu {
 	}
 
 	private void handleScheduleAppointment() {
-		System.out.println("Enter doctor ID:");
-		String doctorID = sc.nextLine();
-		
-		System.out.println("Enter timeslot ID:");
-		String timeslotID = sc.nextLine();
-		
-		boolean succeed = currentPatient.scheduleAppointment(doctorID, timeslotID);
-		if (succeed) {
-			System.out.println("Appointment scheduled successfully!");
-		} else {
-			System.out.println("Failed to schedule the appointment. Please try again.");
-		}
-	}
+        TimeSlotInterface.initializeObjects();
+        AppointmentInterface.initializeObjects();
+        
+        handleViewAvailableAppointmentSlots();
+        
+        System.out.println("\nEnter slot ID to book (or 'cancel' to go back): ");
+        String slotID = sc.nextLine();
+        
+        if (slotID.equalsIgnoreCase("cancel")) {
+            return;
+        }
+        
+        TimeSlot slot = TimeSlotInterface.getTimeSlotByID(slotID);
+        if (slot == null) {
+            System.out.println("Slot ID not found.");
+            return;
+        }
+        
+        if (slot.getStatus() != ScheduleStatus.AVAILABLE) {
+            System.out.println("Slot is not available.");
+            return;
+        }
+        
+        AppointmentInterface.scheduleAppointment(
+            currentPatient.getPatientID(),
+            slot.getDoctorID(),
+            slotID
+        );
+        System.out.println("Appointment request sent successfully!");
+    }
 
 	private void handleRescheduleAppointment() {
-		System.out.println("Enter your old appointment ID:");
-		String oldAppointmentID = sc.nextLine();
-		
-		System.out.println("Enter new timeslot ID:");
-		String newTimeSlotID = sc.nextLine();
-
-		boolean succeed = currentPatient.rescheduleAppointment(oldAppointmentID, newTimeSlotID);
-		if (succeed) {
-			System.out.println("Appointment rescheduled successfully!");
-		} else {
-			System.out.println("Failed to reschedule the appointment. Please try again.");
-		}
-	}
+        List<Appointment> appointments = AppointmentInterface.getAppointmentsByPatientID(currentPatient.getPatientID());
+        System.out.println("\nYour appointments:");
+        for (Appointment apt : appointments) {
+            System.out.printf("ID: %s, Doctor: %s, Date: %s, Status: %s\n",
+                apt.getAppointmentID(), apt.getDoctorID(), apt.getDate(), apt.getStatus());
+        }
+        
+        System.out.println("\nEnter appointment ID to reschedule: ");
+        String aptID = sc.nextLine();
+        
+        handleViewAvailableAppointmentSlots();
+        System.out.println("\nEnter new slot ID: ");
+        String newSlotID = sc.nextLine();
+        
+        AppointmentInterface.updateAppointmentStatus(aptID, AppointmentStatus.CANCELLED);
+        AppointmentInterface.scheduleAppointment(
+            currentPatient.getPatientID(),
+            TimeSlotInterface.getTimeSlotByID(newSlotID).getDoctorID(),
+            newSlotID
+        );
+    }
 
 	private void handleCancelAppointment() {
-		boolean succeed = currentPatient.cancelAppointment();
-		if (succeed) {
-			System.out.println("Appointment canceled successfully!");
-		} else {
-			System.out.println("Failed to cancel the appointment. Please try again.");
-		}
-	}
+        TimeSlotInterface.initializeObjects();
+        AppointmentInterface.initializeObjects();
+        
+        List<Appointment> appointments = AppointmentInterface.getAppointmentsByPatientID(currentPatient.getPatientID());
+        
+        if (appointments.isEmpty()) {
+            System.out.println("You have no scheduled appointments.");
+            return;
+        }
+        
+        System.out.println("\nYour appointments:");
+        boolean hasConfirmedAppointments = false;
+        for (Appointment apt : appointments) {
+            if (apt.getStatus() == AppointmentStatus.CONFIRMED || 
+                apt.getStatus() == AppointmentStatus.PENDING) {
+                hasConfirmedAppointments = true;
+                System.out.printf("ID: %s, Doctor: %s, Date: %s, Status: %s\n",
+                    apt.getAppointmentID(), apt.getDoctorID(), apt.getDate(), apt.getStatus());
+            }
+        }
+        
+        if (!hasConfirmedAppointments) {
+            System.out.println("You have no active appointments to cancel.");
+            return;
+        }
+        
+        System.out.println("\nEnter appointment ID to cancel (or 'back' to return): ");
+        String aptID = sc.nextLine();
+        
+        if (aptID.equalsIgnoreCase("back")) {
+            return;
+        }
+        
+        boolean found = false;
+        for (Appointment apt : appointments) {
+            if (apt.getAppointmentID().equals(aptID)) {
+                found = true;
+                AppointmentInterface.updateAppointmentStatus(aptID, AppointmentStatus.CANCELLED);
+                System.out.println("Appointment cancelled successfully.");
+                break;
+            }
+        }
+        
+        if (!found) {
+            System.out.println("Appointment ID not found.");
+        }
+    }
 	
 	private void handleViewAvailableAppointmentSlots() {
-		boolean succeed = currentPatient.viewAvailableAppointmentSlots();
-		if (!succeed) {
-	
-		}
-	}
+        TimeSlotInterface.initializeObjects(); // Initialize before getting slots
+        List<TimeSlot> availableSlots = TimeSlotInterface.getAvailableTimeSlots();
+        if (availableSlots.isEmpty()) {
+            System.out.println("No available slots found.");
+            return;
+        }
+        System.out.println("\nAvailable Appointment Slots:");
+        for (TimeSlot slot : availableSlots) {
+            System.out.printf("Slot ID: %s, Doctor: %s, Date: %s, Time: %s-%s\n",
+                slot.getTimeSlotID(), 
+                slot.getDoctorID(),
+                slot.getStartTime().toLocalDate(),
+                slot.getStartTime().toLocalTime(),
+                slot.getEndTime().toLocalTime());
+        }
+    }
 
 	private void handleViewScheduledAppointments() {
-		List<Appointment> appointments = currentPatient.viewScheduledAppointments();
-		// Check if the list is null or empty
-		if (appointments == null || appointments.isEmpty()) {
-			System.out.println("No past appointment outcome records found.");
-		} else {
-			for (Appointment record : appointments) {
-				AppointmentManager.printAppointment(record);
-			}
-		}
-		return;
-	}
+        TimeSlotInterface.initializeObjects();
+        AppointmentInterface.initializeObjects();
+        
+        List<Appointment> appointments = AppointmentInterface.getAppointmentsByPatientID(currentPatient.getPatientID());
+        
+        if (appointments.isEmpty()) {
+            System.out.println("You have no appointments.");
+            return;
+        }
+        
+        System.out.println("\nYour Appointments:");
+        System.out.println("----------------------------------------");
+        for (Appointment apt : appointments) {
+            TimeSlot slot = TimeSlotInterface.getTimeSlotByID(apt.getTimeSlotID());
+            if (slot != null) {
+                System.out.printf("Appointment ID: %s\n" +
+                                "Doctor ID: %s\n" +
+                                "Date: %s\n" +
+                                "Time: %s - %s\n" +
+                                "Status: %s\n",
+                    apt.getAppointmentID(),
+                    apt.getDoctorID(),
+                    apt.getDate(),
+                    slot.getStartTime().toLocalTime(),
+                    slot.getEndTime().toLocalTime(),
+                    apt.getStatus());
+                System.out.println("----------------------------------------");
+            }
+        }
+    }
 
 	private void handleViewPastAppointmentOutcomeRecords() {
 		// Get the list of appointment outcome records for the current patient
@@ -204,7 +301,7 @@ public class PatientMenu implements Menu {
 		} else {
 			// If records exist, loop through the list and print each record's details
 			for (AppointmentOutcomeRecord record : appointment_outcomes) {
-				AppointmentManager.printAppointmentOutcomeRecord(record);
+				// AppointmentManager.printAppointmentOutcomeRecord(record);
 			}
 		}
 	}

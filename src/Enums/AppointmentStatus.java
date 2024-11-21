@@ -8,13 +8,9 @@ package Enums;
 
 public enum AppointmentStatus {
     /**
-     * The appointment is available for scheduling.
+     * Waiting for the doctor to accept Appointment
      */
-    AVAILABLE,
-    /**
-     * The appointment has been scheduled but not yet confirmed.
-     */
-    SCHEDULED,
+    PENDING,
     /**
      * The appointment has been confirmed by both parties.
      */
