@@ -54,6 +54,7 @@ public class Doctor extends User{
 	}
 	
 	public int setAppointmentAvailability() {
+		Scanner case4Scanner = new Scanner(System.in);
 		return 0;
 	}
 	
