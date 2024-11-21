@@ -89,7 +89,6 @@ public class UserMenu implements Menu {
         String hospitalIDUpper = hospitalID.toUpperCase();
         
         if (hospitalIDUpper.startsWith("P") && (hospitalID.length() == 5)) {
-            System.out.println("Showing Patient Menu");
             new PatientMenu().showMenu();
         } else if (hospitalIDUpper.startsWith("P") && (hospitalID.length() == 4)) {
             new PharmacistMenu().showMenu();

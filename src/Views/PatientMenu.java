@@ -31,14 +31,22 @@ public class PatientMenu implements Menu {
 	private void initializePatient() {
 		try {
 			String loggedInID = UserMenu.getLoggedInHospitalID();
-
+			System.out.println("Logged In Hospital ID: " + loggedInID);  // Debugging line
+	
 			BufferedReader reader = new BufferedReader(new FileReader("data/Patient_List.csv"));
+			System.out.println("Patient list CSV file opened successfully.");  // Debugging line
 			reader.readLine(); // Skip header
-
+			System.out.println("Header skipped.");  // Debugging line
+	
 			String line;
 			while ((line = reader.readLine()) != null) {
+				System.out.println("Reading line: " + line);  // Debugging line
 				String[] patientDetails = line.split(",");
-				if (patientDetails[0].equals(loggedInID)) {
+				System.out.println(patientDetails[0].toUpperCase()); 
+				// Check if patient ID matches
+				if (patientDetails[0].equals(loggedInID.toUpperCase())) {
+					System.out.println("Patient found: " + patientDetails[1]);  // Debugging line
+	
 					this.currentPatient = new Patient(
 						loggedInID,                           // Hospital ID
 						"",                                   // Password not needed
@@ -46,11 +54,13 @@ public class PatientMenu implements Menu {
 						patientDetails[1],                    // Name
 						LocalDate.parse(patientDetails[2]),   // Date of Birth
 						patientDetails[3],                    // Gender
-						patientDetails[5],                    // Phone Number
-						patientDetails[6],                    // Email
+						patientDetails[6],                    // Phone Number
+						patientDetails[5],                    // Email
 						patientDetails[4],                    // Blood Type
 						new ArrayList<>()                     // Empty Medical History
 					);
+					this.currentPatient.getBloodType();
+					System.out.println("Patient object created successfully.");  // Debugging line
 					break;
 				}
 			}
@@ -61,7 +71,6 @@ public class PatientMenu implements Menu {
 			System.err.println("Error initializing patient: " + e.getMessage());
 		}
 	}
-
 	public void showMenu() {
 		while (isRunning) {
 			System.out.println("Patient Menu:");
@@ -96,7 +105,10 @@ public class PatientMenu implements Menu {
 
 	// Handles viewing medical records
 	private void handleViewMedicalRecord() {
-		currentPatient.viewMedicalRecord();
+		boolean succeed = currentPatient.viewMedicalRecord();
+		if (!succeed) {
+			System.out.println("Failed to retrieve medical records.");
+		}
 	}
 
 	// Handles updating personal information

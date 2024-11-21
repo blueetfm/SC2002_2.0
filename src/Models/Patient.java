@@ -47,8 +47,9 @@ public class Patient extends User {
 
 //	methods return 0 if no error, else returns 1
 
-    public void viewMedicalRecord(){
+    public boolean viewMedicalRecord(){
 		MedicalRecordInterface.readMedicalRecordsByPatientID(this.patientID);
+		return true;
     }
 
 	public boolean viewAvailableAppointmentSlots() {
@@ -90,38 +91,38 @@ public class Patient extends User {
     // Update personal information(only non-medical info)
     public void setPhoneNum(String phoneNum){
         this.phoneNum = phoneNum;
-		System.out.print("Phone number changed successfully");
+		System.out.println("Phone number changed successfully\n");
     }
 
     public void setEmail(String email){
         this.email = email;
-		System.out.print("Email changed successfully");
+		System.out.println("Email changed successfully\n");
     }
 
 	// admin setters 
 	public void setPatientID(String patientID) {
 		this.patientID = patientID;
-		System.out.println("Patient ID changed successfully");
+		System.out.println("Patient ID changed successfully\n");
 	}
 	
 	public void setName(String name) {
 		this.name = name;
-		System.out.println("Name changed successfully");
+		System.out.println("Name changed successfully\n");
 	}
 	
 	public void setDateOfBirth(LocalDate birthDate) {
 		this.birthDate = birthDate;
-		System.out.println("Date of birth changed successfully");
+		System.out.println("Date of birth changed successfully\n");
 	}
 	
 	public void setGender(String gender) {
 		this.gender = gender;
-		System.out.println("Gender changed successfully");
+		System.out.println("Gender changed successfully\n");
 	}
 	
 	public void setBloodType(String bloodType) {
 		this.bloodType = bloodType;
-		System.out.println("Blood type changed successfully");
+		System.out.println("Blood type changed successfully\n");
 	}
 
 	// utils 
