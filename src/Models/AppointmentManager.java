@@ -25,15 +25,9 @@ public class AppointmentManager {
     private static final AtomicInteger counter = new AtomicInteger(0);
 
     private AppointmentManager() {
-<<<<<<< HEAD
         if (appointments == null || appointments.isEmpty()) {
             initializeObjects();
         }
-=======
-        appointments = new ArrayList<>();
-        appointmentOutcomeRecords = new ArrayList<>();
-        initializeObjects();
->>>>>>> e927f54372e0b786d125142781f424f70023bb01
     }
 
     public static synchronized AppointmentManager getInstance() {
