@@ -1,2 +1,2 @@
 Appointment ID,Patient ID,Doctor ID,Date,TimeSlot ID,Status,Outcome Date,Service,Medication,Prescription Status,Notes
-APT001,P1001,D001,2024-11-21,14:00,CONFIRMED,2024-11-21,TS001,Domperidone,DISPENSED,Nil
+APT001,P1001,D001,2024-11-21,TS001,CONFIRMED,2024-11-21,CONSULTATION,Ibuprofen,DISPENSED,Nil
