@@ -29,8 +29,8 @@ public class Appointment {
         this.doctorID = doctorID;
         this.date = date;
         this.timeSlotID = timeSlotID;
-        this.status = AppointmentStatus.AVAILABLE;
-        this.outcomeRecord = null;
+        this.status = status;
+        this.outcomeRecord = outcomeRecord;
     }
 
     // setters
