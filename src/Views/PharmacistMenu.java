@@ -138,7 +138,7 @@ public class PharmacistMenu implements Menu {
 
     private void handlePrescriptionStatus(){
         System.out.print("Enter Appointment ID to view: ");
-        String appointmentID = scanner.nextLine().trim();
+        String appointmentID = scanner.nextLine().trim().toUpperCase();
         if (validateInput(appointmentID)) {
             currentPharmacist.updatePrescriptionStatus(appointmentID);
             int result = AppointmentOutcomeRecordInterface.updateCSV();
