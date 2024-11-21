@@ -25,7 +25,9 @@ public class AppointmentManager {
     private static final AtomicInteger counter = new AtomicInteger(0);
 
     private AppointmentManager() {
-        initializeObjects();
+        if (appointments == null || appointments.isEmpty()) {
+            initializeObjects();
+        }
     }
 
     public static synchronized AppointmentManager getInstance() {
@@ -73,6 +75,7 @@ public class AppointmentManager {
 
                 appointments.add(appointment);
                 appointmentOutcomeRecords.add(outcomeRecord);
+                System.out.println("Initialized!");
             }
         }
         return appointments;
@@ -120,8 +123,9 @@ public class AppointmentManager {
 
     /* Appointment Queries */
     public static Appointment getAppointmentByID(String appointmentID) {
+        String upperCaseAppointmentID = appointmentID.toUpperCase();
         for (Appointment appointment : appointments) {
-            if (appointment.getAppointmentID().equals(appointmentID)) {
+            if (appointment.getAppointmentID().equals(upperCaseAppointmentID)) {
                 return appointment;
             }
         }
@@ -129,27 +133,31 @@ public class AppointmentManager {
     }
 
     public static List<Appointment> getAppointmentsByPatientID(String patientID) {
+        String upperCasePatientID = patientID.toUpperCase();
         return appointments.stream()
-                .filter(appointment -> appointment.getPatientID().equals(patientID))
+                .filter(appointment -> appointment.getPatientID().equals(upperCasePatientID))
                 .collect(Collectors.toList());
     }
 
     public static List<Appointment> getAppointmentsByDoctorID(String doctorID) {
+        String upperCaseDoctorID = doctorID.toUpperCase();
         return appointments.stream()
-                .filter(appointment -> appointment.getDoctorID().equals(doctorID))
+                .filter(appointment -> appointment.getDoctorID().equals(upperCaseDoctorID))
                 .collect(Collectors.toList());
     }
 
     /* Appointment Outcome Records */
     public static AppointmentOutcomeRecord getAppointmentOutcomeRecordByID(String appointmentID){
-        Appointment appointment = getAppointmentByID(appointmentID);
+        String upperCaseAppointmentID = appointmentID.toUpperCase();
+        Appointment appointment = getAppointmentByID(upperCaseAppointmentID);
 
         return appointment.outcomeRecord;
     }
 
     public static List<AppointmentOutcomeRecord> getAppointmentOutcomeRecordsByPatientID(String patientID){
+        String upperCasePatientID = patientID.toUpperCase();
         return appointments.stream()
-                .filter(appointment -> appointment.getPatientID().equals(patientID)) 
+                .filter(appointment -> appointment.getPatientID().equals(upperCasePatientID)) 
                 .map(Appointment::getOutcomeRecord) 
                 .collect(Collectors.toList()); 
     }
