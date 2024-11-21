@@ -23,8 +23,4 @@ public enum ScheduleStatus {
      * The timeslot has been cancelled.
      */
     CANCELLED,
-    /**
-     * The timeslot has been completed after the appointment.
-     */
-    COMPLETED;
 }
