@@ -177,17 +177,11 @@ public class AppointmentManager {
 
     // Cancel appointment
     public static boolean cancelAppointment(String appointmentID){
-        List<Appointment> appointments = getAppointments();
-        Iterator<Appointment> iterator = appointments.iterator();
-
-        while (iterator.hasNext()) {
-            Appointment appointment = iterator.next();
-            if (appointment.getAppointmentID().equals(appointmentID)) {
-                appointment.setStatus(AppointmentStatus.CANCELED);
-                iterator.remove(); 
-                return true; 
-            }
-        }    
+        Appointment appointment = getAppointmentByID(appointmentID);
+        if (appointment != null){
+            appointment.setStatus(Enums.AppointmentStatus.CANCELED);
+            return true;
+        }
         return false; 
     }
     
