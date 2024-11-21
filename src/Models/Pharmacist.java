@@ -8,9 +8,8 @@
  */
 package Models;
 
-import java.util.List;
-
 import Enums.*;
+import java.util.List;
 
 
 public class Pharmacist extends User {
@@ -66,31 +65,72 @@ public class Pharmacist extends User {
      * @return `true` if the prescription status is successfully updated, `false` otherwise.
      */
     public boolean updatePrescriptionStatus(String appointmentID) {
-    	List<AppointmentOutcomeRecord> AORList = AppointmentOutcomeRecordManager.showAllAppointmentOutcomeRecords();
-        if (AORList == null){
-            System.out.println("Appointment does not exist.");
+        List<AppointmentOutcomeRecord> AORList = AppointmentOutcomeRecordManager.showAllAppointmentOutcomeRecords();
+        if (AORList == null) {
+            System.out.println("No appointment records found.");
             return false;
         } 
+    
         for (AppointmentOutcomeRecord AOR : AORList) {
-        	if (AOR.getAppointmentID().equals(appointmentID)) {
-        		AOR.setStatus(PrescriptionStatus.DISPENSED);
-        		return true;
-        	}
+            if (AOR.getAppointmentID().equals(appointmentID)) {
+                if (AOR.getStatus() == PrescriptionStatus.PENDING) {
+                    // Check if medicine is in stock
+                    if (!AOR.getMedicine().equalsIgnoreCase("NONE")) {
+                        boolean prescribed = MedicationInventoryManager.prescribeMedication(
+                            AOR.getMedicine(), 1); // Assuming 1 unit per prescription
+                        
+                        if (!prescribed) {
+                            System.out.println("Cannot dispense: Medicine out of stock!");
+                            return false;
+                        }
+                    }
+                    
+                    AOR.setStatus(PrescriptionStatus.DISPENSED);
+                    System.out.println("Prescription status updated to DISPENSED.");
+                    return true;
+                } else {
+                    System.out.println("Prescription has already been dispensed.");
+                    return false;
+                }
+            }
         }
-        System.err.println("Appointment ID not found.");
+        System.out.println("Appointment ID not found.");
         return false;
     }
 
     public boolean viewAppointmentOutcomes() {
         List<AppointmentOutcomeRecord> AORList = AppointmentOutcomeRecordManager.showAllAppointmentOutcomeRecords();
-        if (AORList == null){
-            System.out.println("Appointment does not exist.");
+        if (AORList == null || AORList.isEmpty()) {
+            System.out.println("No appointment outcome records found.");
             return false;
         } 
+    
+        System.out.println("\nAppointment Outcome Records:");
+        System.out.println("----------------------------------------");
+        boolean hasPending = false;
         for (AppointmentOutcomeRecord AOR : AORList) {
-        	AppointmentOutcomeRecordManager.printAppointmentOutcomeRecord(AOR);
+            if (AOR.getStatus() == PrescriptionStatus.PENDING) {
+                hasPending = true;
+                System.out.printf("Appointment ID: %s\n" +
+                                "Date: %s\n" +
+                                "Service: %s\n" +
+                                "Prescribed Medicine: %s\n" +
+                                "Status: %s\n" +
+                                "Notes: %s\n",
+                    AOR.getAppointmentID(),
+                    AOR.getDate(),
+                    AOR.getService(),
+                    AOR.getMedicine(),
+                    AOR.getStatus(),
+                    AOR.getNotes());
+                System.out.println("----------------------------------------");
+            }
         }
-    	return true;
+        
+        if (!hasPending) {
+            System.out.println("No pending prescriptions found.");
+        }
+        return true;
     }
 
     /**

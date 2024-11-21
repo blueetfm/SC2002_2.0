@@ -23,4 +23,6 @@ public enum ScheduleStatus {
      * The timeslot has been cancelled.
      */
     CANCELLED,
+
+    COMPLETED;
 }

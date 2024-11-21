@@ -9,20 +9,21 @@
 
 package Models;
 
+import Enums.AppointmentStatus;
 import Enums.PrescriptionStatus;
-import Enums.ScheduleStatus;
 import Services.AppointmentInterface;
 import Services.PatientInterface;
 import Services.TimeSlotInterface;
 import Utils.DateTimeFormatUtils;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 
 public class Doctor extends User {
-    
     /**
      * The name of the doctor.
      */
@@ -83,16 +84,9 @@ public class Doctor extends User {
      *
      * @return an integer indicating success (0) or failure (1)
      */
-    public int viewPersonalSchedule() {
-        Scanner case3Scanner = new Scanner(System.in);
-        String case3Choice;
-        case3Choice = case3Scanner.nextLine();
-        List<TimeSlot> timeSlotList = TimeSlotInterface.getTimeSlotsByDoctorID(case3Choice);
-        for (TimeSlot slot : timeSlotList) {
-            TimeSlotInterface.printTimeSlot(slot);
-        }
-        case3Scanner.close();
-        return 1;
+    public List<TimeSlot> getPersonalSchedule() {
+        TimeSlotInterface.initializeObjects();
+        return TimeSlotInterface.getTimeSlotsByDoctorID(this.getHospitalID());
     }
 
     /**
@@ -100,9 +94,8 @@ public class Doctor extends User {
      *
      * @return an integer indicating success (0) or failure (1)
      */
-    public int setAppointmentAvailability() {
-        Scanner case4Scanner = new Scanner(System.in);
-        return 0;
+    public void createTimeSlot(LocalDateTime start, LocalDateTime end) {
+        TimeSlotInterface.createTimeSlot(this.getHospitalID(), start, end);
     }
 
     /**
@@ -111,25 +104,59 @@ public class Doctor extends User {
      * @return an integer indicating success (0) or failure (1)
      */
     public int acceptOrDeclineAppointmentRequests() {
-        Scanner case5Scanner = new Scanner(System.in);
-        String case5Choice;
-        case5Choice = case5Scanner.nextLine();
-        List<TimeSlot> timeSlotList = TimeSlotInterface.getTimeSlotsByDoctorID(case5Choice);
-        for (TimeSlot i : timeSlotList) {
-            if (i.getScheduleStatus().equals(ScheduleStatus.PENDING)) {
-                System.out.println("Accept? (Y/N): ");
-                String acceptChar = case5Scanner.nextLine();
-                if (acceptChar.equals("Y")) {
-                    i.setScheduleStatus(ScheduleStatus.RESERVED);
-                } else if (acceptChar.equals("N")) {
-                    i.setScheduleStatus(ScheduleStatus.CANCELLED);
-                } else {
-                    System.out.println("Invalid Input. No action is done.");
-                }
+        List<Appointment> pendingAppointments = getPendingAppointments();
+        if (pendingAppointments.isEmpty()) {
+            System.out.println("No pending appointment requests.");
+            return 0;
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        for (Appointment apt : pendingAppointments) {
+            TimeSlot slot = TimeSlotInterface.getTimeSlotByID(apt.getTimeSlotID());
+            System.out.printf("Pending Request:\n" +
+                            "Appointment ID: %s\n" +
+                            "Patient ID: %s\n" +
+                            "Date: %s\n" +
+                            "Time: %s - %s\n",
+                apt.getAppointmentID(),
+                apt.getPatientID(),
+                apt.getDate(),
+                slot.getStartTime().toLocalTime(),
+                slot.getEndTime().toLocalTime());
+            
+            System.out.print("Accept? (Y/N): ");
+            String response = scanner.nextLine().trim().toUpperCase();
+            
+            if (response.equals("Y")) {
+                updateAppointmentStatus(apt.getAppointmentID(), AppointmentStatus.CONFIRMED);
+                System.out.println("Appointment confirmed.");
+            } else if (response.equals("N")) {
+                updateAppointmentStatus(apt.getAppointmentID(), AppointmentStatus.CANCELLED);
+                System.out.println("Appointment rejected.");
+            } else {
+                System.out.println("Invalid input. No action taken.");
             }
         }
-        case5Scanner.close();
-        return 0;
+        return 1;
+    }
+
+    public List<Appointment> getPendingAppointments() {
+        AppointmentInterface.initializeObjects();
+        return AppointmentInterface.getAppointmentsByDoctorID(this.getHospitalID())
+            .stream()
+            .filter(apt -> apt.getStatus() == AppointmentStatus.PENDING)
+            .collect(Collectors.toList());
+    }
+    public List<Appointment> getUpcomingAppointments() {
+        AppointmentInterface.initializeObjects();
+        return AppointmentInterface.getAppointmentsByDoctorID(this.getHospitalID())
+            .stream()
+            .filter(apt -> apt.getStatus() == AppointmentStatus.CONFIRMED)
+            .collect(Collectors.toList());
+    }
+
+    public void updateAppointmentStatus(String appointmentID, AppointmentStatus status) {
+        AppointmentInterface.updateAppointmentStatus(appointmentID, status);
     }
 
     /**
@@ -138,16 +165,27 @@ public class Doctor extends User {
      * @return an integer indicating success (0) or failure (1)
      */
     public int viewUpcomingAppointments() {
-        Scanner case6Scanner = new Scanner(System.in);
-        String case6Choice;
-        case6Choice = case6Scanner.nextLine();
-        List<Appointment> appointmentList = AppointmentInterface.getAppointmentsByDoctorID(case6Choice);
-        for (Appointment i : appointmentList) {
-            // Display appointment details (to be implemented)
+        List<Appointment> appointments = getUpcomingAppointments();
+        if (appointments.isEmpty()) {
+            System.out.println("No upcoming appointments found.");
+            return 0;
         }
-        case6Scanner.close();
+        
+        for (Appointment apt : appointments) {
+            TimeSlot slot = TimeSlotInterface.getTimeSlotByID(apt.getTimeSlotID());
+            System.out.printf("Appointment ID: %s\n" +
+                            "Patient ID: %s\n" +
+                            "Date: %s\n" +
+                            "Time: %s - %s\n",
+                apt.getAppointmentID(),
+                apt.getPatientID(),
+                apt.getDate(),
+                slot.getStartTime().toLocalTime(),
+                slot.getEndTime().toLocalTime());
+        }
         return 1;
     }
+
 
     /**
      * Records the outcome of a specific appointment, including services provided and medications prescribed.
@@ -155,30 +193,62 @@ public class Doctor extends User {
      * @return an integer indicating success (0) or failure (1)
      */
     public int recordAppointmentOutcome() {
-        Scanner case7Scanner = new Scanner(System.in);
-        System.out.print("Enter Appointment ID to record: ");
-        String appointmentID = case7Scanner.next();
-        System.out.print("Enter Hospital ID of Patient: ");
-        String patientID = case7Scanner.next();
-        LocalDate date = null;
-        while (date == null) {
-            System.out.print("Enter date of appointment in the form 'YYYY-MM-DD': ");
-            String dateInput = case7Scanner.next();
-            try {
-                date = LocalDate.parse(dateInput, DateTimeFormatUtils.DATE_FORMATTER);
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid date format. Please enter the date in 'YYYY-MM-DD' format.");
-            }
+        Scanner scanner = new Scanner(System.in);
+        
+        List<Appointment> confirmedAppointments = getUpcomingAppointments();
+        if (confirmedAppointments.isEmpty()) {
+            System.out.println("No confirmed appointments available.");
+            return 0;
         }
-        System.out.print("Enter service provided: ");
-        Enums.Service service = Enums.Service.valueOf(case7Scanner.next().toUpperCase());
-        System.out.print("Enter medication prescribed: ");
-        String medication = case7Scanner.next();
-        System.out.print("Enter notes for appointment: ");
-        String notes = case7Scanner.next();
-        int recordResult = AppointmentInterface.recordAppointmentOutcomeRecord(appointmentID, patientID, date, service, medication, PrescriptionStatus.valueOf("PENDING"), notes);
-        case7Scanner.close();
-        return recordResult;
+    
+        System.out.println("\nConfirmed Appointments:");
+        for (Appointment apt : confirmedAppointments) {
+            System.out.printf("ID: %s, Patient: %s, Date: %s, Service: %s\n",
+                apt.getAppointmentID(),
+                apt.getPatientID(),
+                apt.getDate(),
+                apt.getService());
+        }
+    
+        System.out.print("\nEnter Appointment ID to record outcome: ");
+        String appointmentID = scanner.nextLine().trim();
+    
+        Appointment selectedApt = confirmedAppointments.stream()
+            .filter(apt -> apt.getAppointmentID().equals(appointmentID))
+            .findFirst()
+            .orElse(null);
+    
+        if (selectedApt == null) {
+            System.out.println("Invalid appointment ID.");
+            return 0;
+        }
+    
+        System.out.print("Enter medication prescribed (or 'NONE'): ");
+        String medication = scanner.nextLine().trim();
+        if (medication.isEmpty()) medication = "NONE";
+    
+        System.out.print("Enter notes for appointment (or 'NIL'): ");
+        String notes = scanner.nextLine().trim();
+        if (notes.isEmpty()) notes = "NIL";
+    
+        // Create the AOR
+        int result = AppointmentOutcomeRecordManager.createAppointmentOutcomeRecord(
+            appointmentID,
+            selectedApt.getDate(),
+            selectedApt.getService(),
+            medication,
+            PrescriptionStatus.PENDING,
+            notes
+        );
+    
+        if (result == 1) {
+            AppointmentInterface.updateAppointmentStatus(appointmentID, AppointmentStatus.COMPLETED);
+            System.out.println("Appointment outcome recorded successfully.");
+            return 1;
+        } else {
+            System.out.println("Failed to record appointment outcome.");
+            return 0;
+        }
     }
 
     /**
