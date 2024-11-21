@@ -45,39 +45,57 @@ public class AppointmentManager {
     public static List<Appointment> initializeObjects() {
         appointments = new ArrayList<Appointment>();
         appointmentOutcomeRecords = new ArrayList<AppointmentOutcomeRecord>();
-
+    
         List<List<String>> records = CSVHandler.readCSVLines("data/Appointment_List.csv");
-
+    
         if (!records.isEmpty()) {
             // skip headers
             for (int i = 1; i < records.size(); i++) {
                 List<String> record = records.get(i);
                 
-                // parsing appointment
-                String appointmentID = record.get(0);
-                String patientID = record.get(1);
-                String doctorID = record.get(2);
-                LocalDate date = LocalDate.parse(record.get(3), DateTimeFormatUtils.DATE_FORMATTER);
-                String timeSlotID = record.get(4);
-                Enums.AppointmentStatus status = Enums.AppointmentStatus.valueOf(record.get(5).toUpperCase());
+                try {
+                    // parsing appointment
+                    String appointmentID = record.get(0).trim();
+                    String patientID = record.get(1).trim();
+                    String doctorID = record.get(2).trim();
+                    LocalDate date = LocalDate.parse(record.get(3).trim(), DateTimeFormatUtils.DATE_FORMATTER);
+                    String timeSlotID = record.get(4).trim();
+                    AppointmentStatus status = AppointmentStatus.valueOf(record.get(5).trim().toUpperCase());
+        
+                    // parsing appointment outcome record
+                    LocalDate outcomeDate = null;
+                    Service service = null;
+                    String medication = "";
+                    PrescriptionStatus prescriptionStatus = PrescriptionStatus.PENDING;
+                    String notes = "";
     
-                // parsing appointment outcome record
-                LocalDate outcomeDate = LocalDate.parse(record.get(6), DateTimeFormatUtils.DATE_FORMATTER); 
-                Enums.Service service = Enums.Service.valueOf(record.get(7).toUpperCase()); 
-                String medication = record.get(8);
-                Enums.PrescriptionStatus prescriptionStatus = Enums.PrescriptionStatus.valueOf(record.get(9).toUpperCase());
-                String notes = record.get(10);
-
-                AppointmentOutcomeRecord outcomeRecord = new AppointmentOutcomeRecord(
-                    appointmentID, patientID, outcomeDate, service, medication, prescriptionStatus, notes
-                );
-
-                Appointment appointment = new Appointment(
-                    appointmentID, patientID, doctorID, date, timeSlotID, status, outcomeRecord
-                );
-
-                appointments.add(appointment);
-                appointmentOutcomeRecords.add(outcomeRecord);
+                    if (record.size() > 6 && !record.get(6).trim().isEmpty()) {
+                        outcomeDate = LocalDate.parse(record.get(6).trim(), DateTimeFormatUtils.DATE_FORMATTER);
+                        service = Service.valueOf(record.get(7).trim().toUpperCase());
+                        medication = record.get(8).trim();
+                        prescriptionStatus = PrescriptionStatus.valueOf(record.get(9).trim().toUpperCase());
+                        notes = record.get(10).trim();
+                    }
+    
+                    AppointmentOutcomeRecord outcomeRecord = null;
+                    if (outcomeDate != null) {
+                        outcomeRecord = new AppointmentOutcomeRecord(
+                            appointmentID, patientID, outcomeDate, service, medication, prescriptionStatus, notes
+                        );
+                    }
+    
+                    Appointment appointment = new Appointment(
+                        appointmentID, patientID, doctorID, date, timeSlotID, status, outcomeRecord
+                    );
+    
+                    appointments.add(appointment);
+                    if (outcomeRecord != null) {
+                        appointmentOutcomeRecords.add(outcomeRecord);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error parsing appointment record at line " + (i+1) + ": " + e.getMessage());
+                    System.err.println("Record content: " + String.join(",", record));
+                }
             }
         }
         return appointments;

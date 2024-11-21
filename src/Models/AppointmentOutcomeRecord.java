@@ -1,8 +1,5 @@
 package Models;
-import java.util.*;
-
 import Enums.*;
-
 import java.time.*;
 
 public class AppointmentOutcomeRecord {
@@ -14,11 +11,13 @@ public class AppointmentOutcomeRecord {
     protected PrescriptionStatus prescriptionStatus;
     protected String notes;
 
-    public AppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate date, Service service, String medication, PrescriptionStatus prescriptionStatus, String notes){
+    public AppointmentOutcomeRecord(String appointmentID, String patientID, LocalDate date, 
+                                   Service service, String medication, 
+                                   PrescriptionStatus prescriptionStatus, String notes) {
         this.appointmentID = appointmentID;
         this.patientID = patientID;
         this.date = date;
-        this.service = service;
+        this.service = (service != null) ? service : Service.CONSULTATION; // Default to CONSULTATION if null
         this.medication = medication;
         this.prescriptionStatus = prescriptionStatus;
         this.notes = notes;
