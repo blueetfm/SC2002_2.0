@@ -1,12 +1,12 @@
 package Views;
 import java.util.Scanner;
 import Models.Patient;
-import Models.PatientList;
 import Models.PatientManager;
+import Models.PatientInterface;
 
 public class PatientMenu implements Menu {
 	private String hospitalID;
-	private PatientManager patientManager = PatientList.getInstance();
+	private PatientInterface patientManager = PatientManager.getInstance();
 	private Patient patient = patientManager.getPatient(hospitalID);
 	public PatientMenu(String hospitalID) {
 		this.hospitalID = hospitalID;

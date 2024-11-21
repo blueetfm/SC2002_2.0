@@ -5,10 +5,10 @@ import java.util.List;
 
 import Utils.CSVHandler;
 
-public class MedicalRecordList {
+public class MedicalRecordManager {
 	private static List<MedicalRecord> medicalRecordList;
 
-	public MedicalRecordList() {
+	public MedicalRecordManager() {
 		List<MedicalRecord> medicalRecordList = new ArrayList<MedicalRecord>();
 		
 		List<List<String>> record = CSVHandler.readCSVLines("data/MedicalRecord_List.csv");
@@ -34,7 +34,7 @@ public class MedicalRecordList {
 				}
 			}
 		}
-		MedicalRecordList.medicalRecordList = medicalRecordList;
+		MedicalRecordManager.medicalRecordList = medicalRecordList;
 	}
 	
 	public int updateCSV() {

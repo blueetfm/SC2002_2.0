@@ -37,8 +37,8 @@ public class AppointmentManager {
 
     // Function to initialize objects from CSVHandler's readCSVLines
     public List<Appointment> initializeObjects() {
-        appointments = new ArrayList<>();
-        appointmentOutcomeRecords = new ArrayList<>();
+        appointments = new ArrayList<Appointment>();
+        appointmentOutcomeRecords = new ArrayList<AppointmentOutcomeRecord>();
 
         List<List<String>> records = CSVHandler.readCSVLines("data/Appointment_List.csv");
 
