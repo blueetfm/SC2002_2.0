@@ -59,8 +59,7 @@ public class PatientMenu implements Menu {
 						patientDetails[3],                    // Gender
 						patientDetails[6],                    // Phone Number
 						patientDetails[5],                    // Email
-						patientDetails[4],                    // Blood Type
-						new ArrayList<>()                     // Empty Medical History
+						patientDetails[4]                    // Blood Type
 					);
 					this.currentPatient.getBloodType();
 					System.out.println("Patient object created successfully.");  

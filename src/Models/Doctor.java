@@ -124,14 +124,15 @@ public class Doctor extends User{
 		String bloodType = case8Scanner.next();
 		System.out.print("Enter contact number: ");
 		String contactNumber = case8Scanner.next();
-		PatientManager.createPatient(patientID, "", "patient", name, date, gender, contactNumber, "", bloodType);
-		return 0;
+		case8Scanner.close();
+		return PatientManager.createPatient(patientID, "", "patient", name, date, gender, contactNumber, "", bloodType);
 	}
 	
 	public int dischargePatient() {
 		Scanner case9Scanner = new Scanner(System.in);
 		System.out.print("Enter Patient ID to delete: ");
 		String case9Choice = case9Scanner.next();
+		case9Scanner.close();
 		return PatientManager.deletePatient(case9Choice);
 	}
 	
