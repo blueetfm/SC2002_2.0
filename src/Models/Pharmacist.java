@@ -8,6 +8,8 @@
  */
 package Models;
 
+import java.util.List;
+
 import Enums.*;
 
 
@@ -64,46 +66,31 @@ public class Pharmacist extends User {
      * @return `true` if the prescription status is successfully updated, `false` otherwise.
      */
     public boolean updatePrescriptionStatus(String appointmentID) {
-        try {
-            AppointmentOutcomeRecord appointmentOutcomeRecord = AppointmentManager.getAppointmentOutcomeRecordByID(appointmentID);
-            if (appointmentOutcomeRecord == null) {
-                System.out.println("Appointment does not exist.");
-                return false;
-            } else if (appointmentOutcomeRecord.getPrescriptionStatus().name().equals("DISPENSED")) {
-                System.out.println("Prescription has already been dispensed.");
-                return false;
-            }
-            appointmentOutcomeRecord.setPrescriptionStatus(PrescriptionStatus.DISPENSED);
-            return true;
-        } catch (Exception e) {
-            System.err.println("Error viewing appointment: " + e.getMessage());
+    	List<AppointmentOutcomeRecord> AORList = AppointmentOutcomeRecordManager.showAllAppointmentOutcomeRecords();
+        if (AORList == null){
+            System.out.println("Appointment does not exist.");
             return false;
+        } 
+        for (AppointmentOutcomeRecord AOR : AORList) {
+        	if (AOR.getAppointmentID().equals(appointmentID)) {
+        		AOR.setStatus(PrescriptionStatus.DISPENSED);
+        		return true;
+        	}
         }
+        System.err.println("Appointment ID not found.");
+        return false;
     }
 
-    /**
-     * Views the outcome of a given appointment.
-     * <p>
-     * This method retrieves the appointment outcome record by appointment ID and prints 
-     * the details. If the appointment does not exist, an error message is displayed.
-     * </p>
-     * 
-     * @param appointmentID The unique ID of the appointment to view the outcome of.
-     * @return `true` if the appointment outcome is successfully viewed, `false` otherwise.
-     */
-    public boolean viewAppointmentOutcome(String appointmentID) {
-        try {
-            AppointmentOutcomeRecord appointmentOutcomeRecord = AppointmentManager.getAppointmentOutcomeRecordByID(appointmentID);
-            if (appointmentOutcomeRecord == null) {
-                System.out.println("Appointment does not exist.");
-                return false;
-            }
-            AppointmentManager.printAppointmentOutcomeRecord(appointmentOutcomeRecord);
-            return true;
-        } catch (Exception e) {
-            System.err.println("Error viewing appointment: " + e.getMessage());
+    public boolean viewAppointmentOutcomes() {
+        List<AppointmentOutcomeRecord> AORList = AppointmentOutcomeRecordManager.showAllAppointmentOutcomeRecords();
+        if (AORList == null){
+            System.out.println("Appointment does not exist.");
             return false;
+        } 
+        for (AppointmentOutcomeRecord AOR : AORList) {
+        	AppointmentOutcomeRecordManager.printAppointmentOutcomeRecord(AOR);
         }
+    	return true;
     }
 
     /**
