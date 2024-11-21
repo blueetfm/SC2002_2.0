@@ -3,9 +3,9 @@ package Views;
 
 import Models.Administrator;
 import Models.Appointment;
+import Models.AppointmentManager;
 import Models.Staff;
 import Utils.DateTimeFormatUtils;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,10 +16,12 @@ public class AdministratorMenu implements Menu {
 	private final Scanner scanner;
     private Administrator currentAdmin;
     private boolean isRunning;
+    private AppointmentManager appointmentManager;
 
 	public AdministratorMenu() {
         this.scanner = new Scanner(System.in);
         this.isRunning = true;
+        this.appointmentManager = AppointmentManager.getInstance();
         initializeAdministrator();
     }
 
@@ -301,6 +303,9 @@ public class AdministratorMenu implements Menu {
 
     /* Appointment Details */
     private void viewAppointmentDetails(){
+        if (appointmentManager == null) {
+            appointmentManager = AppointmentManager.getInstance();
+        }
         Scanner scanner = new Scanner(System.in);
         System.out.println("Choose an option to view appointments:");
         System.out.println("1. By Appointment ID");

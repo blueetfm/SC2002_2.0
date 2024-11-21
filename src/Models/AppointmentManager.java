@@ -25,13 +25,17 @@ public class AppointmentManager {
     private static final AtomicInteger counter = new AtomicInteger(0);
 
     private AppointmentManager() {
+        appointments = new ArrayList<>();
+        appointmentOutcomeRecords = new ArrayList<>();
         initializeObjects();
     }
 
     public static synchronized AppointmentManager getInstance() {
         if (instance == null) {
             instance = new AppointmentManager();
-            
+            if (appointments == null) {
+                appointments = initializeObjects();
+            }
         }
         return instance;
     }
