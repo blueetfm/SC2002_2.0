@@ -46,13 +46,13 @@ public class PatientManager implements PatientInterface {
         return null;
     }
 
-    public void createPatient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String patientID, String bloodType, List<MedicalRecord> medicalHistory) {
+    public int createPatient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String patientID, String bloodType, List<MedicalRecord> medicalHistory) {
         String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
         List<String> allLines = new ArrayList<>();
         for (Patient patient: patientList) {
             if (patient.getPatientID().equals(hospitalID)) {
                 System.out.println("Patient profile already exists.");
-                return;
+                return 0;
             }
             String line = String.format("%s,%s,%s,%s,%s,%s",
                 patient.getPatientID(),
@@ -77,7 +77,8 @@ public class PatientManager implements PatientInterface {
         allLines.add(newLine);
         String[] lines = allLines.toArray(new String[0]);
         CSVHandler.writeCSVLines(headers, lines, "../../data/Patient_List.csv"); 
-        System.out.println("Patient successfully created!"); 
+        System.out.println("Patient successfully created!");
+        return 1;
     }
 
     public static void readPatient(String hospitalID) {

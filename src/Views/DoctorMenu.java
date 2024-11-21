@@ -2,20 +2,13 @@ package Views;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.security.Provider.Service;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Scanner;
 
 import Enums.*;
 import Models.AppointmentManager;
 import Models.AppointmentOutcomeRecord;
 import Models.Doctor;
-import Models.PatientInterface;
-import Models.TimeSlotInterface;
-import Models.Patient;
-import Utils.DateTimeFormatUtils;
+
 
 public class DoctorMenu implements Menu {
 	private final Scanner scanner = null;
@@ -123,19 +116,13 @@ public class DoctorMenu implements Menu {
 					System.out.println("Task failed.");
 				}
 			case 7: 
-				System.out.print("Enter Appointment ID to record: ");
-				String appointmentID = sc.next();
-				System.out.print("Enter Hospital ID of Patient: ");
-				String patientID = sc.next();
-				System.out.print("Enter date of appointment in the form 'YYYY-MM-DD': ");
-				LocalDate date = LocalDate.parse(sc.next(), DateTimeFormatUtils.DATE_FORMATTER);
-				System.out.print("Enter service provided: ");
-				Enums.Service service = Enums.Service.valueOf(sc.next().toUpperCase());
-				System.out.print("Enter medication prescribed: ");
-				String medication = sc.next();
-				System.out.print("Enter notes for appointment: ");
-				String notes = sc.next();
-//				AppointmentInterface.recordAppointmentOutcomeRecord(appointmentID, patientID, date, service, medication, PrescriptionStatus.valueOf("PENDING"), notes);
+				result = currentDoctor.recordAppointmentOutcome();
+				if (result == 1) {
+					System.out.println("Task completed successfully.");
+				} else {
+					System.out.println("Task failed.");
+				}
+
 				// if (AppointmentManager.recordAppointmentOutcomeRecord(appointmentID, hospitalID, date, 
 				// 	service, medication, PrescriptionStatus.PENDING, notes)){
 				// 		System.out.println("Appointment Outcome Record created successfully!");

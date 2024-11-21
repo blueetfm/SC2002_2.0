@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
+import Utils.DateTimeFormatUtils;
 import Views.DoctorMenu;
 
 public class Doctor extends User{
@@ -55,13 +56,27 @@ public class Doctor extends User{
 	}
 	
 	public int viewUpcomingAppointments() {
-		Scanner case5Scanner = new Scanner(System.in);
-		String case5Choice;
-		case5Choice = case5Scanner.nextLine();
+		Scanner case6Scanner = new Scanner(System.in);
+		String case6Choice;
+		case6Choice = case6Scanner.nextLine();
 		return 0;
 	}
 	
 	public int recordAppointmentOutcome() {
+		Scanner case7Scanner = new Scanner(System.in);
+		System.out.print("Enter Appointment ID to record: ");
+		String appointmentID = case7Scanner.next();
+		System.out.print("Enter Hospital ID of Patient: ");
+		String patientID = case7Scanner.next();
+		System.out.print("Enter date of appointment in the form 'YYYY-MM-DD': ");
+		LocalDate date = LocalDate.parse(case7Scanner.next(), DateTimeFormatUtils.DATE_FORMATTER);
+		System.out.print("Enter service provided: ");
+		Enums.Service service = Enums.Service.valueOf(case7Scanner.next().toUpperCase());
+		System.out.print("Enter medication prescribed: ");
+		String medication = case7Scanner.next();
+		System.out.print("Enter notes for appointment: ");
+		String notes = case7Scanner.next();
+//		AppointmentInterface.recordAppointmentOutcomeRecord(appointmentID, patientID, date, service, medication, PrescriptionStatus.valueOf("PENDING"), notes);
 		return 0;
 	}
 	
