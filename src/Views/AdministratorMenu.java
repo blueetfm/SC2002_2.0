@@ -21,7 +21,7 @@ public class AdministratorMenu implements Menu {
 	public AdministratorMenu() {
         this.scanner = new Scanner(System.in);
         this.isRunning = true;
-        this.appointmentManager = AppointmentManager.getInstance();
+        // this.appointmentManager = AppointmentManager.getInstance();
         initializeAdministrator();
     }
 
@@ -69,8 +69,9 @@ public class AdministratorMenu implements Menu {
             System.out.println("4: Approve Replenishment Requests");
                         // Administrator Class
                 // MedicationInventoryManager
-            System.out.println("5: Logout");
-            System.out.print("Enter your choice (1-5): ");
+            System.out.println("5: Reset User Password");
+            System.out.println("6: Logout");
+            System.out.print("Enter your choice (1-6): ");
 
             try {
                 String input = scanner.nextLine().trim();
@@ -94,12 +95,15 @@ public class AdministratorMenu implements Menu {
                         handleReplenishmentApproval();
                         break;
                     case 5:
+                        handleUpdatePassword();
+                        break;
+                    case 6:
                         if (currentAdmin.logout()) {
                             isRunning = false;
                         }
                         break;
                     default:
-                        System.out.println("Invalid choice! Please enter a number between 1 and 5.");
+                        System.out.println("Invalid choice! Please enter a number between 1 and 6.");
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid number.");
@@ -153,13 +157,10 @@ public class AdministratorMenu implements Menu {
                         handleUpdateStaff();
                         break;
                     case 4:
-                        handleUpdatePassword();
-                        break;
-                    case 5:
                         managing = false;
                         break;
                     default:
-                        System.out.println("Invalid choice! Please enter a number between 1 and 5.");
+                        System.out.println("Invalid choice! Please enter a number between 1 and 4.");
                 }
             } catch (NumberFormatException e) {
                 System.out.println("Please enter a valid number.");
