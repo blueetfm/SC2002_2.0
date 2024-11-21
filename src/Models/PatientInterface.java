@@ -9,7 +9,9 @@ public interface PatientInterface {
 	};
     public void updatePatient();
     public void deletePatient(String hospitalID);
-    public Patient getPatient(String hospitalID);
+    public static Patient getPatient(String hospitalID) {
+		return null;
+	}
 	public static List<Patient> getAllPatients() {
 		return null;
 	}
