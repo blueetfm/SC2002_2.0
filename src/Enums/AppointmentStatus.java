@@ -2,8 +2,8 @@ package Enums;
 
 public enum AppointmentStatus {
     AVAILABLE, 
-    REQUESTED,
+    SCHEDULED,
     CONFIRMED, 
-    CANCELED, 
+    CANCELLED, 
     COMPLETED;
 }

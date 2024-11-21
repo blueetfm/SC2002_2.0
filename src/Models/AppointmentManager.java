@@ -58,7 +58,7 @@ public class AppointmentManager {
                 String patientID = record.get(1);
                 String doctorID = record.get(2);
                 LocalDate date = LocalDate.parse(record.get(3), DateTimeFormatUtils.DATE_FORMATTER);
-                LocalTime timeSlot = LocalTime.parse(record.get(4), DateTimeFormatUtils.TIME_FORMATTER);
+                String timeSlotID = record.get(4);
                 Enums.AppointmentStatus status = Enums.AppointmentStatus.valueOf(record.get(5).toUpperCase());
     
                 // parsing appointment outcome record
@@ -73,7 +73,7 @@ public class AppointmentManager {
                 );
 
                 Appointment appointment = new Appointment(
-                    appointmentID, patientID, doctorID, date, timeSlot, status, outcomeRecord
+                    appointmentID, patientID, doctorID, date, timeSlotID, status, outcomeRecord
                 );
 
                 appointments.add(appointment);
@@ -93,7 +93,7 @@ public class AppointmentManager {
                               appointment.getPatientID() + "," +
                               appointment.getDoctorID() + "," +
                               appointment.getDate().format(DateTimeFormatUtils.DATE_FORMATTER) + "," +
-                              appointment.getTimeSlot().format(DateTimeFormatUtils.TIME_FORMATTER) + "," +
+                              appointment.getTimeSlotID() + "," +
                               appointment.getStatus().name() + "," +
                               appointment.getOutcomeRecord().getDate().format(DateTimeFormatUtils.DATE_FORMATTER) + "," +
                               appointment.getOutcomeRecord().getService().name() + "," +
@@ -108,7 +108,7 @@ public class AppointmentManager {
         return 0;
     }
 
-    public String generateAppointmentID(){
+    public static String generateAppointmentID(){
         int uniqueNumber = counter.incrementAndGet();
         String uniquePart = String.format("%03d", uniqueNumber);
 
@@ -166,23 +166,76 @@ public class AppointmentManager {
 
 
     /*Patient Menu Stuff*/
-    // Schedule appointment
-    public static boolean scheduleAppointment(){
-        List<Appointment> appointments = getAppointments();
-        List<TimeSlot> timeslots = TimeSlotManager.getTimeSlots();
-        // Appointment appointment = 
+    public static boolean scheduleAppointment(String patientID, String doctorID, String timeSlotID){
+        if (doctorID == null || doctorID.trim().isEmpty()) {
+			System.out.println("Doctor ID cannot be null or empty.");
+			return false;
+		}
 
-        return false;
+        if (timeSlotID == null || timeSlotID.trim().isEmpty()){
+            System.out.println("TimeSlot ID cannot be null or empty.");
+            return false;
+        }
+
+        TimeSlot timeSlot = TimeSlotManager.getTimeSlotByID(timeSlotID);
+
+        Appointment appointment = new Appointment(
+            generateAppointmentID(), 
+            doctorID,                
+            timeSlot.getPatientID(), 
+            timeSlot.getDate(),      
+            timeSlot.getTimeSlotID(),      
+            AppointmentStatus.SCHEDULED,
+            null                      
+        );
+
+        appointments.add(appointment);
+        updateCSV(appointments);
+        return true;
+    }
+
+    public static boolean rescheduleAppointment(String oldAppointmentID, String newTimeSlotID){
+        if (oldAppointmentID == null || oldAppointmentID.trim().isEmpty()) {
+			System.out.println("Appointment ID cannot be null or empty.");
+			return false;
+		}
+
+        if (newTimeSlotID == null || newTimeSlotID.trim().isEmpty()){
+            System.out.println("TimeSlot ID cannot be null or empty.");
+            return false;
+        }
+        Appointment appointment = getAppointmentByID(oldAppointmentID);
+        String oldTimeSlotID = appointment.getTimeSlotID();
+        TimeSlot oldTimeSlot = TimeSlotManager.getTimeSlotByID(oldTimeSlotID);
+        TimeSlot newTimeSlot = TimeSlotManager.getTimeSlotByID(newTimeSlotID);
+
+        if (newTimeSlot == null){
+            System.out.println("TimeSlot to be switched to does not exist.");
+            return false;
+        } else if (newTimeSlot.getScheduleStatus() != ScheduleStatus.AVAILABLE){
+            System.out.println("The time slot is not available.");
+            return false;
+        }
+        oldTimeSlot.setScheduleStatus(ScheduleStatus.AVAILABLE);
+        newTimeSlot.setScheduleStatus(ScheduleStatus.RESERVED);
+        
+        updateCSV(appointments);
+        return true;
     }
 
     // Cancel appointment
     public static boolean cancelAppointment(String appointmentID){
         Appointment appointment = getAppointmentByID(appointmentID);
-        if (appointment != null){
-            appointment.setStatus(Enums.AppointmentStatus.CANCELED);
-            return true;
+        if (appointment == null){
+            System.out.println("Appointment cannot be found.");
+            return false;
         }
-        return false; 
+        String oldTimeSlotID = appointment.getTimeSlotID();
+        TimeSlot oldTimeSlot = TimeSlotManager.getTimeSlotByID(oldTimeSlotID);
+        
+        oldTimeSlot.setScheduleStatus(ScheduleStatus.AVAILABLE);
+        appointment.setStatus(AppointmentStatus.CANCELLED);
+        return true; 
     }
     
 
