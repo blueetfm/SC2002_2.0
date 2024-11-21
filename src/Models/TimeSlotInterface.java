@@ -7,13 +7,33 @@ import java.util.List;
 import Enums.ScheduleStatus;
 
 public interface TimeSlotInterface {
-	public int addTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus);
-	
-	public int deleteTimeSlot(String name);
-	
-	public int editTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus);
-	
-	public List<TimeSlot> getTimeSlotByStaffID(String ID);
-	
-	public List<TimeSlot> getTimeSlotByPatientID(String ID);
+	static List<TimeSlot> initializeObjects(){
+		return null;
+	}
+    static int initializeCSVLines(List<TimeSlot> timeSlots){
+		return 0;
+	}
+	static List<TimeSlot> getTimeSlots(){
+		return null;
+	}
+    static TimeSlot getTimeSlotByID(String timeSlotID){
+		return null;
+	}
+    static List<TimeSlot> getTimeSlotsByDoctorID(String doctorID){
+		return null;
+	}
+    static List<TimeSlot> getTimeSlotsByPatientID(String patientID){
+		return null;
+	}
+    static int addTimeSlot(String doctorID, String patientID, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus){
+		return 0;
+	}
+    static int editTimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus){
+		return 0;
+	}
+	static String generateTimeSlotID(){
+		return null;
+	}
+
+    
 }

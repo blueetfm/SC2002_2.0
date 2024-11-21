@@ -5,33 +5,32 @@ import java.time.*;
 import Enums.*;
 
 public class TimeSlot {
-	String staffID;
+	String timeSlotID;
+	String doctorID;
 	String patientID;
-	String name;
 	LocalDate date;
 	LocalTime time;
 	ScheduleStatus scheduleStatus;
 	
-
-	public TimeSlot(String staffID, String patientID, String name, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
-		this.staffID = staffID;
+	public TimeSlot(String timeSlotID, String doctorID, String patientID, LocalDate date, LocalTime time, ScheduleStatus scheduleStatus) {
+		this.timeSlotID = timeSlotID;
+		this.doctorID = doctorID;
 		this.patientID = patientID;
-		this.name = name;
 		this.date = date;
 		this.time = time;
 		this.scheduleStatus = scheduleStatus;
 	}
+
+	public String getTimeSlotID() {
+		return this.timeSlotID;
+	}
 	
-	public String getStaffID() {
-		return this.staffID;
+	public String getDoctorID() {
+		return this.doctorID;
 	}
 	
 	public String getPatientID() {
 		return this.patientID;
-	}
-	
-	public String getName() {
-		return this.name;
 	}
 	
 	public LocalDate getDate() {
@@ -45,35 +44,36 @@ public class TimeSlot {
 	public ScheduleStatus getScheduleStatus() {
 		return this.scheduleStatus;
 	}
-	
-	public String setStaffID(TimeSlot timeSlot, String staffID) {
-		timeSlot.staffID = staffID;
-		return timeSlot.staffID;
+
+	public void setTimeSlotID(String timeSlotID) {
+		this.timeSlotID = timeSlotID;
+		return;
 	}
 	
-	public String setPatientID(TimeSlot timeSlot, String staffID) {
-		timeSlot.patientID = patientID;
-		return timeSlot.patientID;
+	public void setDoctorID(String doctorID) {
+		this.doctorID = doctorID;
+		return;
 	}
 	
-	public String setName(TimeSlot timeSlot, String name) {
-		timeSlot.name = name;
-		return timeSlot.name;
+	public void setPatientID(String doctorID) {
+		this.patientID = patientID;
+		return;
 	}
 	
-	public LocalDate setDate(TimeSlot timeSlot, LocalDate date) {
-		timeSlot.date = date;
-		return timeSlot.date;
+	
+	public void setDate(LocalDate date) {
+		this.date = date;
+		return;
 	}
 	
-	public LocalTime setTime(TimeSlot timeSlot, LocalTime time) {
-		timeSlot.time = time;
-		return timeSlot.time;
+	public void setTime(LocalTime time) {
+		this.time = time;
+		return;
 	}
 	
-	public ScheduleStatus setScheduleStatus(TimeSlot timeSlot, ScheduleStatus scheduleStatus) {
-		timeSlot.scheduleStatus = scheduleStatus;
-		return timeSlot.scheduleStatus;
+	public void setScheduleStatus(ScheduleStatus scheduleStatus) {
+		this.scheduleStatus = scheduleStatus;
+		return;
 	}
 
 }

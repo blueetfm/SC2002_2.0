@@ -23,6 +23,7 @@ public class AppointmentManager {
     private static List<AppointmentOutcomeRecord> appointmentOutcomeRecords;
 
     private static final AtomicInteger counter = new AtomicInteger(0);
+    private static final String[] headers = {"Appointment ID","Patient ID","Doctor ID","Date","Time Slot","Status","Outcome Date","Service","Medication","Prescription Status","Notes"};
 
     private AppointmentManager() {
         if (appointments == null || appointments.isEmpty()) {
@@ -77,35 +78,34 @@ public class AppointmentManager {
 
                 appointments.add(appointment);
                 appointmentOutcomeRecords.add(outcomeRecord);
-                System.out.println("Initialized!");
             }
         }
         return appointments;
     }
 
     // Function to transform objects back into CSV lines
-    public static List<List<String>> initializeCSVLines(List<Appointment> appointments){
-        List<List<String>> records = new ArrayList<>();
+    public static int initializeCSVLines(List<Appointment> appointments){
+        List<String> records = new ArrayList<>();
 
-        records.add(Arrays.asList("Appointment ID","Patient ID","Doctor ID","Date","Time Slot","Status","Outcome Date","Service","Medication","Prescription Status","Notes"));
-
-        for (Appointment appointment : appointments){
-            if (appointment != null){
-                records.add(Arrays.asList(
-                    appointment.getAppointmentID(), appointment.getPatientID(), appointment.getDoctorID(),
-                    appointment.getDate().format(DateTimeFormatUtils.DATE_FORMATTER),
-                    appointment.getTimeSlot().format(DateTimeFormatUtils.TIME_FORMATTER),
-                    appointment.getStatus().name(),
-                    appointment.getOutcomeRecord().getDate().format(DateTimeFormatUtils.DATE_FORMATTER),
-                    appointment.getOutcomeRecord().getService().name(),
-                    appointment.getOutcomeRecord().getMedication(),
-                    appointment.getOutcomeRecord().getPrescriptionStatus().name(),
-                    appointment.getOutcomeRecord().getNotes()
-                ));
-
+        for (Appointment appointment : appointments) {
+            if (appointment != null) {
+                String line = appointment.getAppointmentID() + "," +
+                              appointment.getPatientID() + "," +
+                              appointment.getDoctorID() + "," +
+                              appointment.getDate().format(DateTimeFormatUtils.DATE_FORMATTER) + "," +
+                              appointment.getTimeSlot().format(DateTimeFormatUtils.TIME_FORMATTER) + "," +
+                              appointment.getStatus().name() + "," +
+                              appointment.getOutcomeRecord().getDate().format(DateTimeFormatUtils.DATE_FORMATTER) + "," +
+                              appointment.getOutcomeRecord().getService().name() + "," +
+                              appointment.getOutcomeRecord().getMedication() + "," +
+                              appointment.getOutcomeRecord().getPrescriptionStatus().name() + "," +
+                              appointment.getOutcomeRecord().getNotes();
+                records.add(line);
             }
         }
-        return records;
+
+        CSVHandler.writeCSVLines(headers, records.toArray(new String[0]), "data/Appointment_List.csv");
+        return 0;
     }
 
     public String generateAppointmentID(){
@@ -169,7 +169,7 @@ public class AppointmentManager {
     // Schedule appointment
     public static boolean scheduleAppointment(){
         List<Appointment> appointments = getAppointments();
-        // List<TimeSlot> timeslots = TimeSlotList.getTimeSlotList();
+        List<TimeSlot> timeslots = TimeSlotManager.getTimeSlots();
         // Appointment appointment = 
 
         return false;
@@ -201,14 +201,7 @@ public class AppointmentManager {
                 );
             appointment.outcomeRecord = outcomeRecord;
 
-            List<List<String>> updatedCSVLines = initializeCSVLines(appointments);
-            String[] headers = updatedCSVLines.get(0).toArray(new String[0]);
-            String[] lines = updatedCSVLines.stream()
-                .skip(1) 
-                .map(row -> String.join(",", row)) 
-                .toArray(String[]::new);
-
-            CSVHandler.writeCSVLines(headers, lines, "data/Appointment_List.csv");
+            initializeCSVLines(appointments);
             return true;
 
         } else {
