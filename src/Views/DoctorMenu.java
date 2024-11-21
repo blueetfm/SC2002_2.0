@@ -1,38 +1,64 @@
 package Views;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.security.Provider.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
 import Enums.*;
 import Models.AppointmentManager;
 import Models.AppointmentOutcomeRecord;
+import Models.Doctor;
+import Models.PatientInterface;
+import Models.TimeSlotInterface;
+import Models.Patient;
 import Utils.DateTimeFormatUtils;
 
 public class DoctorMenu implements Menu {
+	private final Scanner scanner = null;
+	private Doctor currentDoctor;
+	private boolean isRunning; 
+	
+	private void initializeDoctor() {
+		String loggedInID = UserMenu.getLoggedInHospitalID();
+        
+        // get administrator details
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader("data/Staff_List.csv"));
+	        reader.readLine(); // Skip header
+	        
+	        String line;
+	        while ((line = reader.readLine()) != null) {
+	        	String[] staffDetails = line.split(",");
+	            if (staffDetails[0].equals(loggedInID)) {
+	            	this.currentDoctor = new Doctor(loggedInID, "", "doctor", staffDetails[1], staffDetails[3]);
+	            	break;
+	            }
+	        }
+	        reader.close();
+		} catch (IOException e) {
+			System.err.println("Error reading staff data: " + e.getMessage());
+		}
+	}
+	
 	public void showMenu() {
-
-		
-
-
 		int choice;
 		Scanner sc = new Scanner(System.in);
 		do {
 			System.out.println("Perform the following methods:");
 			System.out.println("1: View Patient Medical Records");
-			// Doctor Class
-				// MedicalRecordManager: 
 			System.out.println("2: Update Patient Medical Records"); 
-			// Doctor Class
-				// MedicalRecordManager: 
-			System.out.println("3: View Personal Schedule"); // Doctor Class
+			System.out.println("3: View Personal Schedule");
 			System.out.println("4: Set Availability for Appointments");
 			// Doctor Class
-				// TimeSlotManager: Change availabiliy of new timeslot
+				// TimeSlotManager: Change availability of new TimeSlot
 			System.out.println("5: Accept or Decline Appointment Requests");
 			/*  Doctor Class
 				IF ACCEPT:
-				TimeSlotManager: Change availabiliy of new timeslot
+				TimeSlotManager: Change availability of new TimeSlot
 				*/
 			System.out.println("6: View Upcoming Appointments");
 			// Doctor Class
@@ -46,25 +72,61 @@ public class DoctorMenu implements Menu {
 			// Doctor Class
 			System.out.println("10: Logout");
 			choice = sc.nextInt();
+			int result;
 			
 			switch (choice) {
 			case 1: 
-				break;
+//				View Patient Medical Records
+				result = currentDoctor.viewPatientMedicalRecords();
+				if (result == 1) {
+					System.out.println("Task completed successfully.");
+				} else {
+					System.out.println("Task failed.");
+				}
 			case 2: 
-				break;
+//				Update Patient Medical Records
+				result = currentDoctor.updatePatientMedicalRecords();
+				if (result == 1) {
+					System.out.println("Task completed successfully.");
+				} else {
+					System.out.println("Task failed.");
+				}
 			case 3: 
-				break;
+//				View Personal Schedule
+				result = currentDoctor.viewPersonalSchedule();
+				if (result == 1) {
+					System.out.println("Task completed successfully.");
+				} else {
+					System.out.println("Task failed.");
+				}
 			case 4: 
-				break;
+//				Set Availability for Appointments
+				result = currentDoctor.setAppointmentAvailability();
+				if (result == 1) {
+					System.out.println("Task completed successfully.");
+				} else {
+					System.out.println("Task failed.");
+				}		
 			case 5: 
-				break;
+//				Accept or Decline Appointment Requests
+				result = currentDoctor.acceptOrDeclineAppointmentRequests();
+				if (result == 1) {
+					System.out.println("Task completed successfully.");
+				} else {
+					System.out.println("Task failed.");
+				}	
 			case 6: 
-				break;
+				result = currentDoctor.viewUpcomingAppointments();
+				if (result == 1) {
+					System.out.println("Task completed successfully.");
+				} else {
+					System.out.println("Task failed.");
+				}
 			case 7: 
 				System.out.print("Enter Appointment ID to record: ");
 				String appointmentID = sc.next();
 				System.out.print("Enter Hospital ID of Patient: ");
-				String hospitalID = sc.next();
+				String patientID = sc.next();
 				System.out.print("Enter date of appointment in the form 'YYYY-MM-DD': ");
 				LocalDate date = LocalDate.parse(sc.next(), DateTimeFormatUtils.DATE_FORMATTER);
 				System.out.print("Enter service provided: ");
@@ -73,6 +135,7 @@ public class DoctorMenu implements Menu {
 				String medication = sc.next();
 				System.out.print("Enter notes for appointment: ");
 				String notes = sc.next();
+//				AppointmentInterface.recordAppointmentOutcomeRecord(appointmentID, patientID, date, service, medication, PrescriptionStatus.valueOf("PENDING"), notes);
 				// if (AppointmentManager.recordAppointmentOutcomeRecord(appointmentID, hospitalID, date, 
 				// 	service, medication, PrescriptionStatus.PENDING, notes)){
 				// 		System.out.println("Appointment Outcome Record created successfully!");
@@ -83,13 +146,30 @@ public class DoctorMenu implements Menu {
 
 				break;
 			case 8: 
-				break;
+				result = currentDoctor.registerPatient();
+				if (result == 1) {
+					System.out.println("Task completed successfully.");
+				} else {
+					System.out.println("Task failed.");
+				}
 			case 9: 
-				break;	
+				result = currentDoctor.dischargePatient();
+				if (result == 1) {
+					System.out.println("Task completed successfully.");
+				} else {
+					System.out.println("Task failed.");
+				}	
 			case 10: 
 				System.out.println("Logging out ….");
+				result = currentDoctor.logout();
+				if (result == 1) {
+					System.out.println("Task completed successfully.");
+				} else {
+					System.out.println("Task failed.");
+				}
 			}
 		} while (choice < 10);
+		sc.close();
 	    return;
 	}
 }
