@@ -8,19 +8,61 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
-
+/**
+ * The {@code AdministratorMenu} class provides a user interface for administrators
+ * to manage various aspects of a hospital management system, including staff,
+ * appointments, inventory, and password resets.
+ * <p>
+ * This menu interacts with the {@code Administrator} model to perform tasks
+ * such as viewing staff lists, handling appointments, and managing medication inventory.
+ * It implements the {@code Menu} interface.
+ * </p>
+ *
+ * <p>
+ * The menu options include:
+ * <ul>
+ *     <li>View and manage hospital staff</li>
+ *     <li>View appointment details</li>
+ *     <li>Manage medication inventory</li>
+ *     <li>Approve replenishment requests</li>
+ *     <li>Reset user passwords</li>
+ *     <li>Logout</li>
+ * </ul>
+ * </p>
+ *
+ * @author SCSCGroup4
+ * @version 1.0
+ * @since 2024-11-21
+ * @see Models.Administrator
+ * @see Enums.AppointmentStatus
+ */
 public class AdministratorMenu implements Menu {
-	private final Scanner scanner;
-    private Administrator currentAdmin;
-    private boolean isRunning;
-    // private AppointmentManager appointmentManager;
+	/**
+     * Scanner object for reading user input.
+     */
+    private final Scanner scanner;
 
+    /**
+     * Current administrator logged into the system.
+     */
+    private Administrator currentAdmin;
+
+    /**
+     * Flag to control the running state of the menu.
+     */
+    private boolean isRunning;
+    /**
+     * Constructs an {@code AdministratorMenu} instance.
+     * Initializes the menu and sets up the current administrator based on login credentials.
+     */
 	public AdministratorMenu() {
         this.scanner = new Scanner(System.in);
         this.isRunning = true;
         initializeAdministrator();
     }
-
+    /**
+     * Initializes the administrator by retrieving details from the staff data file.
+     */
 	private void initializeAdministrator() {
         try {
             String loggedInID = UserMenu.getLoggedInHospitalID();
@@ -48,7 +90,9 @@ public class AdministratorMenu implements Menu {
             System.err.println("Error reading staff data: " + e.getMessage());
         }
     }
-
+    /**
+     * Displays the main menu for the administrator and handles user input for menu options.
+     */
 	@Override
     public void showMenu() {
         while (isRunning) {
@@ -100,8 +144,9 @@ public class AdministratorMenu implements Menu {
             }
         }
     }
-
-	//other menu displays 
+    /**
+     * Display choices for making changes to staff list.
+     */
 	private void displayStaffMenu() {
         System.out.println("\nStaff Management Options:");
         System.out.println("1: Add new staff");
@@ -110,7 +155,9 @@ public class AdministratorMenu implements Menu {
         System.out.println("4: Return to main menu");
         System.out.print("Enter your choice (1-4): ");
     }
-
+    /**
+     * Display choices for viewing Inventory Menu.
+     */
 	private void displayInventoryMenu() {
         System.out.println("\nInventory Management Options:");
         System.out.println("1: Add new medication to inventory");
@@ -118,7 +165,9 @@ public class AdministratorMenu implements Menu {
         System.out.println("3: Edit inventory quantities");
         System.out.println("4: Return to main menu");
     }
-
+    /**
+     * Displays the menu for managing hospital staff and handles related user input.
+     */
     private void handleStaffManagement() {
         currentAdmin.viewStaffList();
         boolean managing = true;
@@ -156,7 +205,9 @@ public class AdministratorMenu implements Menu {
             }
         }
     }
-
+    /**
+     * Adds a new staff member to the hospital system.
+     */
     private void handleAddStaff() {
         try {
             System.out.println("Enter new staff role (Doctor/Pharmacist/Administrator): ");
@@ -195,13 +246,17 @@ public class AdministratorMenu implements Menu {
             System.err.println("Error adding staff: " + e.getMessage());
         }
     }
-
+    /**
+     * Removes an existing staff member from the hospital system.
+     */
     private void handleRemoveStaff() {
         System.out.println("Enter staff ID to remove: ");
         String staffID = getValidInput("Staff ID");
         currentAdmin.removeStaff(staffID);
     }
-
+    /**
+     * Updates the details of an existing staff member.
+     */
     private void handleUpdateStaff() {
         // Display current staff list
         currentAdmin.viewStaffList();
@@ -271,7 +326,9 @@ public class AdministratorMenu implements Menu {
             System.out.println("Failed to update staff.");
         }
     }
-
+    /**
+     * Resets the password for a user in the hospital system.
+     */
     private void handleUpdatePassword() {
         System.out.println("\nPassword Reset Menu");
         System.out.println("--------------------");
@@ -300,7 +357,10 @@ public class AdministratorMenu implements Menu {
         }
     }
 
-    /* Appointment Details */
+    /**
+     * Displays appointment details and provides options to filter appointments
+     * based on criteria such as doctor ID, patient ID, or status.
+     */
     private void handleViewAppointments() {
         while (true) {
             System.out.println("\nView Appointments By:");
@@ -346,7 +406,9 @@ public class AdministratorMenu implements Menu {
             }
         }
     }
-
+    /**
+     * Displays appointments filtered by their status.
+     */
     private void handleViewByStatus() {
         System.out.println("\nSelect Status:");
         System.out.println("1: Pending");
@@ -383,7 +445,9 @@ public class AdministratorMenu implements Menu {
         }
     }
 
-
+    /**
+     * Manages medication inventory by providing options to add, remove, or update inventory items.
+     */
     private void handleInventoryManagement() {
         currentAdmin.viewMedicationInventory();
         boolean managing = true;
@@ -410,7 +474,9 @@ public class AdministratorMenu implements Menu {
             }
         }
     }
-
+    /**
+     * Adds a new medication to the inventory.
+     */
 	private void handleAddMedication() {
         try {
             System.out.println("Enter name of new medicine: ");
@@ -430,7 +496,9 @@ public class AdministratorMenu implements Menu {
             System.err.println("Error adding medication: " + e.getMessage());
         }
     }
-
+    /**
+     * Removes a medication from the inventory.
+     */
 	private void handleRemoveMedication() {
         try {
             currentAdmin.viewMedicationInventory();
@@ -444,7 +512,9 @@ public class AdministratorMenu implements Menu {
             System.err.println("Error removing medication: " + e.getMessage());
         }
     }
-
+    /**
+     * Updates the quantity or other details of a medication in the inventory.
+     */
 	private void handleUpdateMedication() {
         try {
             currentAdmin.viewMedicationInventory();
@@ -480,7 +550,11 @@ public class AdministratorMenu implements Menu {
             System.err.println("Error updating medication: " + e.getMessage());
         }
     }
-
+    /**
+     * Handles the approval process for medicine replenishment requests.
+     * Displays pending replenishment requests and allows the admin to approve a specific request.
+     * If no requests are available, it notifies the admin and exits.
+     */
 	private void handleReplenishmentApproval() {
         try {
             currentAdmin.viewReplenishRequests();
@@ -511,7 +585,12 @@ public class AdministratorMenu implements Menu {
         }
     }
 
-    // Helper method to check for replenishment requests
+    /**
+     * Checks if there are any pending replenishment requests.
+     * Reads the replenishment requests file and determines if it contains any entries.
+     * 
+     * @return {@code true} if there are pending requests, {@code false} otherwise.
+     */
     private boolean hasAnyReplenishRequests() {
         try (BufferedReader reader = new BufferedReader(new FileReader("data/Medication_Replenish_Requests.csv"))) {
             reader.readLine();
@@ -523,7 +602,12 @@ public class AdministratorMenu implements Menu {
     }
 
 
-	// ensure validity
+	/**
+     * Prompts the user to enter a valid positive integer.
+     * Keeps prompting until the user provides a valid input.
+     * 
+     * @return A valid positive integer entered by the user.
+     */
 	private int getValidChoice() {
         while (true) {
             try {
@@ -540,7 +624,13 @@ public class AdministratorMenu implements Menu {
             }
         }
     }
-
+    /**
+     * Prompts the user to provide a non-empty input for a specified field.
+     * Keeps prompting until a valid input is provided.
+     * 
+     * @param fieldName The name of the field for which input is being collected.
+     * @return A valid non-empty string entered by the user.
+     */
 	private String getValidInput(String fieldName) {
         while (true) {
             String input = scanner.nextLine().trim();
@@ -550,7 +640,13 @@ public class AdministratorMenu implements Menu {
             System.out.println(fieldName + " cannot be empty. Please try again:");
         }
     }
-
+    /**
+     * Prompts the user to enter a valid positive number for a specified field.
+     * Keeps prompting until the user provides a valid number.
+     * 
+     * @param fieldName The name of the field for which input is being collected.
+     * @return A valid positive number entered by the user.
+     */
     private int getValidPositiveNumber(String fieldName) {
         while (true) {
             try {

@@ -1,4 +1,14 @@
-// PharmacistMenu.java
+/**
+ * The `PharmacistMenu` class provides the functionality for pharmacists to interact with
+ * the system through a menu-driven interface. This includes viewing appointment outcomes,
+ * updating prescription statuses, managing medication inventory, and submitting replenishment requests.
+ * 
+ * The class is initialized for a logged-in pharmacist and ensures they have the necessary access.
+ * It interacts with other models and services to facilitate these functionalities.
+ * @author SCSCGroup4
+ * @version 1.0
+ * @since 2024-11-21
+ */
 package Views;
 
 import Models.*;
@@ -7,10 +17,19 @@ import java.io.*;
 import java.util.Scanner;
 
 public class PharmacistMenu implements Menu {
+    /** Scanner for user input. */
     private final Scanner scanner;
+
+    /** Current pharmacist using the menu. */
     private Pharmacist currentPharmacist;
+
+    /** Flag to indicate whether the menu is active. */
     private boolean isRunning;
 
+    /**
+     * Constructs a `PharmacistMenu` instance, initializes the current pharmacist,
+     * and starts required services.
+     */
     public PharmacistMenu() {
         this.scanner = new Scanner(System.in);
         this.isRunning = true;
@@ -18,7 +37,10 @@ public class PharmacistMenu implements Menu {
         new AppointmentOutcomeRecordManager();
     }
 
-    // Assumption that UserMenu.java already checks the person is a Pharmacist
+    /**
+     * Initializes the current pharmacist by validating the logged-in user
+     * and fetching their details from the staff data.
+     */
     private void initializePharmacist() {
         try {
             String loggedInID = UserMenu.getLoggedInHospitalID();
@@ -69,6 +91,9 @@ public class PharmacistMenu implements Menu {
         }
     }
 
+    /**
+     * Displays the pharmacist menu and processes user input.
+     */
     @Override
     public void showMenu() {
         while (isRunning) {
@@ -77,7 +102,9 @@ public class PharmacistMenu implements Menu {
             handleMenuChoice(choice);
         }
     }
-
+    /**
+     * Displays the available menu options for the pharmacist.
+     */
     public void displayOptions() {
         System.out.println("\nPharmacist Menu:");
         System.out.println("1: View Appointment Outcome Record");
@@ -86,7 +113,12 @@ public class PharmacistMenu implements Menu {
         System.out.println("4: Submit Replenishment Request");
         System.out.println("5: Logout");
     }
-
+    /**
+     * Processes the pharmacist's menu choice.
+     * 
+     * @param choice the user's menu selection
+     * @return true if the menu should continue running, false if logout is selected
+     */
     public boolean handleMenuChoice(int choice) {
         try {
             switch (choice) {
@@ -117,11 +149,20 @@ public class PharmacistMenu implements Menu {
         }
         return true;
     }
-
+    /**
+     * Validates user input to make sure it is non-empty and has no spaces
+     * 
+     * @param input the input to validate
+     * @return true if input is valid, false otherwise
+     */
     public boolean validateInput(String input) {
         return input != null && !input.trim().isEmpty();
     }
-
+    /**
+     * Prompts the user to enter a valid menu choice.
+     * 
+     * @return the validated menu choice
+     */
     private int getValidChoice() {
         while (true) {
             try {
@@ -134,7 +175,9 @@ public class PharmacistMenu implements Menu {
             }
         }
     }
-
+    /**
+     * Handles the process of updating prescription statuses.
+     */
     private void handlePrescriptionStatus() {
         // First show pending prescriptions
         currentPharmacist.viewAppointmentOutcomes();
@@ -159,14 +202,18 @@ public class PharmacistMenu implements Menu {
             System.out.println("Invalid appointment ID");
         }
     }
-
+    /**
+     * Handles the process of viewing appointment outcomes.
+     */
     private void handleAppointmentView() {
         System.out.println("\nPending Prescriptions:");
         if (!currentPharmacist.viewAppointmentOutcomes()) {
             System.out.println("No prescriptions to display.");
         }
     }
-
+    /**
+     * Handles the process of submitting replenishment requests for medications.
+     */
     private void handleReplenishmentRequest() {
         while (true) {
             currentPharmacist.viewMedicationInventory();

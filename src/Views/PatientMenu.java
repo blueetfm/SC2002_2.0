@@ -16,15 +16,55 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
-
+/**
+ * The PatientMenu class provides an interactive console-based menu
+ * for managing patient-related operations in a hospital system.
+ * This menu allows patients to view and update personal information,
+ * manage appointments, and access medical records.
+ * <p>
+ * It utilizes the Patient, Appointment, and TimeSlot models along with
+ * relevant interfaces for data management. It integrates with external
+ * CSV files for initial patient data retrieval.
+ * </p>
+ * 
+ * @see Models.Patient
+ * @see Models.Appointment
+ * @see Models.TimeSlot
+ * @see Services.PatientInterface
+ * @see Services.TimeSlotInterface
+ * @see Services.AppointmentInterface
+ * @see Enums.Service
+ * @see Enums.AppointmentStatus
+ * @author SCSCGroup4
+ * @version 1.0
+ * @since 2024-11-21
+ */
 public class PatientMenu implements Menu {
+ /**
+     * Scanner object for user input.
+     */
+    private final Scanner sc;
 
-	private final Scanner sc;
-	private Patient currentPatient;
-	private boolean isRunning;
-	private PatientInterface patientManager;
-	// private AppointmentManager appointmentManager;
+    /**
+     * Current patient object for the logged-in session.
+     */
+    private Patient currentPatient;
 
+    /**
+     * Flag to control the menu's running state.
+     */
+    private boolean isRunning;
+
+    /**
+     * Interface for managing patient-related operations.
+     */
+    private PatientInterface patientManager;
+
+    /**
+     * Constructor for PatientMenu.
+     * Initializes necessary components and retrieves patient data
+     * based on the logged-in hospital ID.
+     */
 	public PatientMenu() {
 		this.sc = new Scanner(System.in);
 		this.patientManager = PatientManager.getInstance();
@@ -32,7 +72,13 @@ public class PatientMenu implements Menu {
 		initializePatient();
 	}
 
-	// Initializes a patient object with the info from the patient list CSV
+	/**
+     * Reads the patient list CSV file to initialize the {@code currentPatient} object
+     * using the logged-in hospital ID.
+     * <p>
+     * If no matching patient is found, the {@code currentPatient} remains null.
+     * </p>
+     */
 	private void initializePatient() {
 		try {
 			String loggedInID = UserMenu.getLoggedInHospitalID();
@@ -75,6 +121,10 @@ public class PatientMenu implements Menu {
 			System.err.println("Error initializing patient: " + e.getMessage());
 		}
 	}
+	/**
+     * Displays the patient menu and processes user input
+     * to execute the selected operation.
+     */
 	public void showMenu() {
 		while (isRunning) {
 			System.out.println("Patient Menu:");
@@ -106,14 +156,20 @@ public class PatientMenu implements Menu {
 		}
 		sc.close();
 	}
-
+	/**
+     * Handles the operation to view the current patient's medical record.
+     * Displays an error message if the operation fails.
+     */
 	private void handleViewMedicalRecord() {
 		boolean succeed = currentPatient.viewMedicalRecord();
 		if (!succeed) {
 			System.out.println("Failed to retrieve medical records.");
 		}
 	}
-
+	/**
+     * Handles updating the current patient's personal information.
+     * The user can update their phone number or email address.
+     */
 	private void handleUpdatePersonalInfo() {
 		System.out.println("\nEnter field to update:");
 		System.out.println("1: Phone number");
@@ -143,7 +199,10 @@ public class PatientMenu implements Menu {
 				System.out.println("Invalid choice.");
 		}
 	}
-
+	/**
+     * Handles scheduling a new appointment for the current patient.
+     * Displays available slots and allows the user to select a slot and service.
+     */
 	private void handleScheduleAppointment() {
 		handleViewAvailableAppointmentSlots();
 		
@@ -201,7 +260,10 @@ public class PatientMenu implements Menu {
 			System.out.println("Invalid input. Please enter a number.");
 		}
 	}
-
+	/**
+     * Handles rescheduling an existing appointment.
+     * Allows the user to select an appointment to modify and choose a new time slot.
+     */
 	private void handleRescheduleAppointment() {
         TimeSlotInterface.initializeObjects();
         AppointmentInterface.initializeObjects();
@@ -299,7 +361,10 @@ public class PatientMenu implements Menu {
             System.out.println("Failed to reschedule appointment: " + e.getMessage());
         }
     }
-
+	/**
+     * Handles canceling a confirmed or pending appointment.
+     * Displays the list of current appointments for selection.
+     */
 	private void handleCancelAppointment() {
         TimeSlotInterface.initializeObjects();
         AppointmentInterface.initializeObjects();
@@ -348,7 +413,9 @@ public class PatientMenu implements Menu {
             System.out.println("Appointment ID not found.");
         }
     }
-	
+	/**
+     * Displays available appointment slots for booking or rescheduling.
+     */
 	private void handleViewAvailableAppointmentSlots() {
         TimeSlotInterface.initializeObjects(); // Initialize before getting slots
         List<TimeSlot> availableSlots = TimeSlotInterface.getAvailableTimeSlots();
@@ -366,7 +433,9 @@ public class PatientMenu implements Menu {
                 slot.getEndTime().toLocalTime());
         }
     }
-
+	/**
+     * Displays a list of scheduled appointments for the current patient.
+     */
 	private void handleViewScheduledAppointments() {
 		TimeSlotInterface.initializeObjects();
 		AppointmentInterface.initializeObjects();
@@ -400,7 +469,9 @@ public class PatientMenu implements Menu {
 			}
 		}
 	}
-
+	/**
+     * Handles viewing past appointment outcome records.
+     */
 	private void handleViewPastAppointmentOutcomeRecords() {
 		// // Get the list of appointment outcome records for the current patient
 		// List<AppointmentOutcomeRecord> appointment_outcomes = currentPatient.viewAppointmentOutcomeRecords();
@@ -416,7 +487,9 @@ public class PatientMenu implements Menu {
 		// 	}
 		// }
 	}
-	
+	/**
+     * Logs out the current patient and terminates the menu session.
+     */
 	private void handleLogout() {
 		System.out.println("Program terminating...");
 		currentPatient.logout();
