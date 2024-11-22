@@ -266,15 +266,27 @@ public class Doctor extends User {
         String patientID = case8Scanner.next().toUpperCase();
         System.out.print("Enter Name of Patient: ");
         String name = null;
-        case8Scanner.nextLine(); 
-        while (name == null) {
-            String nameInput = case8Scanner.nextLine();
-            if (nameInput.matches("^[A-Za-z]+( [A-Za-z]+)?$")) {
-                name = nameInput;
+        while (true) {
+            name = case8Scanner.nextLine().trim();
+            if (!name.isEmpty()) {
+                String[] words = name.split("\\s+");
+                StringBuilder capitalizedNames = new StringBuilder();
+                
+                for (String word : words) {
+                    if (!word.isEmpty()) {
+                        capitalizedNames.append(word.substring(0, 1).toUpperCase())
+                                         .append(word.substring(1).toLowerCase())
+                                         .append(" ");
+                    }
+                }
+
+                name = capitalizedNames.toString().trim();
+                break; 
             } else {
-                System.out.println("Invalid name. Please enter a single name or a full name (e.g., 'Alicia' or 'Alicia Smith').");
+                System.out.println("Name cannot be empty. Please enter a valid name: ");
             }
         }
+
         LocalDate date = null;
         while (date == null) {
             System.out.print("Enter date of birth 'YYYY-MM-DD': ");

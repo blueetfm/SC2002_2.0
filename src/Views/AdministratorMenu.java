@@ -214,7 +214,28 @@ public class AdministratorMenu implements Menu {
             String role = getValidInput("Role");
             
             System.out.println("Enter new staff name: ");
-            String name = getValidInput("Name");
+            String name;
+        while (true) {
+            name = scanner.nextLine().trim();
+            if (!name.isEmpty()) {
+                String[] words = name.split("\\s+");
+                StringBuilder capitalizedNames = new StringBuilder();
+                
+                for (String word : words) {
+                    if (!word.isEmpty()) {
+                        capitalizedNames.append(word.substring(0, 1).toUpperCase())
+                                         .append(word.substring(1).toLowerCase())
+                                         .append(" ");
+                    }
+                }
+
+                name = capitalizedNames.toString().trim();
+                break; 
+            } else {
+                System.out.println("Name cannot be empty. Please enter a valid name: ");
+            }
+        }
+
             
             System.out.println("Enter new staff age: ");
             int age = getValidPositiveNumber("Age");
