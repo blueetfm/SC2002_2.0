@@ -1,3 +1,19 @@
+/**
+ * The {@code AppointmentManager} class provides management functionalities for appointments in a scheduling system.
+ * It offers methods to initialize, save, schedule, update, and retrieve appointments, as well as handle interactions
+ * with a CSV data storage and related services such as time slots.
+ * 
+ * <p>
+ * This class implements the {@code AppointmentInterface} and relies on various supporting classes and enums,
+ * including {@code Appointment}, {@code TimeSlot}, {@code Service}, and {@code AppointmentStatus}.
+ * </p>
+ * 
+ * Package: {@code Models}
+ * Dependencies: {@code Enums}, {@code Services}, {@code Utils}, {@code java.time}, {@code java.util}
+ * @author SCSCGroup4
+ * @version 1.0
+ * @since 2024-11-21
+ */
 package Models;
 
 import Enums.AppointmentStatus;
@@ -10,10 +26,21 @@ import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class AppointmentManager implements AppointmentInterface{
+/**
+ * Manages the lifecycle and data operations of appointments, including creating, updating, and retrieving them.
+ */
+public class AppointmentManager implements AppointmentInterface {
+
+    /** A list containing all the appointments in the system. */
     private static List<Appointment> appointments = new ArrayList<>();
+
+    /** The file path for the CSV file used to store appointment data. */
     private static final String CSV_PATH = "data/Appointments.csv";
-    
+
+    /**
+     * Initializes the appointment objects by reading them from the CSV file.
+     * If no data exists, creates an empty CSV file with headers.
+     */
     public static void initializeObjects() {
         List<List<String>> lines = CSVHandler.readCSVLines(CSV_PATH);
         appointments.clear();
@@ -41,7 +68,9 @@ public class AppointmentManager implements AppointmentInterface{
             }
         }
     }
-
+    /**
+     * Saves the current list of appointments to the CSV file.
+     */
     public static void saveAppointments() {
         String[] headers = {"Appointment ID", "Patient ID", "Doctor ID", "Date", 
                            "TimeSlot ID", "Status", "Service"};
@@ -62,7 +91,14 @@ public class AppointmentManager implements AppointmentInterface{
         
         CSVHandler.writeCSVLines(headers, lines.toArray(new String[0]), CSV_PATH);
     }
-
+    /**
+     * Schedules a new appointment by creating it and associating it with a specified time slot.
+     * 
+     * @param patientID  The ID of the patient for the appointment.
+     * @param doctorID   The ID of the doctor for the appointment.
+     * @param timeSlotID The ID of the time slot reserved for the appointment.
+     * @param service    The service type for the appointment.
+     */
     public static void scheduleAppointment(String patientID, String doctorID, 
                                          String timeSlotID, Service service) {
         TimeSlot slot = TimeSlotManager.getTimeSlotByID(timeSlotID);
@@ -84,7 +120,12 @@ public class AppointmentManager implements AppointmentInterface{
             TimeSlotManager.saveTimeSlots();
         }
     }
-
+    /**
+     * Updates the status of an existing appointment.
+     * 
+     * @param appointmentID The ID of the appointment to update.
+     * @param status        The new status to set for the appointment.
+     */
     public static void updateAppointmentStatus(String appointmentID, AppointmentStatus status) {
         Appointment appointment = appointments.stream()
             .filter(apt -> apt.getAppointmentID().equals(appointmentID))
@@ -101,7 +142,11 @@ public class AppointmentManager implements AppointmentInterface{
             saveAppointments();
         }
     }
-
+    /**
+     * Marks an appointment as completed and updates the associated time slot status.
+     * 
+     * @param appointmentID The ID of the appointment to mark as completed.
+     */
     public static void markAppointmentCompleted(String appointmentID) {
         Appointment appointment = appointments.stream()
             .filter(apt -> apt.getAppointmentID().equals(appointmentID))
@@ -118,18 +163,32 @@ public class AppointmentManager implements AppointmentInterface{
             saveAppointments();
         }
     }
-
+    /**
+     * Retrieves a list of all appointments.
+     * 
+     * @return A list of all appointments.
+     */
     public static List<Appointment> getAllAppointments() {
         initializeObjects();  // Make sure data is loaded
         return new ArrayList<>(appointments);  // Return a copy of all appointments
     }
-
+    /**
+     * Retrieves appointments associated with a specific doctor.
+     * 
+     * @param doctorID The ID of the doctor.
+     * @return A list of appointments for the specified doctor.
+     */
     public static List<Appointment> getAppointmentsByDoctorID(String doctorID) {
         return appointments.stream()
             .filter(apt -> apt.getDoctorID().equals(doctorID))
             .collect(Collectors.toList());
     }
-
+    /**
+     * Retrieves appointments associated with a specific patient.
+     * 
+     * @param patientID The ID of the patient.
+     * @return A list of appointments for the specified patient.
+     */
     public static List<Appointment> getAppointmentsByPatientID(String patientID) {
         return appointments.stream()
             .filter(apt -> apt.getPatientID().equals(patientID))

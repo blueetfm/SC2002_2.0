@@ -1,3 +1,12 @@
+/**
+ * Manages a list of appointment outcome records, providing functionality for
+ * creating, retrieving, displaying, and persisting records to a CSV file.
+ * This class interacts with {@code AppointmentOutcomeRecord}, 
+ * {@code PrescriptionStatus}, and {@code CSVHandler}.
+ * @author SCSCGroup4
+ * @version 1.0
+ * @since 2024-11-21
+ */
 package Models;
 
 import Enums.PrescriptionStatus;
@@ -8,14 +17,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AppointmentOutcomeRecordManager implements AppointmentOutcomeRecordInterface {
-	private static List<AppointmentOutcomeRecord> AORList;
-	private static final String CSV_PATH = "data/AppointmentOutcomeRecord_List.csv";
+    /** A static list that holds all appointment outcome records. */
+    private static List<AppointmentOutcomeRecord> AORList;
 
+    /** The file path to the CSV file used for persisting appointment outcome records. */
+    private static final String CSV_PATH = "data/AppointmentOutcomeRecord_List.csv";
+
+    /**
+     * Constructs a new {@code AppointmentOutcomeRecordManager} and initializes
+     * the list of appointment outcome records by reading data from the CSV file.
+     */
 	public AppointmentOutcomeRecordManager() {
         AORList = new ArrayList<>();
         initializeObjects();
     }
-
+    /**
+     * Reads the appointment outcome records from the CSV file and populates {@code AORList}.
+     * If the file is empty, it initializes the file with headers.
+     */
 	private void initializeObjects() {
         List<List<String>> AORecords = CSVHandler.readCSVLines(CSV_PATH);
         if (AORecords == null || AORecords.isEmpty()) {
@@ -44,7 +63,12 @@ public class AppointmentOutcomeRecordManager implements AppointmentOutcomeRecord
             }
         }
     }
-	
+	/**
+     * Prints the details of a specific appointment outcome record.
+     *
+     * @param appointmentOutcomeRecord the record to print
+     * @return 1 if the operation succeeds
+     */
 	public static int printAppointmentOutcomeRecord(AppointmentOutcomeRecord appointmentOutcomeRecord) {
     	System.out.println("\n=====================================");
     	System.out.printf("Appointment ID: %s\n", appointmentOutcomeRecord.getAppointmentID());
@@ -57,11 +81,20 @@ public class AppointmentOutcomeRecordManager implements AppointmentOutcomeRecord
     	return 1;
 	}
 	
-	
+	/**
+     * Retrieves all stored appointment outcome records.
+     *
+     * @return a list of {@code AppointmentOutcomeRecord} objects
+     */
 	public static List<AppointmentOutcomeRecord> showAllAppointmentOutcomeRecords() {
 		return AORList;
 	}
-	
+	/**
+     * Retrieves a specific appointment outcome record by its ID.
+     *
+     * @param appointmentID the ID of the desired record
+     * @return the matching {@code AppointmentOutcomeRecord}, or {@code null} if not found
+     */
 	public static AppointmentOutcomeRecord getAppointmentOutcomeRecord(String appointmentID) {
 		for (AppointmentOutcomeRecord AORecord : AORList) {
 			if (AORecord.getAppointmentID().equals(appointmentID)) {
@@ -72,7 +105,17 @@ public class AppointmentOutcomeRecordManager implements AppointmentOutcomeRecord
 		return null;
 			
 	}
-
+    /**
+     * Creates a new appointment outcome record and updates the CSV file.
+     *
+     * @param appointmentID the unique ID of the appointment
+     * @param date the date of the appointment
+     * @param service the service provided
+     * @param medicine the prescribed medicine
+     * @param status the prescription status
+     * @param notes additional notes about the appointment
+     * @return 1 if the operation succeeds, or 0 if it fails
+     */
 	public static int createAppointmentOutcomeRecord(String appointmentID, LocalDate date, 
             Enums.Service service, String medicine, PrescriptionStatus status, String notes) {
         try {
@@ -110,7 +153,11 @@ public class AppointmentOutcomeRecordManager implements AppointmentOutcomeRecord
             return 0;
         }
     }
-	
+	/**
+     * Updates the CSV file with the current list of appointment outcome records.
+     *
+     * @return 1 if the operation succeeds, or 0 if it fails
+     */
 	public static int updateCSV() {
         try {
             if (AORList == null) {
