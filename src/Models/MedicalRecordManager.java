@@ -156,8 +156,8 @@ public class MedicalRecordManager implements MedicalRecordInterface {
      *         and 0 if no records are found for the patient.
      */
     public static int readMedicalRecordsByPatientID(String patientID) {
-        if (patientID == null || patientID.trim().isEmpty()) {
-            System.out.println("Invalid patient ID");
+        Patient patient = PatientManager.getPatient(patientID);
+        if (patient == null){
             return -1;
         }
 
@@ -210,6 +210,7 @@ public class MedicalRecordManager implements MedicalRecordInterface {
         }
         MedicalRecord newRecord = createMedicalRecord(patientID);
         newRecord.addRecord(newRecord, diagnosis, medication, treatment);
+        updateCSV();
         return newRecord;
     }
 
