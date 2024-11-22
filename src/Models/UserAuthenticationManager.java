@@ -88,8 +88,8 @@ public class UserAuthenticationManager {
                 String line;
                 while ((line = reader.readLine()) != null) {
                     String[] parts = line.split(",");
-                    if (parts[0].trim().equalsIgnoreCase(hospitalID)) {
-                        lines.add(hospitalID + "," + newPassword);
+                    if (parts[0].trim().equalsIgnoreCase(hospitalID.toUpperCase())) {
+                        lines.add(hospitalID.toUpperCase() + "," + newPassword);
                         foundUser = true;
                     } else {
                         lines.add(line);

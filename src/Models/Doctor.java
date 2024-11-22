@@ -259,10 +259,19 @@ public class Doctor extends User {
     public int registerPatient() {
         Scanner case8Scanner = new Scanner(System.in);
         System.out.print("Enter Patient ID to record: ");
-        String patientID = case8Scanner.next();
+        String patientID = case8Scanner.next().toUpperCase();
         System.out.print("Enter Name of Patient: ");
-        String name = case8Scanner.next();
-         LocalDate date = null;
+        String name = null;
+        case8Scanner.nextLine(); 
+        while (name == null) {
+            String nameInput = case8Scanner.nextLine();
+            if (nameInput.matches("^[A-Za-z]+( [A-Za-z]+)?$")) {
+                name = nameInput;
+            } else {
+                System.out.println("Invalid name. Please enter a single name or a full name (e.g., 'Alicia' or 'Alicia Smith').");
+            }
+        }
+        LocalDate date = null;
         while (date == null) {
             System.out.print("Enter date of birth 'YYYY-MM-DD': ");
             String dateInput = case8Scanner.next();
@@ -283,7 +292,7 @@ public class Doctor extends User {
             }
         }
         System.out.print("Enter patient blood type: ");
-        String bloodType = case8Scanner.next();
+        String bloodType = case8Scanner.next().toUpperCase();
         System.out.print("Enter contact number: ");
         String contactNumber = case8Scanner.next();
         case8Scanner.close();
@@ -298,7 +307,7 @@ public class Doctor extends User {
     public int dischargePatient() {
         Scanner case9Scanner = new Scanner(System.in);
         System.out.print("Enter Patient ID to delete: ");
-        String case9Choice = case9Scanner.next();
+        String case9Choice = case9Scanner.next().toUpperCase();
         case9Scanner.close();
         return PatientInterface.deletePatient(case9Choice);
     }

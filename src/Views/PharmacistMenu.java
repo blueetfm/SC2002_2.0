@@ -135,17 +135,7 @@ public class PharmacistMenu implements Menu {
         }
     }
 
-    private void handlePrescriptionStatus() {
-        // First show pending prescriptions
-        currentPharmacist.viewAppointmentOutcomes();
-        
-        System.out.print("\nEnter Appointment ID to dispense medication (or 'back' to return): ");
-        String appointmentID = scanner.nextLine().trim();
-        
-        if (appointmentID.equalsIgnoreCase("back")) {
-            return;
-        }
-    
+
         if (validateInput(appointmentID)) {
             boolean success = currentPharmacist.updatePrescriptionStatus(appointmentID);
             if (success) {
