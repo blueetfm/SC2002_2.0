@@ -122,6 +122,7 @@ public class MedicalRecordManager implements MedicalRecordInterface {
     public static MedicalRecord createMedicalRecord(String patientID) {
         MedicalRecord newRecord = new MedicalRecord(patientID);
         medicalRecordList.add(newRecord);
+        updateCSV(); 
         return newRecord;
     }
 
@@ -205,6 +206,7 @@ public class MedicalRecordManager implements MedicalRecordInterface {
         for (MedicalRecord record : medicalRecordList) {
             if (record.patientID.equals(patientID)) {
                 record.addRecord(record, diagnosis, medication, treatment);
+                updateCSV();
                 return record;
             }
         }
