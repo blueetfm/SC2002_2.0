@@ -62,11 +62,10 @@ public class PatientManager implements PatientInterface {
                 return patientList;
             }
         
-            // Skip header (index 0) and process records
             for (int i = 1; i < allLines.size(); i++) {
                 List<String> row = allLines.get(i);
                 try {
-                    if (row.size() >= 6) {  // Ensure row has required fields
+                    if (row.size() >= 6) {  
                         String patientID = row.get(0).trim();
                         String name = row.get(1).trim();
                         LocalDate dateOfBirth = LocalDate.parse(row.get(2).trim());
@@ -81,7 +80,7 @@ public class PatientManager implements PatientInterface {
                             gender,         // gender
                             bloodType,      // bloodType
                             "",            // email (not in CSV)
-                            phoneNum        // phoneNum
+                            phoneNum        
                         );
                         patientList.add(patient);
                     }
@@ -153,7 +152,6 @@ public class PatientManager implements PatientInterface {
         }
 
         try {
-            // Check for existing patient
             for (Patient patient : patientList) {
                 if (patient.getPatientID().equals(hospitalID)) {
                     System.out.println("Patient profile already exists.");
@@ -161,19 +159,14 @@ public class PatientManager implements PatientInterface {
                 }
             }
 
-            // Get current patients from CSV
             List<List<String>> existingPatients = CSVHandler.readCSVLines("data/Patient_List.csv");
             List<String> patientLines = new ArrayList<>();
             
-            // Add existing patients (skip header)
             for (int i = 1; i < existingPatients.size(); i++) {
                 List<String> row = existingPatients.get(i);
-                // Keep existing lines as they are to maintain format
                 patientLines.add(String.join(",", row));
             }
 
-            // Format new patient line to match existing format
-            // Format: Patient ID, Name, Date of Birth, Gender, Blood Type, Contact Information
             String newPatientLine = String.format("%s,%s,%s,%s,%s,%s",
                 hospitalID,
                 name,
@@ -184,28 +177,22 @@ public class PatientManager implements PatientInterface {
             );
             patientLines.add(newPatientLine);
 
-            // Write back to Patient_List.csv
             String[] patientHeaders = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
             CSVHandler.writeCSVLines(patientHeaders, patientLines.toArray(new String[0]), "data/Patient_List.csv");
 
-            // Update User_List.csv
             List<List<String>> existingUsers = CSVHandler.readCSVLines("data/User_List.csv");
             List<String> userLines = new ArrayList<>();
             
-            // Add existing users (skip header)
             for (int i = 1; i < existingUsers.size(); i++) {
                 List<String> row = existingUsers.get(i);
                 userLines.add(String.join(",", row));
             }
             
-            // Add new user credentials
             userLines.add(String.format("%s,%s", hospitalID, "password"));
             
-            // Write back to User_List.csv
             String[] userHeaders = {"Hospital ID", "Password"};
             CSVHandler.writeCSVLines(userHeaders, userLines.toArray(new String[0]), "data/User_List.csv");
 
-            // Add to patientList in memory
             Patient newPatient = new Patient(hospitalID, password, role, name, birthDate, gender, phoneNum, email, bloodType);
             patientList.add(newPatient);
 
