@@ -156,7 +156,6 @@ public class PatientMenu implements Menu {
 				default: System.out.println("Invalid choice. Please try again."); break;
 			}
 		}
-		sc.close();
 	}
 	/**
      * Handles the operation to view the current patient's medical record.

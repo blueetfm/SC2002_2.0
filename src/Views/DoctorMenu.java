@@ -6,7 +6,6 @@ import Models.TimeSlot;
 import Services.AppointmentInterface;
 import Services.TimeSlotInterface;
 import Utils.DateTimeFormatUtils;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -179,7 +178,6 @@ public class DoctorMenu implements Menu {
 				break;
 			}
 		} while (choice < 10);
-		scanner.close();
 	    return;
 	}
 	/**
