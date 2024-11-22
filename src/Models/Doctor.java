@@ -72,9 +72,80 @@ public class Doctor extends User {
      */
     public int updatePatientMedicalRecords() {
         Scanner case2Scanner = new Scanner(System.in);
-        String case2Choice;
-        case2Choice = case2Scanner.nextLine();
-        PatientInterface.getPatient(case2Choice);
+        String patientID;
+        System.out.println("Enter Patient ID: ");
+        patientID = case2Scanner.nextLine().trim();
+        Patient patient = PatientInterface.getPatient(patientID);
+        
+        // Patient exists already
+        System.out.println("Enter Diagnosis: ");
+        String diagnosis;
+        while (true) {
+            diagnosis = case2Scanner.nextLine().trim();
+            if (!diagnosis.isEmpty()) {
+                String[] words = diagnosis.split("\\s+");
+                StringBuilder capitalizedDiagnosis = new StringBuilder();
+                
+                for (String word : words) {
+                    if (!word.isEmpty()) {
+                        capitalizedDiagnosis.append(word.substring(0, 1).toUpperCase())
+                                         .append(word.substring(1).toLowerCase())
+                                         .append(" ");
+                    }
+                }
+
+                diagnosis = capitalizedDiagnosis.toString().trim();
+                break; 
+            } else {
+                System.out.println("Diagnosis cannot be empty. Please enter a valid diagnosis: ");
+            }
+        }
+        System.out.println("Enter Medication: ");
+        String medication;
+        while (true) {
+            medication = case2Scanner.nextLine().trim();
+            if (!medication.isEmpty()) {
+                String[] words = medication.split("\\s+");
+                StringBuilder capitalizedMedication = new StringBuilder();
+                
+                for (String word : words) {
+                    if (!word.isEmpty()) {
+                        capitalizedMedication.append(word.substring(0, 1).toUpperCase())
+                                            .append(word.substring(1).toLowerCase())
+                                            .append(" ");
+                    }
+                }
+
+                medication = capitalizedMedication.toString().trim();
+                break; 
+            } else {
+                System.out.println("Medication cannot be empty. Please enter a valid medication: ");
+            }
+        }
+
+        System.out.println("Enter Treatment: ");
+        String treatment;
+        while (true) {
+            treatment = case2Scanner.nextLine().trim();
+            if (!treatment.isEmpty()) {
+                String[] words = treatment.split("\\s+");
+                StringBuilder capitalizedTreatment = new StringBuilder();
+                
+                for (String word : words) {
+                    if (!word.isEmpty()) {
+                        capitalizedTreatment.append(word.substring(0, 1).toUpperCase())
+                                            .append(word.substring(1).toLowerCase())
+                                            .append(" ");
+                    }
+                }
+
+                treatment = capitalizedTreatment.toString().trim();
+                break; 
+            } else {
+                System.out.println("Treatment cannot be empty. Please enter a valid treatment: ");
+            }
+        }
+        MedicalRecordManager.updateMedicalRecord(patientID, diagnosis, medication, treatment);
         case2Scanner.close();
         return 1;
     }

@@ -62,21 +62,26 @@ public class PatientManager implements PatientInterface {
      */
     public static Patient getPatient(String hospitalID) {
         String loggedInID = UserMenu.getLoggedInHospitalID(); 
-        boolean isPatient = loggedInID.startsWith("P") && (loggedInID.length() == 5);
+        boolean isPatient = loggedInID.startsWith("P") && loggedInID.length() == 5;
+        boolean isPharmacist = loggedInID.startsWith("P") && loggedInID.length() == 4;
+        boolean isDoctor = loggedInID.startsWith("D");
+        boolean isAdministrator = loggedInID.startsWith("A");
     
         if (isPatient && !loggedInID.equals(hospitalID)) {
             System.out.println("Access Denied. You may not view that profile.");
             return null;
-        }
-    
-        for (Patient patient : patientList) {
-            if (patient.getPatientID().equals(hospitalID)) {
-                System.out.println("Patient profile already exists.");
-                return patient;
-            }
+        } else if (isPharmacist || isDoctor || isAdministrator){
+            for (Patient patient : patientList) {
+                if (patient.getPatientID().equals(hospitalID)) {
+                    System.out.println("Patient profile exists.");
+                    return patient;
+                }
+            }  
         }
         System.out.println("No matching patient profile ID.");
         return null;
+    
+        
     }
 
     /**
