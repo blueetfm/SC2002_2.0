@@ -382,7 +382,7 @@ public class Doctor extends User {
         String bloodType = "";
         do {
             System.out.print("Enter patient blood type: ");
-            bloodType = case8Scanner.next().toUpperCase();
+            bloodType = case8Scanner.next().trim().toUpperCase();
         } while (!bloodType.matches("A+|A-|B+|B-|AB+|AB-|O+|O-"));
         String contactNumber = null;
 		while (contactNumber == null) {
