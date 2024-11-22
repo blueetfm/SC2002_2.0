@@ -12,6 +12,7 @@ package Models;
 import Enums.AppointmentStatus;
 import Enums.PrescriptionStatus;
 import Services.AppointmentInterface;
+import Services.MedicalRecordInterface;
 import Services.PatientInterface;
 import Services.TimeSlotInterface;
 import Utils.DateTimeFormatUtils;
@@ -71,83 +72,114 @@ public class Doctor extends User {
      * @return an integer indicating success (0) or failure (1)
      */
     public int updatePatientMedicalRecords() {
-        Scanner case2Scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
         String patientID;
-        System.out.println("Enter Patient ID: ");
-        patientID = case2Scanner.nextLine().trim();
-        Patient patient = PatientInterface.getPatient(patientID);
         
-        // Patient exists already
+        // Get list of patients first
+        System.out.println("\nCurrent Patients:");
+        System.out.println("----------------------------------------");
+        List<Patient> patients = PatientInterface.getAllPatients();
+        for (Patient p : patients) {
+            System.out.printf("Patient ID: %s, Name: %s\n", 
+                p.getPatientID(), 
+                p.getName());
+        }
+        System.out.println("----------------------------------------");
+
+        System.out.print("\nEnter Patient ID (or 'back' to return): ");
+        patientID = scanner.nextLine().trim();
+        
+        if (patientID.equalsIgnoreCase("back")) {
+            return 0;
+        }
+
+        Patient patient = PatientInterface.getPatient(patientID);
+        if (patient == null) {
+            System.out.println("Patient not found.");
+            return 0;
+        }
+
+        // Show current medical record if exists
+        System.out.println("\nCurrent Medical Record:");
+        MedicalRecordInterface.readMedicalRecordsByPatientID(patientID);
+        System.out.println();
+
+        // Get diagnosis
         System.out.println("Enter Diagnosis: ");
         String diagnosis;
         while (true) {
-            diagnosis = case2Scanner.nextLine().trim();
+            diagnosis = scanner.nextLine().trim();
             if (!diagnosis.isEmpty()) {
                 String[] words = diagnosis.split("\\s+");
                 StringBuilder capitalizedDiagnosis = new StringBuilder();
-                
                 for (String word : words) {
                     if (!word.isEmpty()) {
                         capitalizedDiagnosis.append(word.substring(0, 1).toUpperCase())
-                                         .append(word.substring(1).toLowerCase())
-                                         .append(" ");
+                            .append(word.substring(1).toLowerCase())
+                            .append(" ");
                     }
                 }
-
                 diagnosis = capitalizedDiagnosis.toString().trim();
-                break; 
+                break;
             } else {
                 System.out.println("Diagnosis cannot be empty. Please enter a valid diagnosis: ");
             }
         }
+
+        // Get medication
         System.out.println("Enter Medication: ");
         String medication;
         while (true) {
-            medication = case2Scanner.nextLine().trim();
+            medication = scanner.nextLine().trim();
             if (!medication.isEmpty()) {
                 String[] words = medication.split("\\s+");
                 StringBuilder capitalizedMedication = new StringBuilder();
-                
                 for (String word : words) {
                     if (!word.isEmpty()) {
                         capitalizedMedication.append(word.substring(0, 1).toUpperCase())
-                                            .append(word.substring(1).toLowerCase())
-                                            .append(" ");
+                            .append(word.substring(1).toLowerCase())
+                            .append(" ");
                     }
                 }
-
                 medication = capitalizedMedication.toString().trim();
-                break; 
+                break;
             } else {
                 System.out.println("Medication cannot be empty. Please enter a valid medication: ");
             }
         }
 
+        // Get treatment
         System.out.println("Enter Treatment: ");
         String treatment;
         while (true) {
-            treatment = case2Scanner.nextLine().trim();
+            treatment = scanner.nextLine().trim();
             if (!treatment.isEmpty()) {
                 String[] words = treatment.split("\\s+");
                 StringBuilder capitalizedTreatment = new StringBuilder();
-                
                 for (String word : words) {
                     if (!word.isEmpty()) {
                         capitalizedTreatment.append(word.substring(0, 1).toUpperCase())
-                                            .append(word.substring(1).toLowerCase())
-                                            .append(" ");
+                            .append(word.substring(1).toLowerCase())
+                            .append(" ");
                     }
                 }
-
                 treatment = capitalizedTreatment.toString().trim();
-                break; 
+                break;
             } else {
                 System.out.println("Treatment cannot be empty. Please enter a valid treatment: ");
             }
         }
-        MedicalRecordManager.updateMedicalRecord(patientID, diagnosis, medication, treatment);
-        case2Scanner.close();
-        return 1;
+
+        // Update medical record
+        MedicalRecord updatedRecord = MedicalRecordManager.updateMedicalRecord(patientID, diagnosis, medication, treatment);
+        if (updatedRecord != null) {
+            System.out.println("\nUpdated Medical Record:");
+            MedicalRecordInterface.readMedicalRecordsByPatientID(patientID);
+            return 1;
+        } else {
+            System.out.println("Failed to update medical record.");
+            return 0;
+        }
     }
 
     /**
@@ -332,70 +364,107 @@ public class Doctor extends User {
      * @return an integer indicating success (0) or failure (1)
      */
     public int registerPatient() {
-        Scanner case8Scanner = new Scanner(System.in);
-        System.out.print("Enter Patient ID to record: ");
-        String patientID = case8Scanner.next().toUpperCase();
-        System.out.print("Enter Name of Patient: ");
-        String name = null;
-        while (true) {
-            name = case8Scanner.nextLine().trim();
-            if (!name.isEmpty()) {
-                String[] words = name.split("\\s+");
-                StringBuilder capitalizedNames = new StringBuilder();
-                
-                for (String word : words) {
-                    if (!word.isEmpty()) {
-                        capitalizedNames.append(word.substring(0, 1).toUpperCase())
-                                         .append(word.substring(1).toLowerCase())
-                                         .append(" ");
+        Scanner scanner = new Scanner(System.in);
+        
+        try {
+            // Get Patient ID
+            System.out.print("Enter Patient ID (format: P1XXX): ");
+            String patientID = scanner.nextLine().trim();
+            if (!patientID.matches("P\\d{4}")) {
+                System.out.println("Invalid Patient ID format. Must be P followed by 4 digits.");
+                return 0;
+            }
+    
+            // Get Name
+            String name;
+            do {
+                System.out.print("Enter Name of Patient: ");
+                name = scanner.nextLine().trim();
+                if (name.isEmpty()) {
+                    System.out.println("Name cannot be empty. Please try again.");
+                }
+            } while (name.isEmpty());
+    
+            // Get Date of Birth
+            LocalDate date = null;
+            while (date == null) {
+                System.out.print("Enter date of birth (YYYY-MM-DD): ");
+                String dateInput = scanner.nextLine().trim();
+                try {
+                    date = LocalDate.parse(dateInput, DateTimeFormatUtils.DATE_FORMATTER);
+                    if (date.isAfter(LocalDate.now())) {
+                        System.out.println("Date of birth cannot be in the future.");
+                        date = null;
+                    }
+                } catch (DateTimeParseException e) {
+                    System.out.println("Invalid date format. Please use YYYY-MM-DD.");
+                }
+            }
+    
+            // Get Gender
+            String gender = null;
+            while (gender == null) {
+                System.out.print("Enter Gender (male/female): ");
+                String genderInput = scanner.nextLine().trim().toLowerCase();
+                if (genderInput.equals("male") || genderInput.equals("female")) {
+                    gender = genderInput;
+                } else {
+                    System.out.println("Invalid input. Please enter 'male' or 'female'.");
+                }
+            }
+    
+            // Get Blood Type
+            String[] validBloodTypes = {"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"};
+            String bloodType = null;
+            while (bloodType == null) {
+                System.out.print("Enter blood type (A+/A-/B+/B-/AB+/AB-/O+/O-): ");
+                String bloodInput = scanner.nextLine().trim().toUpperCase();
+                for (String valid : validBloodTypes) {
+                    if (bloodInput.equals(valid)) {
+                        bloodType = bloodInput;
+                        break;
                     }
                 }
-
-                name = capitalizedNames.toString().trim();
-                break; 
-            } else {
-                System.out.println("Name cannot be empty. Please enter a valid name: ");
+                if (bloodType == null) {
+                    System.out.println("Invalid blood type. Please enter a valid blood type.");
+                }
             }
+    
+            // Get Contact Number
+            String contactNumber;
+            do {
+                System.out.print("Enter contact number (+65 XXXX XXXX): ");
+                contactNumber = scanner.nextLine().trim();
+                if (!contactNumber.matches("\\+65 [89]\\d{3} \\d{4}")) {
+                    System.out.println("Invalid contact number format. Please use format: +65 XXXX XXXX");
+                }
+            } while (!contactNumber.matches("\\+65 [89]\\d{3} \\d{4}"));
+    
+            // Create patient with empty email (can be updated later)
+            int result = PatientInterface.createPatient(
+                patientID, 
+                "password123", // default password
+                "patient", 
+                name, 
+                date, 
+                gender, 
+                contactNumber,
+                "", // empty email
+                bloodType
+            );
+    
+            // if (result == 1) {
+            //     System.out.println("\nPatient registered successfully!");
+            //     System.out.println("Default password set to: password123");
+            //     System.out.println("Please inform the patient to change their password upon first login.");
+            // }
+    
+            return result;
+    
+        } catch (Exception e) {
+            System.err.println("Error registering patient: " + e.getMessage());
+            return 0;
         }
-
-        LocalDate date = null;
-        while (date == null) {
-            System.out.print("Enter date of birth 'YYYY-MM-DD': ");
-            String dateInput = case8Scanner.next();
-            try {
-                date = LocalDate.parse(dateInput, DateTimeFormatUtils.DATE_FORMATTER);
-            } catch (DateTimeParseException e) {
-                System.out.println("Invalid date format. Please enter the date in 'YYYY-MM-DD' format.");
-            }
-        }
-        String gender = null;
-        while (gender == null) {
-            System.out.print("Enter Gender of Patient: ");
-            String genderInput = case8Scanner.next().toLowerCase(); // Normalize input to lowercase
-            if (genderInput.equals("male") || genderInput.equals("female")) {
-                gender = genderInput; 
-            } else {
-                System.out.println("Invalid input. Please enter 'male' or 'female'.");
-            }
-        }
-        System.out.print("Enter patient blood type: ");
-        String bloodType = "";
-        do {
-            System.out.print("Enter patient blood type: ");
-            bloodType = case8Scanner.next().toUpperCase();
-        } while (!bloodType.matches("A+|A-|B+|B-|AB+|AB-|O+|O-"));
-        String contactNumber = null;
-		while (contactNumber == null) {
-			System.out.println("Enter the patient's contact number (format: 9xxx xxxx or 8xxx xxxx):");
-			String input = case8Scanner.nextLine();
-			if (input.matches("^[98]\\d{3} \\d{4}$")) {
-				contactNumber = "+65 " + input.substring(0, 4) + input.substring(4);
-			} else {
-				System.out.println("Invalid phone number. Please enter digits only.");
-			}
-		}
-        case8Scanner.close();
-        return PatientInterface.createPatient(patientID, "", "patient", name, date, gender, contactNumber, "", bloodType);
     }
 
     /**
@@ -404,11 +473,82 @@ public class Doctor extends User {
      * @return an integer indicating success (0) or failure (1)
      */
     public int dischargePatient() {
-        Scanner case9Scanner = new Scanner(System.in);
-        System.out.print("Enter Patient ID to delete: ");
-        String case9Choice = case9Scanner.next().toUpperCase();
-        case9Scanner.close();
-        return PatientInterface.deletePatient(case9Choice);
+        try {
+            Scanner scanner = new Scanner(System.in);
+            
+            // Get fresh list of patients from CSV
+            List<Patient> patients = PatientInterface.getAllPatients();
+            
+            if (patients.isEmpty()) {
+                System.out.println("\nNo patients found in the system.");
+                return 0;
+            }
+    
+            // Show all patients
+            System.out.println("\nCurrent Patients:");
+            System.out.println("----------------------------------------");
+            for (Patient patient : patients) {
+                System.out.printf("Patient ID: %s\n" +
+                                "Name: %s\n" +
+                                "Date of Birth: %s\n" +
+                                "Gender: %s\n" +
+                                "Blood Type: %s\n" +
+                                "Contact: %s\n",
+                    patient.getPatientID(),
+                    patient.getName(),
+                    patient.getDateOfBirth(),
+                    patient.getGender(),
+                    patient.getBloodType(),
+                    patient.getPhoneNum());
+                System.out.println("----------------------------------------");
+            }
+    
+            System.out.print("\nEnter Patient ID to discharge (or 'back' to return): ");
+            String patientID = scanner.nextLine().trim();
+            
+            if (patientID.equalsIgnoreCase("back")) {
+                return 0;
+            }
+    
+            // Validate patient exists
+            Patient patientToDischarge = patients.stream()
+                .filter(p -> p.getPatientID().equals(patientID))
+                .findFirst()
+                .orElse(null);
+                
+            if (patientToDischarge == null) {
+                System.out.println("Patient ID not found.");
+                return 0;
+            }
+    
+            // Confirm discharge
+            System.out.printf("Are you sure you want to discharge patient:\n" +
+                             "Name: %s\n" +
+                             "ID: %s\n" +
+                             "(Y/N): ", 
+                patientToDischarge.getName(), 
+                patientID);
+                
+            String confirm = scanner.nextLine().trim().toUpperCase();
+            
+            if (!confirm.equals("Y")) {
+                System.out.println("Discharge cancelled.");
+                return 0;
+            }
+    
+            int result = PatientInterface.deletePatient(patientID);
+            if (result == 1) {
+                System.out.println("Patient successfully discharged.");
+                return 1;
+            } else {
+                System.out.println("Failed to discharge patient.");
+                return 0;
+            }
+            
+        } catch (Exception e) {
+            System.err.println("Error during discharge process: " + e.getMessage());
+            return 0;
+        }
     }
 
     /**
