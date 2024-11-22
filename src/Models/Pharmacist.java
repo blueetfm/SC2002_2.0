@@ -98,6 +98,10 @@ public class Pharmacist extends User {
         return false;
     }
 
+    
+    /** 
+     * @return boolean
+     */
     public boolean viewAppointmentOutcomes() {
         List<AppointmentOutcomeRecord> AORList = AppointmentOutcomeRecordManager.showAllAppointmentOutcomeRecords();
         if (AORList == null || AORList.isEmpty()) {

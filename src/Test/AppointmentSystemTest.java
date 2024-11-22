@@ -7,6 +7,10 @@ import java.time.*;
 import java.util.*;
 
 public class AppointmentSystemTest {
+    
+    /** 
+     * @param args
+     */
     public static void main(String[] args) {
         // Initialize test data
         TimeSlotInterface.initializeObjects();
@@ -68,7 +72,7 @@ public class AppointmentSystemTest {
         List<TimeSlot> availableSlots = TimeSlotInterface.getAvailableTimeSlots();
         if (!availableSlots.isEmpty()) {
             TimeSlot slot = availableSlots.get(0);
-            AppointmentInterface.scheduleAppointment(patientID, doctorID, slot.getTimeSlotID());
+            AppointmentInterface.scheduleAppointment(patientID, doctorID, slot.getTimeSlotID(), Service.CONSULTATION);
             System.out.println("Booked appointment for patient " + patientID + " in slot " + slot.getTimeSlotID());
             
             // Verify booking
@@ -113,7 +117,7 @@ public class AppointmentSystemTest {
             AppointmentInterface.updateAppointmentStatus(oldApt.getAppointmentID(), AppointmentStatus.CANCELLED);
             
             // Create new appointment
-            AppointmentInterface.scheduleAppointment(patientID, oldApt.getDoctorID(), newSlot.getTimeSlotID());
+            AppointmentInterface.scheduleAppointment(patientID, oldApt.getDoctorID(), newSlot.getTimeSlotID(), Service.CONSULTATION);
             System.out.println("Rescheduled appointment to slot: " + newSlot.getTimeSlotID());
         }
     }

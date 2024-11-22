@@ -252,6 +252,10 @@ public class Administrator extends User {
         return StaffInterface.getCurrentPassword(hospitalID);
     }
 
+    
+    /** 
+     * @return List<Appointment>
+     */
     // Appointment Management Methods
 
     public List<Appointment> viewAllAppointments() {

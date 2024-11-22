@@ -13,7 +13,7 @@
  * @see Views.UserMenu
  */
 
- import Views.*;
+import Views.*;
 public class HMSApp {
   /**
    * The main method which serves as the entry point of the application.

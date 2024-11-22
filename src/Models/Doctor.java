@@ -140,6 +140,10 @@ public class Doctor extends User {
         return 1;
     }
 
+    
+    /** 
+     * @return List<Appointment>
+     */
     public List<Appointment> getPendingAppointments() {
         AppointmentInterface.initializeObjects();
         return AppointmentInterface.getAppointmentsByDoctorID(this.getHospitalID())
@@ -286,7 +290,7 @@ public class Doctor extends User {
             System.out.print("Enter Gender of Patient: ");
             String genderInput = case8Scanner.next().toLowerCase(); // Normalize input to lowercase
             if (genderInput.equals("male") || genderInput.equals("female")) {
-                gender = genderInput; // Assign valid gender
+                gender = genderInput; 
             } else {
                 System.out.println("Invalid input. Please enter 'male' or 'female'.");
             }
