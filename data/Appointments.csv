@@ -1,0 +1,2 @@
+Appointment ID,Patient ID,Doctor ID,Date,TimeSlot ID,Status,Service
+APT1,P1001,D001,2024-11-22,TS3,COMPLETED,XRAY
