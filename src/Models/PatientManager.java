@@ -104,6 +104,7 @@ public class PatientManager implements PatientInterface {
      * @return the patient object if found, or null if no match is found or access is denied
      */
     public static Patient getPatient(String hospitalID) {
+        Patient returnedPatient = null;
         List<Patient> patientList = getAllPatients();
         String loggedInID = UserMenu.getLoggedInHospitalID(); 
         boolean isPatient = loggedInID.startsWith("P") && loggedInID.length() == 5;
@@ -118,11 +119,15 @@ public class PatientManager implements PatientInterface {
             for (Patient patient : patientList) {
                 if (patient.getPatientID().equals(hospitalID)) {
                     System.out.println("Patient profile exists.");
-                    return patient;
+                    returnedPatient = patient;
+                    return returnedPatient;
                 }
             }  
         }
-        System.out.println("No matching patient profile ID.");
+        if (returnedPatient == null){
+            System.out.println("No matching patient profile ID.");
+        }
+        
         return null;
     
         
