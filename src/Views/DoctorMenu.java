@@ -5,6 +5,8 @@ import Models.Doctor;
 import Models.TimeSlot;
 import Services.AppointmentInterface;
 import Services.TimeSlotInterface;
+import Utils.DateTimeFormatUtils;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -16,18 +18,18 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 /**
- * The DoctorMenu class represents the interface for a doctor to interact with various functionalities of the hospital management system.
+ * The `DoctorMenu` class represents the interface for a doctor to interact with various functionalities of the hospital management system.
  * It provides options for viewing and updating patient records, managing appointments, setting availability, and more.
  * 
  * <p>Dependencies:</p>
  * This class relies on several other classes and interfaces:
- * - Enums.AppointmentStatus
- * - Models.Appointment
- * - Models.Doctor
- * - Models.TimeSlot
- * - Services.AppointmentInterface
- * - Services.TimeSlotInterface
- * - Utils.DateTimeFormatUtils
+ * - `Enums.AppointmentStatus`
+ * - `Models.Appointment`
+ * - `Models.Doctor`
+ * - `Models.TimeSlot`
+ * - `Services.AppointmentInterface`
+ * - `Services.TimeSlotInterface`
+ * - `Utils.DateTimeFormatUtils`
  * 
  * <p>Features:</p>
  * - Provides a menu-driven interface for the doctor.
@@ -41,7 +43,7 @@ import java.util.stream.Collectors;
  * Includes basic error handling for file I/O and user input validation.
  * 
  * <p>Usage:</p>
- * Create an instance of DoctorMenu and invoke the showMenu method to start the interaction.
+ * Create an instance of `DoctorMenu` and invoke the `showMenu` method to start the interaction.
  * 
  * @see Enums.AppointmentStatus
  * @see Models.Appointment
@@ -58,7 +60,8 @@ public class DoctorMenu implements Menu {
 	private Scanner scanner;
     private Doctor currentDoctor;
     private boolean isRunning;
-	 /**
+	
+	/**
      * Constructor initializes the scanner and the current doctor based on logged-in user information.
      */
 	public DoctorMenu() {
@@ -66,9 +69,9 @@ public class DoctorMenu implements Menu {
 		isRunning = true;
 		initializeDoctor();
 	}
-	 /**
+	/**
      * Initializes the current doctor based on the logged-in hospital ID.
-     * Reads doctor details from the Staff_List.csv file.
+     * Reads doctor details from the `Staff_List.csv` file.
      */
 	private void initializeDoctor() {
 		String loggedInID = UserMenu.getLoggedInHospitalID();
@@ -91,7 +94,7 @@ public class DoctorMenu implements Menu {
 			System.err.println("Error reading staff data: " + e.getMessage());
 		}
 	}
-	 /**
+	/**
      * Displays the main menu and handles user interactions.
      */
 	public void showMenu() {
@@ -179,7 +182,7 @@ public class DoctorMenu implements Menu {
 		scanner.close();
 	    return;
 	}
-	 /**
+	/**
      * Displays the doctor's personal schedule.
      */
 	private void handleViewPersonalSchedule() {
@@ -273,7 +276,7 @@ public class DoctorMenu implements Menu {
 		}
 		System.out.println("Time slots created successfully.");
 	}
-	 /**
+	/**
      * Allows the doctor to accept or decline appointment requests.
      */
     private void handleAcceptOrDeclineAppointmentRequests() {
@@ -321,6 +324,7 @@ public class DoctorMenu implements Menu {
             System.out.println("----------------------------------------");
         }
     }
+
 	/**
      * Allows the doctor to see what future appointments have been scheduled by patients.
      */
@@ -355,6 +359,7 @@ public class DoctorMenu implements Menu {
 			}
 		}
 	}
+
 	/**
      * Prompts the user to enter a valid date.
      * 
@@ -366,7 +371,7 @@ public class DoctorMenu implements Menu {
         String dateStr = scanner.nextLine().trim();
         
         try {
-            LocalDate date = LocalDate.parse(dateStr);
+            LocalDate date = LocalDate.parse(dateStr, DateTimeFormatUtils.DATE_FORMATTER);
             if (date.isBefore(LocalDate.now())) {
                 System.out.println("Cannot create slots for past dates.");
                 continue;
