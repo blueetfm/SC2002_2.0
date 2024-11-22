@@ -102,6 +102,7 @@ public class PatientManager implements PatientInterface {
      * @return 1 if the patient was created successfully, 0 if the patient already exists
      */
     public static int createPatient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String bloodType) {
+        List<Patient> patientList = getAllPatients();
         String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
         List<String> allLines = new ArrayList<>();
         for (Patient patient : patientList) {
