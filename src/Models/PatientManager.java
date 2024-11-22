@@ -61,6 +61,7 @@ public class PatientManager implements PatientInterface {
      * @return the patient object if found, or null if no match is found or access is denied
      */
     public static Patient getPatient(String hospitalID) {
+        List<Patient> patientList = getAllPatients();
         String loggedInID = UserMenu.getLoggedInHospitalID(); 
         boolean isPatient = loggedInID.startsWith("P") && loggedInID.length() == 5;
         boolean isPharmacist = loggedInID.startsWith("P") && loggedInID.length() == 4;
