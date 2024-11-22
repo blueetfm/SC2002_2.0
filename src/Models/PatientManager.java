@@ -255,7 +255,7 @@ public class PatientManager implements PatientInterface {
         String[] pls_lah={};
         // Write the updated data back to the CSV (without headers being overwritten)
         CSVHandler.writeCSVLines(pls_lah, allLinesArray, "data/Patient_List.csv");
-        System.out.println("Patient database successfully updated!\n");
+        System.out.println("Patient database successfully updated!");
         return 1;
     }
     

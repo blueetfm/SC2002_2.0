@@ -498,6 +498,7 @@ public class PatientMenu implements Menu {
 		if (currentPatient.logout()) {
 			isRunning = false;
 			PatientInterface.updatePatient(this.currentPatient);
+			
 		}
 	}
 
