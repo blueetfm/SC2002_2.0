@@ -196,27 +196,33 @@ public class MedicalRecordManager implements MedicalRecordInterface {
      */
     public static int readMedicalRecordsByPatientID(String patientID) {
         Patient patient = PatientManager.getPatient(patientID);
-        if (patient == null){
-            return -1;
+        if (patient == null) {
+            return -1; 
         }
-
-        int found = 0;
+    
+        int found = 0; // Counter to track the number of records found
+    
         for (MedicalRecord record : medicalRecordList) {
             if (patientID.equals(record.getPatientID())) {
-                found++;
-                String ID = record.patientID;
-                for (Record obj : record.recordList) {
-                    System.out.printf(
-                        "ID: %s, Diagnosis: %s, Medication: %s, Treatment: %s \n",
-                        ID,
-                        obj.diagnosis,
-                        obj.medication,
-                        obj.treatment
-                    );
-                }
-            }
+                    System.out.println("\n=========== Patient Profile ===========");
+                    System.out.println("         Patient ID: " + patient.getPatientID());
+                    System.out.println("               Name: " + patient.getName());
+                    System.out.println("      Date of Birth: " + patient.getDateOfBirth());
+                    System.out.println("             Gender: " + patient.getGender());
+                    System.out.println("         Blood Type: " + patient.getBloodType());
+                    System.out.println("Contact Information: " + patient.getPhoneNum());
+                
+                        for (Record obj : record.recordList) {
+                            System.out.println("          Diagnosis:" + obj.getDiagnosis());
+                            System.out.println("         Medication:" + obj.getMedication());
+                            System.out.println("          Treatment:" + obj.getTreatment());
+                        }
+                    }                     
+                    System.out.println("=======================================\n");
+    
+                    found++;
         }
-
+    
         if (found == 0) {
             System.out.println("No records found for patient ID: " + patientID);
             return 0;

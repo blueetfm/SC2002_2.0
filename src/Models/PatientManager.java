@@ -115,7 +115,7 @@ public class PatientManager implements PatientInterface {
         if (isPatient && !loggedInID.equals(hospitalID)) {
             System.out.println("Access Denied. You may not view that profile.");
             return null;
-        } else if (isPharmacist || isDoctor || isAdministrator){
+        } else if (isPharmacist || isDoctor || isAdministrator || isPatient && loggedInID.equals(hospitalID)){
             for (Patient patient : patientList) {
                 if (patient.getPatientID().equals(hospitalID)) {
                     System.out.println("Patient profile exists.");
@@ -145,6 +145,7 @@ public class PatientManager implements PatientInterface {
      * @param bloodType the blood type of the new patient
      * @return 1 if the patient was created successfully, 0 if the patient already exists
      */
+
     public static int createPatient(String hospitalID, String password, String role, String name, 
                                 LocalDate birthDate, String gender, String phoneNum, String email, String bloodType) {
         if (patientList == null) {
