@@ -44,7 +44,7 @@ public class CSVHandler {
                 System.err.println("Error reading the CSV file: " + e.getMessage());
             }
         } else {
-            System.out.println("File does not exist: " + filePath);
+            System.out.println("Creating the file: " + filePath);
         }
         return records;
     }
