@@ -102,12 +102,12 @@ public class PatientMenu implements Menu {
 					this.currentPatient = new Patient(
 						loggedInID,                           // Hospital ID
 						"",                                   // Password not needed
-						"administrator",                      // Role
+						"patient",                      // Role
 						patientDetails[1],                    // Name
 						LocalDate.parse(patientDetails[2]),   // Date of Birth
 						patientDetails[3],                    // Gender
-						patientDetails[6],                    // Phone Number
-						patientDetails[5],                    // Email
+						patientDetails[5],                    // Phone Number
+						"",                    // Email
 						patientDetails[4]                    // Blood Type
 					);
 					this.currentPatient.getBloodType();
