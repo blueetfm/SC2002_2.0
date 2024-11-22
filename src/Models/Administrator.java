@@ -43,7 +43,7 @@ public class Administrator extends User {
         this.name = name;
         this.gender = gender;
         
-        // Initialize the staff and medication inventory data
+        // init staff and med inventory data
         StaffManager.initialize("data/Staff_List.csv"); 
         MedicationInventoryManager.initialize(
             "data/Medicine_List.csv", 
@@ -52,7 +52,6 @@ public class Administrator extends User {
     }
 
     // Staff Management Methods
-
     /**
      * Views the list of all staff in the hospital.
      * 
@@ -120,7 +119,6 @@ public class Administrator extends User {
     }
 
     // Medication Management Methods
-
     /**
      * Views the current medication inventory.
      */
@@ -192,8 +190,7 @@ public class Administrator extends User {
         }
     }
 
-    // Replenishment Methods
-
+    // Medication Replenishment Methods
     /**
      * Views all current medication replenishment requests.
      */
@@ -221,7 +218,6 @@ public class Administrator extends User {
     }
 
     // User Password Management
-
     /**
      * Updates the password of a user based on their hospital ID.
      * 
@@ -252,12 +248,10 @@ public class Administrator extends User {
         return StaffInterface.getCurrentPassword(hospitalID);
     }
 
-    
+    // Appointment Management Methods
     /** 
      * @return List<Appointment>
      */
-    // Appointment Management Methods
-
     public List<Appointment> viewAllAppointments() {
         AppointmentInterface.initializeObjects();
         List<Appointment> appointments = AppointmentInterface.getAllAppointments();
@@ -349,7 +343,6 @@ public class Administrator extends User {
         return appointments;
     }
 
-    //also handles empty appointment class
     private void printAppointments(List<Appointment> appointments) {
         TimeSlotInterface.initializeObjects();
         

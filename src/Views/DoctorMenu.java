@@ -78,7 +78,7 @@ public class DoctorMenu implements Menu {
         // get administrator details
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader("data/Staff_List.csv"));
-	        reader.readLine(); // Skip header
+	        reader.readLine();
 	        
 	        String line;
 	        while ((line = reader.readLine()) != null) {
@@ -169,7 +169,6 @@ public class DoctorMenu implements Menu {
 				}
 				break;	
 			case 10: 
-				// System.out.println("Logging out ….");
 				if (currentDoctor.logout()) {
 					System.out.println("Task completed successfully.");
 				} else {
@@ -219,11 +218,11 @@ public class DoctorMenu implements Menu {
 	private void handleSetAvailability() {
 		System.out.println("\nSet Appointment Availability");
 		
-		// Get date for the slots
+		// Get date for slots
 		LocalDate slotDate = getValidDate();
 		if (slotDate == null) return;
 
-		// Get number of slots
+		// Get num of slots
 		System.out.println("Enter number of slots to create: ");
 		int numSlots;
 		try {
@@ -237,7 +236,7 @@ public class DoctorMenu implements Menu {
 			return;
 		}
 
-		// Get starting hour (9-17 for business hours)
+		// Get start hour (9-17 for business hours)
 		System.out.println("Enter starting hour (9-17): ");
 		int startHour;
 		try {
@@ -259,12 +258,12 @@ public class DoctorMenu implements Menu {
 			return;
 		}
 
-		// Create the slots
+		// Create slots
 		for (int i = 0; i < numSlots; i++) {
 			LocalDateTime slotStart = startTime.plusHours(i);
 			LocalDateTime slotEnd = slotStart.plusMinutes(30);
 			
-			// Check if slot would extend beyond business hours
+			// Check if slot extend beyond business hours
 			if (slotEnd.getHour() > 17) {
 				System.out.println("Stopping slot creation as it would exceed business hours (17:00).");
 				break;

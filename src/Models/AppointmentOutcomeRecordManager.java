@@ -119,25 +119,24 @@ public class AppointmentOutcomeRecordManager implements AppointmentOutcomeRecord
 	public static int createAppointmentOutcomeRecord(String appointmentID, LocalDate date, 
             Enums.Service service, String medicine, PrescriptionStatus status, String notes) {
         try {
-            // Initialize if not already done
+            // init if not done
             if (AORList == null) {
                 AORList = new ArrayList<>();
             }
 
-            // Check for existing record
+            // check cur record
             for (AppointmentOutcomeRecord record : AORList) {
                 if (record.getAppointmentID().equals(appointmentID)) {
                     System.out.println("Record already exists for this appointment.");
                     return 0;
                 }
             }
-
-            // Create new record
+            // add new record
             AppointmentOutcomeRecord newAOR = new AppointmentOutcomeRecord(
                 appointmentID, date, service, medicine, status, notes);
             AORList.add(newAOR);
 
-            // Update CSV
+            // update csv
             int result = updateCSV();
             if (result == 0) {
                 System.err.println("Failed to update CSV file.");

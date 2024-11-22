@@ -68,7 +68,7 @@ public class AdministratorMenu implements Menu {
             String loggedInID = UserMenu.getLoggedInHospitalID();
             
             BufferedReader reader = new BufferedReader(new FileReader("data/Staff_List.csv"));
-            reader.readLine(); // Skip header
+            reader.readLine();
             
             String line;
             while ((line = reader.readLine()) != null) {
@@ -76,7 +76,7 @@ public class AdministratorMenu implements Menu {
                 if (staffDetails[0].equals(loggedInID)) {
                     this.currentAdmin = new Administrator(
                         loggedInID,       //hospital id
-                        "",     // password not needed
+                        "",
                         "administrator",
                         staffDetails[1], // name
                         staffDetails[3]  // gender
@@ -259,7 +259,7 @@ public class AdministratorMenu implements Menu {
             boolean success = currentAdmin.addStaff(name, role, gender, age);
             if (success) {
                 System.out.println("\nStaff member added successfully!");
-                currentAdmin.viewStaffList();  // Show updated list
+                currentAdmin.viewStaffList();
             } else {
                 System.out.println("\nFailed to add staff member.");
             }
@@ -279,10 +279,10 @@ public class AdministratorMenu implements Menu {
      * Updates the details of an existing staff member.
      */
     private void handleUpdateStaff() {
-        // Display current staff list
+        // show current staff list
         currentAdmin.viewStaffList();
         
-        // Get staff ID to update
+        // Get staffid
         System.out.print("\nEnter Staff ID to update: ");
         String staffId = getValidInput("Staff ID");
         
@@ -294,7 +294,7 @@ public class AdministratorMenu implements Menu {
             return;
         }
 
-        // Show update options menu
+        // Show update menu
         System.out.println("\nWhat would you like to update?");
         System.out.println("1. Name");
         System.out.println("2. Role");
@@ -340,7 +340,6 @@ public class AdministratorMenu implements Menu {
                 return;
         }
         
-        // Call the update method
         if (currentAdmin.updateStaff(staffId, newName, newRole, newGender, newAge)) {
             System.out.println("Staff updated successfully!");
         } else {

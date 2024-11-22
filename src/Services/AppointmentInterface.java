@@ -39,5 +39,4 @@ public interface AppointmentInterface {
         return AppointmentManager.getAppointmentsByPatientID(patientID);
     }
 
-    // public abstract void recordAppointmentOutcomeRecord(appointmentID, patientID, date, service, medication, PrescriptionStatus.valueOf("PENDING"), notes);
 }

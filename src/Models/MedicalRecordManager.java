@@ -101,7 +101,7 @@ public class MedicalRecordManager implements MedicalRecordInterface {
                     String ID = indivRecord.patientID;
                     for (Record soloRecord : indivRecord.recordList) {
                         if (soloRecord != null) {
-                            // Ensure no null values and proper formatting
+                            // proper formatting
                             String diagnosis = soloRecord.diagnosis != null ? soloRecord.diagnosis.trim() : "";
                             String medication = soloRecord.medication != null ? soloRecord.medication.trim() : "";
                             String treatment = soloRecord.treatment != null ? soloRecord.treatment.trim() : "";
@@ -117,24 +117,17 @@ public class MedicalRecordManager implements MedicalRecordInterface {
                     }
                 }
             }
-    
-            // Convert list to array for CSVHandler
             String[] lines = records.toArray(new String[0]);
-    
-            // Write to CSV using absolute path
             CSVHandler.writeCSVLines(
                 headers,
                 lines,
                 "data/MedicalRecord_List.csv"
             );
-    
-            // Verify the file was updated
             List<List<String>> verification = CSVHandler.readCSVLines("data/MedicalRecord_List.csv");
             if (verification == null || verification.size() <= 1) { // Only headers or empty
                 System.err.println("Failed to verify CSV update");
                 return 0;
             }
-    
             System.out.println("Medical records CSV updated successfully");
             return 1;
         } catch (Exception e) {
@@ -198,26 +191,17 @@ public class MedicalRecordManager implements MedicalRecordInterface {
             return -1; 
         }
     
-        int found = 0; // Counter to track if record exists
+        int found = 0; // Counter to track num of record
     
         for (MedicalRecord record : medicalRecordList) {
             if (patientID.equals(record.getPatientID())) {
-                    // System.out.println("\n=========== Patient Profile ===========");
-                    // System.out.println("         Patient ID: " + patient.getPatientID());
-                    // System.out.println("               Name: " + patient.getName());
-                    // System.out.println("      Date of Birth: " + patient.getDateOfBirth());
-                    // System.out.println("             Gender: " + patient.getGender());
-                    // System.out.println("         Blood Type: " + patient.getBloodType());
-                    // System.out.println("Contact Information: " + patient.getPhoneNum());
-                
-                        for (Record obj : record.recordList) {
-                            System.out.println("          Diagnosis:" + obj.getDiagnosis());
-                            System.out.println("         Medication:" + obj.getMedication());
-                            System.out.println("          Treatment:" + obj.getTreatment());
-                            found++;
-                        }
-            }                     
-            // System.out.println("=======================================\n");
+                for (Record obj : record.recordList) {
+                    System.out.println("          Diagnosis:" + obj.getDiagnosis());
+                    System.out.println("         Medication:" + obj.getMedication());
+                    System.out.println("          Treatment:" + obj.getTreatment());
+                    found++;
+                }
+            }   
         }
     
         if (found == 0) {
@@ -250,7 +234,7 @@ public class MedicalRecordManager implements MedicalRecordInterface {
 
         MedicalRecord recordToUpdate = null;
         
-        // Find existing record or create new one
+        // find existing record or create new one
         for (MedicalRecord record : medicalRecordList) {
             if (record.patientID.equals(patientID)) {
                 recordToUpdate = record;
@@ -263,10 +247,10 @@ public class MedicalRecordManager implements MedicalRecordInterface {
             medicalRecordList.add(recordToUpdate);
         }
 
-        // Add new record entry
+        // add new record entry
         recordToUpdate.addRecord(recordToUpdate, diagnosis, medication, treatment);
         
-        // Force save to CSV
+        // force save to CSV
         int saveResult = updateCSV();
         if (saveResult == 0) {
             System.err.println("Warning: Changes may not have been saved to CSV");

@@ -87,7 +87,7 @@ public class PatientMenu implements Menu {
 	
 			BufferedReader reader = new BufferedReader(new FileReader("data/Patient_List.csv"));
 			System.out.println("Patient list CSV file opened successfully.");  
-			reader.readLine(); // Skip header
+			reader.readLine();
 			System.out.println("Header skipped.");  
 	
 			String line;
@@ -95,20 +95,19 @@ public class PatientMenu implements Menu {
 				System.out.println("Reading line: " + line);  
 				String[] patientDetails = line.split(",");
 				System.out.println(patientDetails[0].toUpperCase()); 
-				// Check if patient ID matches
+
 				if (patientDetails[0].equals(loggedInID.toUpperCase())) {
 					System.out.println("Patient found: " + patientDetails[1]);  
-	
 					this.currentPatient = new Patient(
-						loggedInID,                           // Hospital ID
-						"",                                   // Password not needed
-						"patient",                      // Role
-						patientDetails[1],                    // Name
-						LocalDate.parse(patientDetails[2]),   // Date of Birth
-						patientDetails[3],                    // Gender
-						patientDetails[6],                    // Phone Number
-						patientDetails[5],                    // Email
-						patientDetails[4]                    // Blood Type
+						loggedInID,                           // hospital id
+						"",
+						"patient",                      // role
+						patientDetails[1],                    // name
+						LocalDate.parse(patientDetails[2]),   // dob
+						patientDetails[3],                    // gender
+						patientDetails[6],                    // phone 
+						patientDetails[5],                    // email
+						patientDetails[4]                    // blood type
 					);
 					this.currentPatient.getBloodType();
 					System.out.println("Patient object created successfully.");  
@@ -140,7 +139,7 @@ public class PatientMenu implements Menu {
 			System.out.println("9: Logout");
 
 			int choice = sc.nextInt();
-			sc.nextLine(); // Consume newline character
+			sc.nextLine();
 
 			switch (choice) {
 				case 1: handleViewMedicalRecord(); break;
@@ -221,7 +220,7 @@ public class PatientMenu implements Menu {
 			return;
 		}
 
-		// Show available services
+		// show avail services
 		System.out.println("\nAvailable services:");
 		System.out.println("1: CONSULTATION");
 		System.out.println("2: XRAY");
@@ -270,7 +269,7 @@ public class PatientMenu implements Menu {
         TimeSlotInterface.initializeObjects();
         AppointmentInterface.initializeObjects();
         
-        // Show current appointments
+        // show cur appointments
         List<Appointment> appointments = currentPatient.getScheduledAppointments();
         if (appointments.isEmpty()) {
             System.out.println("You have no appointments to reschedule.");
@@ -314,7 +313,7 @@ public class PatientMenu implements Menu {
             return;
         }
 
-        // Find the old appointment to get its service
+        // find old appointment for service
         Appointment oldAppointment = appointments.stream()
             .filter(apt -> apt.getAppointmentID().equals(oldAppointmentID))
             .findFirst()
@@ -331,7 +330,7 @@ public class PatientMenu implements Menu {
             return;
         }
 
-        // Show available slots
+        // show avail slots
         handleViewAvailableAppointmentSlots();
 
         System.out.print("\nEnter new slot ID (or 'back' to return): ");
@@ -347,16 +346,13 @@ public class PatientMenu implements Menu {
             return;
         }
 
-        // Cancel old appointment
         AppointmentInterface.updateAppointmentStatus(oldAppointmentID, AppointmentStatus.CANCELLED);
-
-        // Schedule new appointment with same service
         try {
             AppointmentInterface.scheduleAppointment(
                 currentPatient.getPatientID(),
                 newSlot.getDoctorID(),
                 newSlotID,
-                oldAppointment.getService()  // Preserve the original service
+                oldAppointment.getService()
             );
             System.out.println("Appointment rescheduled successfully!");
         } catch (Exception e) {
@@ -419,7 +415,7 @@ public class PatientMenu implements Menu {
      * Displays available appointment slots for booking or rescheduling.
      */
 	private void handleViewAvailableAppointmentSlots() {
-        TimeSlotInterface.initializeObjects(); // Initialize before getting slots
+        TimeSlotInterface.initializeObjects();
         List<TimeSlot> availableSlots = TimeSlotInterface.getAvailableTimeSlots();
         if (availableSlots.isEmpty()) {
             System.out.println("No available slots found.");
@@ -487,7 +483,7 @@ public class PatientMenu implements Menu {
 			System.out.println("----------------------------------------");
 			
 			for (AppointmentOutcomeRecord record : records) {
-				// Get appointment details
+				// get apt details
 				List<Appointment> appointments = AppointmentInterface.getAppointmentsByPatientID(currentPatient.getPatientID());
 				Appointment relatedAppointment = appointments.stream()
 					.filter(apt -> apt.getAppointmentID().equals(record.getAppointmentID()))

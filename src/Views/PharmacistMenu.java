@@ -48,25 +48,21 @@ public class PharmacistMenu implements Menu {
                 throw new IllegalStateException("No user is logged in");
             }
 
-            // Read from Staff_List.csv to get pharmacist details
             File csvFile = new File("data/Staff_List.csv");
             BufferedReader reader = new BufferedReader(new FileReader(csvFile));
             String line;
             
-            // Skip header if exists
             reader.readLine();
-            
             while ((line = reader.readLine()) != null) {
                 String[] staffDetails = line.split(",");
-                // Check if staffID matches logged in ID and role is pharmacist
                 if (staffDetails.length >= 5 && 
                     staffDetails[0].equals(loggedInID) && 
                     staffDetails[2].equalsIgnoreCase("pharmacist")) {
                     
-                    // Create Pharmacist object with details from Staff_List.csv
+                    // Create pharma object
                     this.currentPharmacist = new Pharmacist(
                         loggedInID,             // hospitalID
-                        "",                     // password (already authenticated)
+                        "",
                         "pharmacist",           // role
                         staffDetails[1],        // name
                         staffDetails[3],        // gender
@@ -179,7 +175,7 @@ public class PharmacistMenu implements Menu {
      * Handles the process of updating prescription statuses.
      */
     private void handlePrescriptionStatus() {
-        // First show pending prescriptions
+        // show pending prescriptions first
         currentPharmacist.viewAppointmentOutcomes();
         
         System.out.print("\nEnter Appointment ID to dispense medication (or 'back' to return): ");

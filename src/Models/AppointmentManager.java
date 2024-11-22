@@ -54,15 +54,15 @@ public class AppointmentManager implements AppointmentInterface {
         
         for (int i = 1; i < lines.size(); i++) {
             List<String> row = lines.get(i);
-            if (row.size() >= 7) {  // Updated size check
+            if (row.size() >= 7) {
                 Appointment appointment = new Appointment(
                     row.get(0), // appointmentID
                     row.get(1), // patientID
                     row.get(2), // doctorID
-                    LocalDate.parse(row.get(3)),
+                    LocalDate.parse(row.get(3)), //date
                     row.get(4), // timeSlotID
                     Service.valueOf(row.get(6)), //service
-                    AppointmentStatus.valueOf(row.get(5))
+                    AppointmentStatus.valueOf(row.get(5)) //status
                 );
                 appointments.add(appointment);
             }
@@ -169,8 +169,8 @@ public class AppointmentManager implements AppointmentInterface {
      * @return A list of all appointments.
      */
     public static List<Appointment> getAllAppointments() {
-        initializeObjects();  // Make sure data is loaded
-        return new ArrayList<>(appointments);  // Return a copy of all appointments
+        initializeObjects();
+        return new ArrayList<>(appointments);
     }
     /**
      * Retrieves appointments associated with a specific doctor.

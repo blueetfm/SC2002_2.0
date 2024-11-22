@@ -53,7 +53,6 @@ public class PatientManager implements PatientInterface {
      */
     public static List<Patient> getAllPatients() {
         try {
-            // Always read from CSV to get current list
             List<List<String>> allLines = CSVHandler.readCSVLines("data/Patient_List.csv");
             patientList = new ArrayList<>();
             
@@ -76,10 +75,10 @@ public class PatientManager implements PatientInterface {
                         Patient patient = new Patient(
                             patientID,      // hospitalID
                             name,           // name
-                            dateOfBirth,    // birthDate
+                            dateOfBirth,    // dob
                             gender,         // gender
                             bloodType,      // bloodType
-                            "",            // email (not in CSV)
+                            "",            // email
                             phoneNum        
                         );
                         patientList.add(patient);
@@ -178,7 +177,7 @@ public class PatientManager implements PatientInterface {
                 birthDate.toString(),
                 gender,
                 bloodType,
-                phoneNum  // Contact information at the end
+                phoneNum
             );
             patientLines.add(newPatientLine);
 
@@ -256,13 +255,12 @@ public class PatientManager implements PatientInterface {
             List<List<String>> allLines = CSVHandler.readCSVLines("data/Patient_List.csv");
             
             if (allLines == null || allLines.isEmpty()) {
-                // Create new file with headers if it doesn't exist
+                // create new file with headers if it doesn't exist
                 String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Email", "Contact Information"};
                 CSVHandler.writeCSVLines(headers, new String[]{}, "data/Patient_List.csv");
                 return patients;
             }
         
-            // Skip header and process records
             for (int i = 1; i < allLines.size(); i++) {
                 List<String> row = allLines.get(i);
         
@@ -299,25 +297,20 @@ public class PatientManager implements PatientInterface {
      */
     public static int updatePatient(Patient updatedPatient) {
         String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Email", "Contact Information"};
-        
-        // Read the CSV file into a List of List of Strings (representing rows and columns)
         List<List<String>> allLines = CSVHandler.readCSVLines("data/Patient_List.csv");
         boolean patientUpdated = false;
     
-        // Loop through all lines
+
         for (int i = 0; i < allLines.size(); i++) {
             List<String> row = allLines.get(i);
-    
-            // Ensure we're checking for 7 columns and the Patient ID is the first column
             if (row.get(0).equals(updatedPatient.getPatientID().toUpperCase())) {
-                // Update the row with the new patient details
                 row.set(0, updatedPatient.getPatientID().toUpperCase());
                 row.set(1, updatedPatient.getName());
                 row.set(2, updatedPatient.getDateOfBirth().toString());
                 row.set(3, updatedPatient.getGender());
                 row.set(4, updatedPatient.getBloodType());
-                row.set(5, updatedPatient.getEmail()); // Update email
-                row.set(6, updatedPatient.getPhoneNum()); // Update contact info
+                row.set(5, updatedPatient.getEmail());
+                row.set(6, updatedPatient.getPhoneNum());
                 patientUpdated = true;
                 break;
             }
@@ -328,17 +321,12 @@ public class PatientManager implements PatientInterface {
             return 0;
         }
     
-        // Convert List<List<String>> to String[] array for writeCSVLines method
         List<String> flattenedLines = new ArrayList<>();
         for (List<String> row : allLines) {
-            flattenedLines.add(String.join(",", row));  // Convert each row (List<String>) to a single comma-separated String
+            flattenedLines.add(String.join(",", row));
         }
-    
-        // Convert the list to a String[] array
         String[] allLinesArray = flattenedLines.toArray(new String[0]);
-        
         String[] pls_lah={};
-        // Write the updated data back to the CSV (without headers being overwritten)
         CSVHandler.writeCSVLines(pls_lah, allLinesArray, "data/Patient_List.csv");
         System.out.println("Patient database successfully updated!");
         return 1;
@@ -360,7 +348,7 @@ public class PatientManager implements PatientInterface {
     */
     public static int deletePatient(String hospitalID) {
         try {
-            // First validate if patient exists
+            // validate if patient exists
             boolean found = false;
             for (Patient patient : patientList) {
                 if (patient.getPatientID().equals(hospitalID)) {
@@ -374,16 +362,12 @@ public class PatientManager implements PatientInterface {
                 return 0;
             }
 
-            // Update Patient_List.csv
+            // Update csv
             List<List<String>> existingPatients = CSVHandler.readCSVLines("data/Patient_List.csv");
             List<String> remainingLines = new ArrayList<>();
-            
-            // Add header
             if (!existingPatients.isEmpty()) {
                 remainingLines.add(String.join(",", existingPatients.get(0)));
             }
-
-            // Add all patients except the one to be deleted
             for (int i = 1; i < existingPatients.size(); i++) {
                 List<String> row = existingPatients.get(i);
                 if (!row.get(0).equals(hospitalID)) {
@@ -391,32 +375,22 @@ public class PatientManager implements PatientInterface {
                 }
             }
 
-            // Write back to Patient_List.csv
             String[] patientLines = remainingLines.toArray(new String[0]);
             CSVHandler.writeCSVLines(new String[0], patientLines, "data/Patient_List.csv");
 
-            // Update User_List.csv
             List<List<String>> existingUsers = CSVHandler.readCSVLines("data/User_List.csv");
             List<String> updatedUserLines = new ArrayList<>();
-            
-            // Add header
             if (!existingUsers.isEmpty()) {
                 updatedUserLines.add(String.join(",", existingUsers.get(0)));
             }
-            
-            // Add all users except the deleted patient
             for (int i = 1; i < existingUsers.size(); i++) {
                 List<String> row = existingUsers.get(i);
                 if (!row.get(0).equals(hospitalID)) {
                     updatedUserLines.add(String.join(",", row));
                 }
             }
-
-            // Write back to User_List.csv
             String[] userLines = updatedUserLines.toArray(new String[0]);
             CSVHandler.writeCSVLines(new String[0], userLines, "data/User_List.csv");
-
-            // Update in-memory list without using iterator
             patientList = patientList.stream()
                 .filter(p -> !p.getPatientID().equals(hospitalID))
                 .collect(Collectors.toList());

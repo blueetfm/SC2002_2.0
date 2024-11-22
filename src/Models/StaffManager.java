@@ -92,7 +92,6 @@ public class StaffManager implements StaffInterface {
         List<Staff> staffList = new ArrayList<>();
         List<List<String>> records = CSVHandler.readCSVLines(csvFilePath);
 
-        // Skip header row
         for (int i = 1; i < records.size(); i++) {
             List<String> record = records.get(i);
             if (record.size() == 5) {
@@ -139,7 +138,6 @@ public class StaffManager implements StaffInterface {
         List<String[]> userList = new ArrayList<>();
         List<List<String>> records = CSVHandler.readCSVLines(userListPath);
 
-        // Skip header row
         for (int i = 1; i < records.size(); i++) {
             List<String> record = records.get(i);
             if (record.size() == 2) {

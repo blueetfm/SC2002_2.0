@@ -102,7 +102,7 @@ public class Doctor extends User {
         MedicalRecordInterface.readMedicalRecordsByPatientID(patientID);
         System.out.println();
 
-        // Get diagnosis
+        // get diagnosis
         System.out.println("Enter Diagnosis: ");
         String diagnosis;
         while (true) {
@@ -124,7 +124,7 @@ public class Doctor extends User {
             }
         }
 
-        // Get medication
+        // get medication
         System.out.println("Enter Medication: ");
         String medication;
         while (true) {
@@ -146,7 +146,7 @@ public class Doctor extends User {
             }
         }
 
-        // Get treatment
+        // get treatment
         System.out.println("Enter Treatment: ");
         String treatment;
         while (true) {
@@ -168,7 +168,7 @@ public class Doctor extends User {
             }
         }
 
-        // Update medical record
+        // update MR
         MedicalRecord updatedRecord = MedicalRecordManager.updateMedicalRecord(patientID, diagnosis, medication, treatment);
         if (updatedRecord != null) {
             System.out.println("\nUpdated Medical Record:");
@@ -336,7 +336,7 @@ public class Doctor extends User {
         String notes = scanner.nextLine().trim();
         if (notes.isEmpty()) notes = "NIL";
     
-        // Create the AOR
+        // create AOR
         int result = AppointmentOutcomeRecordManager.createAppointmentOutcomeRecord(
             appointmentID,
             selectedApt.getDate(),
@@ -365,7 +365,7 @@ public class Doctor extends User {
         Scanner scanner = new Scanner(System.in);
         
         try {
-            // Get Patient ID
+            // get patientid
             System.out.print("Enter Patient ID (format: P1XXX): ");
             String patientID = scanner.nextLine().trim();
             if (!patientID.matches("P\\d{4}")) {
@@ -373,7 +373,7 @@ public class Doctor extends User {
                 return 0;
             }
     
-            // Get Name
+            // get name
             String name;
             do {
                 System.out.print("Enter Name of Patient: ");
@@ -383,7 +383,7 @@ public class Doctor extends User {
                 }
             } while (name.isEmpty());
     
-            // Get Date of Birth
+            // Get dob
             LocalDate date = null;
             while (date == null) {
                 System.out.print("Enter date of birth (YYYY-MM-DD): ");
@@ -399,7 +399,7 @@ public class Doctor extends User {
                 }
             }
     
-            // Get Gender
+            // Get gender
             String gender = null;
             while (gender == null) {
                 System.out.print("Enter Gender (male/female): ");
@@ -411,7 +411,7 @@ public class Doctor extends User {
                 }
             }
     
-            // Get Blood Type
+            // Get blood type
             String[] validBloodTypes = {"A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"};
             String bloodType = null;
             while (bloodType == null) {
@@ -428,7 +428,7 @@ public class Doctor extends User {
                 }
             }
     
-            // Get Contact Number
+            // Get phone
             String contactNumber;
             do {
                 System.out.print("Enter contact number (+65 XXXX XXXX): ");
@@ -441,7 +441,7 @@ public class Doctor extends User {
             // Create patient with empty email (can be updated later)
             int result = PatientInterface.createPatient(
                 patientID, 
-                "password123", // default password
+                "password", // default password
                 "patient", 
                 name, 
                 date, 
@@ -474,7 +474,7 @@ public class Doctor extends User {
         try {
             Scanner scanner = new Scanner(System.in);
             
-            // Get fresh list of patients from CSV
+            // Get list of patients from CSV
             List<Patient> patients = PatientInterface.getAllPatients();
             
             if (patients.isEmpty()) {
@@ -482,7 +482,7 @@ public class Doctor extends User {
                 return 0;
             }
     
-            // Show all patients
+            // show all patients
             System.out.println("\nCurrent Patients:");
             System.out.println("----------------------------------------");
             for (Patient patient : patients) {
@@ -508,7 +508,7 @@ public class Doctor extends User {
                 return 0;
             }
     
-            // Validate patient exists
+            // validate patient exists
             Patient patientToDischarge = patients.stream()
                 .filter(p -> p.getPatientID().equals(patientID))
                 .findFirst()
@@ -519,7 +519,7 @@ public class Doctor extends User {
                 return 0;
             }
     
-            // Confirm discharge
+            // confirm discharge
             System.out.printf("Are you sure you want to discharge patient:\n" +
                              "Name: %s\n" +
                              "ID: %s\n" +

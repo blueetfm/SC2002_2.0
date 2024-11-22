@@ -268,7 +268,6 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
             return;
         }
 
-        // Update existing request or add new one
         boolean updated = false;
         for (ReplenishRequest request : replenishRequests) {
             if (request.medicineName.equals(medicationName)) {
@@ -349,10 +348,8 @@ public class MedicationInventoryManager implements MedicationInventoryInterface 
             return false;
         }
 
-        // Update medication stock
+        //update status
         medication.replenish(request.quantity);
-        
-        // Update status and save
         request.status = ReplenishStatus.APPROVED;
         saveMedicationList();
         saveReplenishRequests();

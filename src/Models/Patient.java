@@ -74,7 +74,6 @@ public class Patient extends User {
     /**
      * Manages appointments for the patient.
      */
-    // private AppointmentManager appointmentManager;
 
     /**
      * Constructs a new {@code Patient} object with the specified details.
@@ -178,10 +177,10 @@ public class Patient extends User {
             AppointmentInterface.initializeObjects();
             TimeSlotInterface.initializeObjects();
             
-            // Cancel old appointment
+            // cancel old appointment
             AppointmentInterface.updateAppointmentStatus(oldAppointmentID, AppointmentStatus.CANCELLED);
             
-            // Get old appointment details to create new one
+            // get old appointment details to create new one
             Appointment oldApt = AppointmentInterface.getAppointmentsByPatientID(this.patientID)
                 .stream()
                 .filter(apt -> apt.getAppointmentID().equals(oldAppointmentID))
@@ -192,7 +191,7 @@ public class Patient extends User {
                 return false;
             }
             
-            // Schedule new appointment
+            // schedule new
             return scheduleAppointment(oldApt.getDoctorID(), newTimeSlotID, Service.CONSULTATION);
         } catch (Exception e) {
             System.err.println("Error rescheduling appointment: " + e.getMessage());
@@ -232,17 +231,16 @@ public class Patient extends User {
      *
      * @return A list of {@code AppointmentOutcomeRecord} objects representing the outcome of the patient's appointments.
      */
-    // In Patient class
     public List<AppointmentOutcomeRecord> viewAppointmentOutcomeRecords() {
         AppointmentInterface.initializeObjects();
-        new AppointmentOutcomeRecordManager(); // Initialize AOR manager
+        new AppointmentOutcomeRecordManager(); // init AOR manager
         
         List<AppointmentOutcomeRecord> allRecords = AppointmentOutcomeRecordInterface.showAllAppointmentOutcomeRecords();
         if (allRecords == null || allRecords.isEmpty()) {
             return new ArrayList<>();
-        }
+        } 
     
-        // Filter records for this patient's appointments
+        // Filter apts
         List<Appointment> myAppointments = AppointmentInterface.getAppointmentsByPatientID(this.patientID);
         Set<String> myAppointmentIds = myAppointments.stream()
             .map(Appointment::getAppointmentID)

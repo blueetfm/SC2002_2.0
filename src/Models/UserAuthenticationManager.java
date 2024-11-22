@@ -50,7 +50,7 @@ public class UserAuthenticationManager {
      */
     public String getUserPassword(String hospitalID) {
         try (BufferedReader reader = new BufferedReader(new FileReader(USER_FILE_PATH))) {
-            reader.readLine(); // Skip header
+            reader.readLine();
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");

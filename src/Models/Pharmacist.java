@@ -74,10 +74,10 @@ public class Pharmacist extends User {
         for (AppointmentOutcomeRecord AOR : AORList) {
             if (AOR.getAppointmentID().equals(appointmentID)) {
                 if (AOR.getStatus() == PrescriptionStatus.PENDING) {
-                    // Check if medicine is in stock
+                    // Check if med in stock
                     if (!AOR.getMedicine().equalsIgnoreCase("NONE")) {
                         boolean prescribed = MedicationInventoryManager.prescribeMedication(
-                            AOR.getMedicine(), 1); // Assuming 1 unit per prescription
+                            AOR.getMedicine(), 1); // Assume 1 unit per prescription
                         
                         if (!prescribed) {
                             System.out.println("Cannot dispense: Medicine out of stock!");
