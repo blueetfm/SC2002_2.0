@@ -11,10 +11,12 @@ package Models;
 import Enums.AppointmentStatus;
 import Enums.Service;
 import Services.AppointmentInterface;
+import Services.AppointmentOutcomeRecordInterface;
 import Services.MedicalRecordInterface;
 import Services.TimeSlotInterface;
 import java.time.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The {@code Patient} class models a patient in the hospital system.
@@ -230,11 +232,28 @@ public class Patient extends User {
      *
      * @return A list of {@code AppointmentOutcomeRecord} objects representing the outcome of the patient's appointments.
      */
-    // public List<AppointmentOutcomeRecord> viewAppointmentOutcomeRecords() {
-    //     AppointmentInterface.initializeObjects();
-    //     List<AppointmentOutcomeRecord> appointment_outcomes = AppointmentManager.getAppointmentOutcomeRecordsByPatientID(this.patientID);
-    //     return appointment_outcomes;
-    // }
+    // In Patient class
+    public List<AppointmentOutcomeRecord> viewAppointmentOutcomeRecords() {
+        AppointmentInterface.initializeObjects();
+        new AppointmentOutcomeRecordManager(); // Initialize AOR manager first
+        
+        // Get all appointments for this patient
+        List<Appointment> patientAppointments = AppointmentInterface.getAppointmentsByPatientID(this.patientID);
+        if (patientAppointments.isEmpty()) {
+            return new ArrayList<>();
+        }
+    
+        // Get all AORs and filter for this patient's appointments
+        List<AppointmentOutcomeRecord> allRecords = AppointmentOutcomeRecordInterface.showAllAppointmentOutcomeRecords();
+        if (allRecords == null || allRecords.isEmpty()) {
+            return new ArrayList<>();
+        }
+    
+        return allRecords.stream()
+            .filter(aor -> patientAppointments.stream()
+                .anyMatch(apt -> apt.getAppointmentID().equals(aor.getAppointmentID())))
+            .collect(Collectors.toList());
+    }
 
     /**
      * Logs out the patient from the system.

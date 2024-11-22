@@ -8,7 +8,6 @@ import Models.PatientManager;
 import Models.TimeSlot;
 import Models.TimeSlotManager;
 import Services.AppointmentInterface;
-import Services.AppointmentOutcomeRecordInterface;
 import Services.PatientInterface;
 import Services.TimeSlotInterface;
 import java.io.BufferedReader;
@@ -476,10 +475,46 @@ public class PatientMenu implements Menu {
      * Handles viewing past appointment outcome records.
      */
 	private void handleViewPastAppointmentOutcomeRecords() {
-		List<Appointment> apts = AppointmentInterface.getAppointmentsByPatientID(currentPatient.getPatientID());
-		for (Appointment apt : apts) {
-			AppointmentOutcomeRecord AOR = AppointmentOutcomeRecordInterface.getAppointmentOutcomeRecord(apt.getAppointmentID());
-			AppointmentOutcomeRecordInterface.printAppointmentOutcomeRecord(AOR);
+		try {
+			List<AppointmentOutcomeRecord> records = currentPatient.viewAppointmentOutcomeRecords();
+			
+			if (records.isEmpty()) {
+				System.out.println("\nNo appointment outcome records found.");
+				return;
+			}
+	
+			System.out.println("\nYour Appointment Outcome Records:");
+			System.out.println("----------------------------------------");
+			
+			AppointmentInterface.initializeObjects(); // Ensure appointments are initialized
+			
+			for (AppointmentOutcomeRecord record : records) {
+				// Get appointment to show doctor information
+				List<Appointment> appointments = AppointmentInterface.getAppointmentsByPatientID(currentPatient.getPatientID());
+				Appointment relatedAppointment = appointments.stream()
+					.filter(apt -> apt.getAppointmentID().equals(record.getAppointmentID()))
+					.findFirst()
+					.orElse(null);
+	
+				// Print record with appointment details
+				System.out.printf("Appointment ID: %s\n" +
+								"Date: %s\n" +
+								"Doctor: %s\n" +
+								"Service: %s\n" +
+								"Medicine: %s\n" +
+								"Prescription Status: %s\n" +
+								"Notes: %s\n",
+					record.getAppointmentID(),
+					record.getDate(),
+					relatedAppointment != null ? relatedAppointment.getDoctorID() : "Unknown",
+					record.getService(),
+					record.getMedicine(),
+					record.getStatus(),
+					record.getNotes());
+				System.out.println("----------------------------------------");
+			}
+		} catch (Exception e) {
+			System.out.println("Error retrieving appointment records: " + e.getMessage());
 		}
 	}
 	/**
