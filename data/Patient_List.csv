@@ -1,4 +1,4 @@
-Patient ID,Name,Date of Birth,Gender,Blood Type,Contact Information
-P1001,Alice Brown,1980-05-14,Female,A+,+65 9999 9999,
-P1002,Bob Stone,1975-11-22,Male,B+,+65 9000 0000,
-P1003,Charlie White,1990-07-08,Male,O-,+65 9000 0002,
+Patient ID,Name,Date of Birth,Gender,Blood Type,Email,Contact Information
+P1001,Alice Brown,1980-05-14,Female,A+,,+65 9999 9999,
+P1002,Bob Stone,1975-11-22,Male,B+,,+65 9000 0000,
+P1003,Charlie White,1990-07-08,Male,O-,,+65 9000 0002,
