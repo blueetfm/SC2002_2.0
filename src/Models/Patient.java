@@ -8,6 +8,8 @@
  */
 package Models;
 
+import Enums.AppointmentStatus;
+import Enums.Service;
 import Services.AppointmentInterface;
 import Services.MedicalRecordInterface;
 import Services.TimeSlotInterface;
@@ -139,11 +141,11 @@ public class Patient extends User {
      *
      * @return {@code true} if the appointment slots are successfully viewed, otherwise {@code false}.
      */
-    // public boolean viewAvailableAppointmentSlots() {
-    //     TimeSlotInterface.initializeObjects();
-    //     TimeSlotInterface.getTimeSlotsByPatientID(this.patientID);
-    //     return true;
-    // }
+    public List<TimeSlot> viewAvailableAppointmentSlots() {
+        TimeSlotInterface.initializeObjects();
+        return TimeSlotInterface.getAvailableTimeSlots();
+    }
+
 
     /**
      * Schedules an appointment for the patient.
@@ -152,11 +154,14 @@ public class Patient extends User {
      * @param timeslotID  The ID of the time slot.
      * @return {@code true} if the appointment is successfully scheduled, otherwise {@code false}.
      */
-    public boolean scheduleAppointment(String doctorID, String timeslotID) {
-        TimeSlotInterface.initializeObjects();
-        AppointmentInterface.initializeObjects();
-        AppointmentInterface.scheduleAppointment(this.patientID, doctorID, timeslotID);
-        return true;
+    public boolean scheduleAppointment(String doctorID, String timeSlotID, Service service) {
+        try {
+            AppointmentManager.scheduleAppointment(this.patientID, doctorID, timeSlotID, service);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error scheduling appointment: " + e.getMessage());
+            return false;
+        }
     }
 
     /**
@@ -166,33 +171,59 @@ public class Patient extends User {
      * @param newTimeSlotID    The ID of the new time slot.
      * @return {@code true} if the appointment is successfully rescheduled, otherwise {@code false}.
      */
-    // public boolean rescheduleAppointment(String oldAppointmentID, String newTimeSlotID) {
-    //     AppointmentInterface.initializeObjects();
-    //     AppointmentInterface.rescheduleAppointment(oldAppointmentID, newTimeSlotID);
-    //     return true;
-    // }
+    public boolean rescheduleAppointment(String oldAppointmentID, String newTimeSlotID) {
+        try {
+            AppointmentInterface.initializeObjects();
+            TimeSlotInterface.initializeObjects();
+            
+            // Cancel old appointment
+            AppointmentInterface.updateAppointmentStatus(oldAppointmentID, AppointmentStatus.CANCELLED);
+            
+            // Get old appointment details to create new one
+            Appointment oldApt = AppointmentInterface.getAppointmentsByPatientID(this.patientID)
+                .stream()
+                .filter(apt -> apt.getAppointmentID().equals(oldAppointmentID))
+                .findFirst()
+                .orElse(null);
+                
+            if (oldApt == null) {
+                return false;
+            }
+            
+            // Schedule new appointment
+            return scheduleAppointment(oldApt.getDoctorID(), newTimeSlotID);
+        } catch (Exception e) {
+            System.err.println("Error rescheduling appointment: " + e.getMessage());
+            return false;
+        }
+    }
 
     /**
      * Cancels an existing appointment for the patient.
      *
      * @return {@code true} if the appointment is successfully canceled, otherwise {@code false}.
      */
-    // public boolean cancelAppointment() {
-    //     AppointmentInterface.initializeObjects();
-    //     AppointmentInterface.cancelAppointment(this.patientID);
-    //     return true;
-    // }
+    public boolean cancelAppointment(String appointmentID) {
+        try {
+            AppointmentInterface.initializeObjects();
+            AppointmentInterface.updateAppointmentStatus(appointmentID, AppointmentStatus.CANCELLED);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error cancelling appointment: " + e.getMessage());
+            return false;
+        }
+    }
 
     /**
      * Views the scheduled appointments for this patient.
      *
      * @return A list of {@code Appointment} objects representing the patient's scheduled appointments.
      */
-    public List<Appointment> viewScheduledAppointments() {
+    public List<Appointment> getScheduledAppointments() {
         AppointmentInterface.initializeObjects();
-        List<Appointment> appointments = AppointmentInterface.getAppointmentsByPatientID(this.patientID);
-        return appointments;
+        return AppointmentInterface.getAppointmentsByPatientID(this.patientID);
     }
+
 
     /**
      * Views the outcome records of the patient's appointments.

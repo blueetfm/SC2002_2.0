@@ -10,8 +10,13 @@
 
 package Models;
 
+import Enums.AppointmentStatus;
+import Services.AppointmentInterface;
 import Services.MedicationInventoryInterface;
 import Services.StaffInterface;
+import Services.TimeSlotInterface;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class Administrator extends User {
@@ -249,6 +254,22 @@ public class Administrator extends User {
 
     // Appointment Management Methods
 
+    public List<Appointment> viewAllAppointments() {
+        AppointmentInterface.initializeObjects();
+        List<Appointment> appointments = AppointmentInterface.getAllAppointments();
+        if (appointments.isEmpty()) {
+            System.out.println("No appointments found in the system.");
+            return appointments;
+        }
+
+        System.out.println("\nAll Appointments in System:");
+        System.out.println("----------------------------------------");
+        appointments.sort((a1, a2) -> a1.getDate().compareTo(a2.getDate()));
+        
+        printAppointments(appointments);
+        return appointments;
+    }
+
     /**
      * Views the details of an appointment by its ID.
      * 
@@ -260,16 +281,47 @@ public class Administrator extends User {
     //     return appointment;
     // }
 
+    public List<Appointment> viewAppointmentsByStatus(AppointmentStatus status) {
+        AppointmentInterface.initializeObjects();
+        List<Appointment> allAppointments = AppointmentInterface.getAllAppointments();
+        List<Appointment> filteredAppointments = allAppointments.stream()
+            .filter(apt -> apt.getStatus() == status)
+            .sorted((a1, a2) -> a1.getDate().compareTo(a2.getDate()))
+            .collect(Collectors.toList());
+
+        if (filteredAppointments.isEmpty()) {
+            System.out.println("No appointments found with status: " + status);
+            return filteredAppointments;
+        }
+
+        System.out.println("\nAppointments with status " + status + ":");
+        System.out.println("----------------------------------------");
+        
+        printAppointments(filteredAppointments);
+        return filteredAppointments;
+    }
+
     /**
      * Views all appointments for a given patient by their ID.
      * 
      * @param patientID The ID of the patient whose appointments are to be viewed.
      * @return A list of appointments for the specified patient.
      */
-    // public List<Appointment> viewAppointmentDetailsByPatientID(String patientID) {
-    //     List<Appointment> appointments = AppointmentManager.getAppointmentsByPatientID(patientID);
-    //     return appointments;
-    // }
+    public List<Appointment> viewAppointmentsByPatientID(String patientID) {
+        AppointmentInterface.initializeObjects();
+        List<Appointment> appointments = AppointmentInterface.getAppointmentsByPatientID(patientID);
+        if (appointments.isEmpty()) {
+            System.out.println("No appointments found for Patient " + patientID);
+            return appointments;
+        }
+
+        System.out.println("\nAppointments for Patient " + patientID + ":");
+        System.out.println("----------------------------------------");
+        appointments.sort((a1, a2) -> a1.getDate().compareTo(a2.getDate()));
+        
+        printAppointments(appointments);
+        return appointments;
+    }
 
     /**
      * Views all appointments for a given doctor by their ID.
@@ -277,10 +329,52 @@ public class Administrator extends User {
      * @param doctorID The ID of the doctor whose appointments are to be viewed.
      * @return A list of appointments for the specified doctor.
      */
-    // public List<Appointment> viewAppointmentDetailsByDoctorID(String doctorID) {
-    //     List<Appointment> appointments = AppointmentManager.getAppointmentsByDoctorID(doctorID);
-    //     return appointments;
-    // }
+    public List<Appointment> viewAppointmentsByDoctorID(String doctorID) {
+        AppointmentInterface.initializeObjects();
+        List<Appointment> appointments = AppointmentInterface.getAppointmentsByDoctorID(doctorID);
+        if (appointments.isEmpty()) {
+            System.out.println("No appointments found for Doctor " + doctorID);
+            return appointments;
+        }
+
+        System.out.println("\nAppointments for Doctor " + doctorID + ":");
+        System.out.println("----------------------------------------");
+        appointments.sort((a1, a2) -> a1.getDate().compareTo(a2.getDate()));
+        
+        printAppointments(appointments);
+        return appointments;
+    }
+
+    //also handles empty appointment class
+    private void printAppointments(List<Appointment> appointments) {
+        TimeSlotInterface.initializeObjects();
+        
+        for (Appointment apt : appointments) {
+            System.out.printf("Appointment ID: %s\n" +
+                            "Patient ID: %s\n" +
+                            "Doctor ID: %s\n" +
+                            "Date: %s\n" +
+                            "Service: %s\n" +
+                            "Status: %s\n",
+                apt.getAppointmentID(),
+                apt.getPatientID(),
+                apt.getDoctorID(),
+                apt.getDate(),
+                apt.getService(),
+                apt.getStatus());
+
+            TimeSlot slot = TimeSlotInterface.getTimeSlotByID(apt.getTimeSlotID());
+            if (slot != null) {
+                System.out.printf("Time: %s - %s\n",
+                    slot.getStartTime().toLocalTime(),
+                    slot.getEndTime().toLocalTime());
+            } else {
+                System.out.println("Time: Not available");
+            }
+            
+            System.out.println("----------------------------------------");
+        }
+    }
 
     public boolean logout() {
         try {

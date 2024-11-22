@@ -1,5 +1,5 @@
 package Views;
-import Enums.*;
+import Enums.AppointmentStatus;
 import Models.Appointment;
 import Models.Doctor;
 import Models.TimeSlot;
@@ -8,7 +8,9 @@ import Services.TimeSlotInterface;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -84,12 +86,7 @@ public class DoctorMenu implements Menu {
 				}
 				break;
 			case 3: 
-				result = currentDoctor.viewPersonalSchedule();
-				if (result == 1) {
-					System.out.println("Task completed successfully.");
-				} else {
-					System.out.println("Task failed.");
-				}
+				handleViewPersonalSchedule();
 				break;
 			case 4: 
 				handleSetAvailability();
@@ -138,22 +135,95 @@ public class DoctorMenu implements Menu {
 	    return;
 	}
 
+	private void handleViewPersonalSchedule() {
+		TimeSlotInterface.initializeObjects();
+		List<TimeSlot> slots = currentDoctor.getPersonalSchedule();
+		
+		if (slots.isEmpty()) {
+			System.out.println("\nNo time slots found in your schedule.");
+			return;
+		}
+	
+		System.out.println("\nYour Schedule:");
+		System.out.println("----------------------------------------");
+		for (TimeSlot slot : slots) {
+			String status = slot.getStatus().toString();
+			String patientInfo = slot.getPatientID() != null ? 
+				"Patient: " + slot.getPatientID() : "Available";
+				
+			System.out.printf("Slot ID: %s\n" +
+							 "Date: %s\n" +
+							 "Time: %s - %s\n" +
+							 "Status: %s\n" +
+							 "%s\n",
+				slot.getTimeSlotID(),
+				slot.getStartTime().toLocalDate(),
+				slot.getStartTime().toLocalTime(),
+				slot.getEndTime().toLocalTime(),
+				status,
+				patientInfo);
+			System.out.println("----------------------------------------");
+		}
+	}	
+
 	private void handleSetAvailability() {
-        System.out.println("\nSet Appointment Availability");
-        Scanner input = new Scanner(System.in);
-        
-        System.out.println("Enter number of slots to create: ");
-        int numSlots = input.nextInt();
-        
-        LocalDateTime startTime = LocalDateTime.now().plusDays(1).withHour(9).withMinute(0);
-        
-        for (int i = 0; i < numSlots; i++) {
-            LocalDateTime slotStart = startTime.plusHours(i);
-            LocalDateTime slotEnd = slotStart.plusMinutes(30);
-            TimeSlotInterface.createTimeSlot(currentDoctor.getHospitalID(), slotStart, slotEnd);
-        }
-        System.out.println("Created " + numSlots + " time slots");
-    }
+		System.out.println("\nSet Appointment Availability");
+		
+		// Get date for the slots
+		LocalDate slotDate = getValidDate();
+		if (slotDate == null) return;
+
+		// Get number of slots
+		System.out.println("Enter number of slots to create: ");
+		int numSlots;
+		try {
+			numSlots = Integer.parseInt(scanner.nextLine().trim());
+			if (numSlots <= 0) {
+				System.out.println("Please enter a positive number.");
+				return;
+			}
+		} catch (NumberFormatException e) {
+			System.out.println("Invalid input. Please enter a number.");
+			return;
+		}
+
+		// Get starting hour (9-17 for business hours)
+		System.out.println("Enter starting hour (9-17): ");
+		int startHour;
+		try {
+			startHour = Integer.parseInt(scanner.nextLine().trim());
+			if (startHour < 9 || startHour > 17) {
+				System.out.println("Please enter an hour between 9 and 17.");
+				return;
+			}
+		} catch (NumberFormatException e) {
+			System.out.println("Invalid input. Please enter a number.");
+			return;
+		}
+
+		LocalDateTime startTime = slotDate.atTime(startHour, 0);
+		
+		// Check if date is not in the past
+		if (startTime.isBefore(LocalDateTime.now())) {
+			System.out.println("Cannot create slots for past dates/times.");
+			return;
+		}
+
+		// Create the slots
+		for (int i = 0; i < numSlots; i++) {
+			LocalDateTime slotStart = startTime.plusHours(i);
+			LocalDateTime slotEnd = slotStart.plusMinutes(30);
+			
+			// Check if slot would extend beyond business hours
+			if (slotEnd.getHour() > 17) {
+				System.out.println("Stopping slot creation as it would exceed business hours (17:00).");
+				break;
+			}
+			
+			currentDoctor.createTimeSlot(slotStart, slotEnd);
+		}
+		System.out.println("Time slots created successfully.");
+	}
 
     private void handleAcceptOrDeclineAppointmentRequests() {
         TimeSlotInterface.initializeObjects();
@@ -202,15 +272,58 @@ public class DoctorMenu implements Menu {
     }
 
     private void handleViewUpcomingAppointments() {
-        List<Appointment> appointments = AppointmentInterface.getAppointmentsByDoctorID(currentDoctor.getHospitalID());
-        System.out.println("\nUpcoming Appointments:");
-        for (Appointment apt : appointments) {
-            if (apt.getStatus() == AppointmentStatus.CONFIRMED) {
-                System.out.printf("ID: %s, Patient: %s, Date: %s\n",
-                    apt.getAppointmentID(), apt.getPatientID(), apt.getDate());
+		TimeSlotInterface.initializeObjects();
+		AppointmentInterface.initializeObjects();
+		
+		List<Appointment> appointments = currentDoctor.getUpcomingAppointments();
+		
+		if (appointments.isEmpty()) {
+			System.out.println("\nNo upcoming appointments found.");
+			return;
+		}
+		
+		System.out.println("\nUpcoming Appointments:");
+		System.out.println("----------------------------------------");
+		for (Appointment apt : appointments) {
+			TimeSlot slot = TimeSlotInterface.getTimeSlotByID(apt.getTimeSlotID());
+			if (slot != null) {
+				System.out.printf("Appointment ID: %s\n" +
+								"Patient ID: %s\n" +
+								"Date: %s\n" +
+								"Time: %s - %s\n" +
+								"Status: %s\n",
+					apt.getAppointmentID(),
+					apt.getPatientID(),
+					apt.getDate(),
+					slot.getStartTime().toLocalTime(),
+					slot.getEndTime().toLocalTime(),
+					apt.getStatus());
+				System.out.println("----------------------------------------");
+			}
+		}
+	}
+
+	private LocalDate getValidDate() {
+    while (true) {
+        System.out.println("Enter date for slots (YYYY-MM-DD): ");
+        String dateStr = scanner.nextLine().trim();
+        
+        try {
+            LocalDate date = LocalDate.parse(dateStr);
+            if (date.isBefore(LocalDate.now())) {
+                System.out.println("Cannot create slots for past dates.");
+                continue;
+            }
+            return date;
+        } catch (DateTimeParseException e) {
+            System.out.println("Invalid date format. Please use YYYY-MM-DD.");
+            System.out.println("Would you like to try again? (Y/N): ");
+            if (!scanner.nextLine().trim().equalsIgnoreCase("Y")) {
+                return null;
             }
         }
     }
+}
 
 }
 	

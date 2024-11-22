@@ -1,22 +1,19 @@
 
 package Views;
 
+import Enums.AppointmentStatus;
 import Models.Administrator;
-import Models.Appointment;
-import Models.AppointmentManager;
 import Models.Staff;
-import Utils.DateTimeFormatUtils;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
 import java.util.Scanner;
 
 public class AdministratorMenu implements Menu {
 	private final Scanner scanner;
     private Administrator currentAdmin;
     private boolean isRunning;
-    private AppointmentManager appointmentManager;
+    // private AppointmentManager appointmentManager;
 
 	public AdministratorMenu() {
         this.scanner = new Scanner(System.in);
@@ -77,7 +74,7 @@ public class AdministratorMenu implements Menu {
                         handleStaffManagement();
                         break;
                     case 2:
-                        viewAppointmentDetails();
+                        handleViewAppointments();
                         break;
                     case 3:
                         handleInventoryManagement();
@@ -304,62 +301,88 @@ public class AdministratorMenu implements Menu {
     }
 
     /* Appointment Details */
-    private void viewAppointmentDetails(){
-        if (appointmentManager == null) {
-            appointmentManager = AppointmentManager.getInstance();
-        }
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Choose an option to view appointments:");
-        System.out.println("1. By Appointment ID");
-        System.out.println("2. By Patient ID");
-        System.out.println("3. By Doctor ID");
-        System.out.print("Enter your choice: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine(); 
-
-        switch (choice) {
-            case 1:
-                System.out.print("Enter Appointment ID: ");
-                String appointmentID = scanner.nextLine();
-                Appointment appointment = currentAdmin.viewAppointmentDetailsByID(appointmentID);
-                if (appointment != null) {
-                    AppointmentManager.printAppointment(appointment);
-                } else {
-                    System.out.println("No appointment found with the provided ID.");
+    private void handleViewAppointments() {
+        while (true) {
+            System.out.println("\nView Appointments By:");
+            System.out.println("1: View All Appointments");
+            System.out.println("2: View by Doctor ID");
+            System.out.println("3: View by Patient ID");
+            System.out.println("4: View by Status");
+            System.out.println("5: Return to Main Menu");
+            System.out.print("Enter your choice (1-5): ");
+    
+            try {
+                int choice = getValidChoice();
+                
+                switch (choice) {
+                    case 1:
+                        currentAdmin.viewAllAppointments();
+                        break;
+                        
+                    case 2:
+                        System.out.print("Enter Doctor ID: ");
+                        String doctorID = getValidInput("Doctor ID");
+                        currentAdmin.viewAppointmentsByDoctorID(doctorID);
+                        break;
+                        
+                    case 3:
+                        System.out.print("Enter Patient ID: ");
+                        String patientID = getValidInput("Patient ID");
+                        currentAdmin.viewAppointmentsByPatientID(patientID);
+                        break;
+                        
+                    case 4:
+                        handleViewByStatus();
+                        break;
+                        
+                    case 5:
+                        return;
+                        
+                    default:
+                        System.out.println("Invalid choice! Please enter a number between 1 and 5.");
                 }
-                break;
-
-            case 2:
-                System.out.print("Enter Patient ID: ");
-                String patientID = scanner.nextLine();
-                List<Appointment> appointmentsByPatient = currentAdmin.viewAppointmentDetailsByPatientID(patientID);
-                if (!appointmentsByPatient.isEmpty()) {
-                    for (Appointment appt : appointmentsByPatient) {
-                        AppointmentManager.printAppointment(appt);
-                    }
-                } else {
-                    System.out.println("No appointments found for the provided Patient ID.");
-                }
-                break;
-
-            case 3:
-                System.out.print("Enter Doctor ID: ");
-                String doctorID = scanner.nextLine();
-                List<Appointment> appointmentsByDoctor = currentAdmin.viewAppointmentDetailsByDoctorID(doctorID);
-                if (!appointmentsByDoctor.isEmpty()) {
-                    for (Appointment appt : appointmentsByDoctor) {
-                        AppointmentManager.printAppointment(appt);
-                    }
-                } else {
-                    System.out.println("No appointments found for the provided Doctor ID.");
-                }
-                break;
-
-            default:
-                System.out.println("Invalid choice. Please try again.");
-                break;
+            } catch (Exception e) {
+                System.err.println("Error: " + e.getMessage());
+            }
         }
     }
+
+    private void handleViewByStatus() {
+        System.out.println("\nSelect Status:");
+        System.out.println("1: Pending");
+        System.out.println("2: Confirmed");
+        System.out.println("3: Completed");
+        System.out.println("4: Cancelled");
+        System.out.print("Enter choice (1-4): ");
+
+        try {
+            int choice = getValidChoice();
+            AppointmentStatus status;
+            
+            switch (choice) {
+                case 1:
+                    status = AppointmentStatus.PENDING;
+                    break;
+                case 2:
+                    status = AppointmentStatus.CONFIRMED;
+                    break;
+                case 3:
+                    status = AppointmentStatus.COMPLETED;
+                    break;
+                case 4:
+                    status = AppointmentStatus.CANCELLED;
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+                    return;
+            }
+            
+            currentAdmin.viewAppointmentsByStatus(status);
+        } catch (Exception e) {
+            System.err.println("Error: " + e.getMessage());
+        }
+    }
+
 
     private void handleInventoryManagement() {
         currentAdmin.viewMedicationInventory();

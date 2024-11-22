@@ -3,7 +3,6 @@ package Views;
 
 import Models.*;
 import Services.AppointmentOutcomeRecordInterface;
-
 import java.io.*;
 import java.util.Scanner;
 
@@ -136,14 +135,16 @@ public class PharmacistMenu implements Menu {
         }
     }
 
-    private void handlePrescriptionStatus(){
-        System.out.print("Enter Appointment ID to view: ");
-        String appointmentID = scanner.nextLine().trim().toUpperCase();
+
         if (validateInput(appointmentID)) {
-            currentPharmacist.updatePrescriptionStatus(appointmentID);
-            int result = AppointmentOutcomeRecordInterface.updateCSV();
-            if (result == 0) {
-            	System.err.println("Exiting Handle Prescription Status from Error.");
+            boolean success = currentPharmacist.updatePrescriptionStatus(appointmentID);
+            if (success) {
+                int result = AppointmentOutcomeRecordInterface.updateCSV();
+                if (result == 1) {
+                    System.out.println("Successfully dispensed medication and updated records.");
+                } else {
+                    System.err.println("Error updating records.");
+                }
             }
         } else {
             System.out.println("Invalid appointment ID");
@@ -151,7 +152,10 @@ public class PharmacistMenu implements Menu {
     }
 
     private void handleAppointmentView() {
-    	currentPharmacist.viewAppointmentOutcomes();
+        System.out.println("\nPending Prescriptions:");
+        if (!currentPharmacist.viewAppointmentOutcomes()) {
+            System.out.println("No prescriptions to display.");
+        }
     }
 
     private void handleReplenishmentRequest() {

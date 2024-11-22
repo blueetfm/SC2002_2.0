@@ -17,16 +17,18 @@ public class Appointment {
     protected LocalDate date;
     protected LocalTime time;
     protected String timeSlotID;
+    protected Service service;
     protected AppointmentStatus status;
 
-    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, String timeSlotID, AppointmentStatus status){
+
+    public Appointment(String appointmentID, String patientID, String doctorID, LocalDate date, String timeSlotID, Service service, AppointmentStatus status){
         this.appointmentID = appointmentID;
         this.patientID = patientID;
         this.doctorID = doctorID;
         this.date = date;
         this.timeSlotID = timeSlotID;
+        this.service = service;
         this.status = status;
-
     }
 
     // setters
@@ -53,6 +55,10 @@ public class Appointment {
 
     public String getTimeSlotID(){
         return this.timeSlotID;
+    }
+    
+    public Service getService() {
+        return this.service;
     }
 
     public AppointmentStatus getStatus(){

@@ -3,10 +3,10 @@ import Enums.ScheduleStatus;
 import java.time.*;
 
 public class TimeSlot {
-    private String timeSlotID;
+    private final String timeSlotID;
     private LocalDateTime startTime;
-    private LocalDateTime endTime;
-    private String doctorID;
+    private final LocalDateTime endTime;
+    private final String doctorID;
     private String patientID;
     private ScheduleStatus status;
 
@@ -30,4 +30,8 @@ public class TimeSlot {
     // Setters
     public void setPatientID(String patientID) { this.patientID = patientID; }
     public void setStatus(ScheduleStatus status) { this.status = status; }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
 }
