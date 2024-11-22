@@ -183,7 +183,7 @@ public class PatientMenu implements Menu {
 					System.out.println("Enter your new phone number (format: 9xxx xxxx or 8xxx xxxx):");
 					String input = sc.nextLine();
 					if (input.matches("^[98]\\d{3} \\d{4}$")) {
-						newPhoneNumber = input;
+						newPhoneNumber = "+65 " + input.substring(0, 4) + " " + input.substring(4);
 					} else {
 						System.out.println("Invalid phone number. Please enter digits only.");
 					}
