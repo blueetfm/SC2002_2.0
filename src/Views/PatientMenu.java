@@ -486,35 +486,32 @@ public class PatientMenu implements Menu {
 			System.out.println("\nYour Appointment Outcome Records:");
 			System.out.println("----------------------------------------");
 			
-			AppointmentInterface.initializeObjects(); // Ensure appointments are initialized
-			
 			for (AppointmentOutcomeRecord record : records) {
-				// Get appointment to show doctor information
+				// Get appointment details
 				List<Appointment> appointments = AppointmentInterface.getAppointmentsByPatientID(currentPatient.getPatientID());
 				Appointment relatedAppointment = appointments.stream()
 					.filter(apt -> apt.getAppointmentID().equals(record.getAppointmentID()))
 					.findFirst()
 					.orElse(null);
 	
-				// Print record with appointment details
 				System.out.printf("Appointment ID: %s\n" +
 								"Date: %s\n" +
-								"Doctor: %s\n" +
 								"Service: %s\n" +
-								"Medicine: %s\n" +
-								"Prescription Status: %s\n" +
+								"Doctor: %s\n" +
+								"Prescribed Medicine: %s\n" +
+								"Status: %s\n" +
 								"Notes: %s\n",
 					record.getAppointmentID(),
 					record.getDate(),
-					relatedAppointment != null ? relatedAppointment.getDoctorID() : "Unknown",
 					record.getService(),
+					relatedAppointment != null ? relatedAppointment.getDoctorID() : "Unknown",
 					record.getMedicine(),
 					record.getStatus(),
 					record.getNotes());
 				System.out.println("----------------------------------------");
 			}
 		} catch (Exception e) {
-			System.out.println("Error retrieving appointment records: " + e.getMessage());
+			System.err.println("Error viewing appointment records: " + e.getMessage());
 		}
 	}
 	/**

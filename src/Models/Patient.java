@@ -235,25 +235,24 @@ public class Patient extends User {
     // In Patient class
     public List<AppointmentOutcomeRecord> viewAppointmentOutcomeRecords() {
         AppointmentInterface.initializeObjects();
-        new AppointmentOutcomeRecordManager(); // Initialize AOR manager first
+        new AppointmentOutcomeRecordManager(); // Initialize AOR manager
         
-        // Get all appointments for this patient
-        List<Appointment> patientAppointments = AppointmentInterface.getAppointmentsByPatientID(this.patientID);
-        if (patientAppointments.isEmpty()) {
-            return new ArrayList<>();
-        }
-    
-        // Get all AORs and filter for this patient's appointments
         List<AppointmentOutcomeRecord> allRecords = AppointmentOutcomeRecordInterface.showAllAppointmentOutcomeRecords();
         if (allRecords == null || allRecords.isEmpty()) {
             return new ArrayList<>();
         }
     
+        // Filter records for this patient's appointments
+        List<Appointment> myAppointments = AppointmentInterface.getAppointmentsByPatientID(this.patientID);
+        Set<String> myAppointmentIds = myAppointments.stream()
+            .map(Appointment::getAppointmentID)
+            .collect(Collectors.toSet());
+    
         return allRecords.stream()
-            .filter(aor -> patientAppointments.stream()
-                .anyMatch(apt -> apt.getAppointmentID().equals(aor.getAppointmentID())))
+            .filter(record -> myAppointmentIds.contains(record.getAppointmentID()))
             .collect(Collectors.toList());
     }
+    
 
     /**
      * Logs out the patient from the system.
