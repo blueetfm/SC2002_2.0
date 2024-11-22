@@ -296,9 +296,21 @@ public class Doctor extends User {
             }
         }
         System.out.print("Enter patient blood type: ");
-        String bloodType = case8Scanner.next().toUpperCase();
-        System.out.print("Enter contact number: ");
-        String contactNumber = case8Scanner.next();
+        String bloodType = "";
+        do {
+            System.out.print("Enter patient blood type: ");
+            bloodType = case8Scanner.next().toUpperCase();
+        } while (!bloodType.matches("A+|A-|B+|B-|AB+|AB-|O+|O-"));
+        String contactNumber = null;
+		while (contactNumber == null) {
+			System.out.println("Enter the patient's contact number (format: 9xxx xxxx or 8xxx xxxx):");
+			String input = case8Scanner.nextLine();
+			if (input.matches("^[98]\\d{3} \\d{4}$")) {
+				contactNumber = "+65 " + input.substring(0, 4) + input.substring(4);
+			} else {
+				System.out.println("Invalid phone number. Please enter digits only.");
+			}
+		}
         case8Scanner.close();
         return PatientInterface.createPatient(patientID, "", "patient", name, date, gender, contactNumber, "", bloodType);
     }
