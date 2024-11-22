@@ -189,11 +189,13 @@ public class PatientMenu implements Menu {
 					}
 				}
 				currentPatient.setPhoneNum(newPhoneNumber);
+				PatientManager.updatePatient(currentPatient);
 				break;
 			case 2: 
 				System.out.println("Enter your new email address:");
 				String newEmail = sc.nextLine();
 				currentPatient.setEmail(newEmail);
+				PatientManager.updatePatient(currentPatient);
 				break;
 			default:
 				System.out.println("Invalid choice.");
