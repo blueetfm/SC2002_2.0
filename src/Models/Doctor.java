@@ -332,6 +332,7 @@ public class Doctor extends User {
      * @return an integer indicating success (0) or failure (1)
      */
     public int registerPatient() {
+        List<Patient> patientList = PatientInterface.getAllPatients();
         Scanner case8Scanner = new Scanner(System.in);
         System.out.print("Enter Patient ID to record: ");
         String patientID = case8Scanner.next().toUpperCase();
