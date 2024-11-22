@@ -71,7 +71,7 @@ public class PatientManager implements PatientInterface {
         if (isPatient && !loggedInID.equals(hospitalID)) {
             System.out.println("Access Denied. You may not view that profile.");
             return null;
-        } else {
+        } else if (isPharmacist || isDoctor || isAdministrator || isPatient && loggedInID.equals(hospitalID)){
             for (Patient patient : patientList) {
                 if (patient.getPatientID().equals(hospitalID)) {
                     System.out.println("Patient profile exists.");
