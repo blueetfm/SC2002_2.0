@@ -169,7 +169,7 @@ public class DoctorMenu implements Menu {
 				}
 				break;	
 			case 10: 
-				System.out.println("Logging out ….");
+				// System.out.println("Logging out ….");
 				if (currentDoctor.logout()) {
 					System.out.println("Task completed successfully.");
 				} else {

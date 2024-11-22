@@ -173,6 +173,7 @@ public class Pharmacist extends User {
      */
     public boolean logout() {
         try {
+            super.logout();
             System.out.println("Logging out pharmacist: " + this.name);
             return true;
         } catch (Exception e) {

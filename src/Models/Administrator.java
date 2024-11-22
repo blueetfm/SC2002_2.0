@@ -380,8 +380,11 @@ public class Administrator extends User {
         }
     }
 
+    
+    @Override
     public boolean logout() {
         try {
+            super.logout();
             System.out.println("Logging out administrator: " + this.name);
             return true;
         } catch (Exception e) {

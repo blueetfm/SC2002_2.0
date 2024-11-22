@@ -261,6 +261,7 @@ public class Patient extends User {
      */
     public boolean logout() {
         try {
+            super.logout();
             System.out.println("Logging out patient: " + this.name);
             return true;
         } catch (Exception e) {

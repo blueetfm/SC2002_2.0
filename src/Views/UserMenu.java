@@ -78,7 +78,14 @@ public class UserMenu implements Menu {
      * Displays the main menu options to the user.
      */
     private void displayMainMenu() {
-        System.out.println("\n===Welcome to HMS!===");
+        System.out.println("\n __          __  _                            _          _    _ __  __  _____ _ \n" + //
+                " \\ \\        / / | |                          | |        | |  | |  \\/  |/ ____| |\n" + //
+                "  \\ \\  /\\  / /__| | ___ ___  _ __ ___   ___  | |_ ___   | |__| | \\  / | (___ | |\n" + //
+                "   \\ \\/  \\/ / _ \\ |/ __/ _ \\| '_ ` _ \\ / _ \\ | __/ _ \\  |  __  | |\\/| |\\___ \\| |\n" + //
+                "    \\  /\\  /  __/ | (_| (_) | | | | | |  __/ | || (_) | | |  | | |  | |____) |_|\n" + //
+                "     \\/  \\/ \\___|_|\\___\\___/|_| |_| |_|\\___|  \\__\\___/  |_|  |_|_|  |_|_____/(_)\n" + //
+                "                                                                                \n" + //
+                "                                                                                ");
         System.out.println("1: Login");
         System.out.println("2: Exit System");
         System.out.print("Enter your choice: ");

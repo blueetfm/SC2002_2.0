@@ -556,6 +556,7 @@ public class Doctor extends User {
      */
     public boolean logout() {
         try {
+            super.logout();
             System.out.println("Logging out doctor: " + this.name);
             return true;
         } catch (Exception e) {
