@@ -2,11 +2,13 @@ package Views;
 import Enums.AppointmentStatus;
 import Enums.Service;
 import Models.Appointment;
+import Models.AppointmentOutcomeRecord;
 import Models.Patient;
 import Models.PatientManager;
 import Models.TimeSlot;
 import Models.TimeSlotManager;
 import Services.AppointmentInterface;
+import Services.AppointmentOutcomeRecordInterface;
 import Services.PatientInterface;
 import Services.TimeSlotInterface;
 import java.io.BufferedReader;
@@ -475,19 +477,11 @@ public class PatientMenu implements Menu {
      * Handles viewing past appointment outcome records.
      */
 	private void handleViewPastAppointmentOutcomeRecords() {
-		// // Get the list of appointment outcome records for the current patient
-		// List<AppointmentOutcomeRecord> appointment_outcomes = currentPatient.viewAppointmentOutcomeRecords();
-		
-		// // Check if the list is null or empty
-		// if (appointment_outcomes == null || appointment_outcomes.isEmpty()) {
-		// 	// If no records found, display a message
-		// 	System.out.println("No past appointment outcome records found.");
-		// } else {
-		// 	// If records exist, loop through the list and print each record's details
-		// 	for (AppointmentOutcomeRecord record : appointment_outcomes) {
-		// 		// AppointmentManager.printAppointmentOutcomeRecord(record);
-		// 	}
-		// }
+		List<Appointment> apts = AppointmentInterface.getAppointmentsByPatientID(currentPatient.getPatientID());
+		for (Appointment apt : apts) {
+			AppointmentOutcomeRecord AOR = AppointmentOutcomeRecordInterface.getAppointmentOutcomeRecord(apt.getAppointmentID());
+			AppointmentOutcomeRecordInterface.printAppointmentOutcomeRecord(AOR);
+		}
 	}
 	/**
      * Logs out the current patient and terminates the menu session.
