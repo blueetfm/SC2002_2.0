@@ -494,6 +494,7 @@ public class PatientMenu implements Menu {
      */
 	private void handleLogout() {
 		System.out.println("Program terminating...");
+
 		if (currentPatient.logout()) {
 			isRunning = false;
 			PatientInterface.updatePatient(this.currentPatient);
