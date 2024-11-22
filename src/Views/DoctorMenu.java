@@ -273,7 +273,9 @@ public class DoctorMenu implements Menu {
 		}
 		System.out.println("Time slots created successfully.");
 	}
-
+	 /**
+     * Allows the doctor to accept or decline appointment requests.
+     */
     private void handleAcceptOrDeclineAppointmentRequests() {
         TimeSlotInterface.initializeObjects();
         AppointmentInterface.initializeObjects();
