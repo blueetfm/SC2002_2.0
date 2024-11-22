@@ -476,7 +476,12 @@ public class PatientMenu implements Menu {
      * Handles viewing past appointment outcome records.
      */
 	private void handleViewPastAppointmentOutcomeRecords() {
+		System.out.println(currentPatient.getPatientID());			
 		List<Appointment> apts = AppointmentInterface.getAppointmentsByPatientID(currentPatient.getPatientID());
+		if (apts.size() == 0) {
+			System.out.println("No past Appointments.");
+			return;
+		}
 		for (Appointment apt : apts) {
 			AppointmentOutcomeRecord AOR = AppointmentOutcomeRecordInterface.getAppointmentOutcomeRecord(apt.getAppointmentID());
 			AppointmentOutcomeRecordInterface.printAppointmentOutcomeRecord(AOR);
