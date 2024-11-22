@@ -87,30 +87,65 @@ public class MedicalRecordManager implements MedicalRecordInterface {
      * @return 0 to indicate the successful update of the CSV file.
      */
     public static int updateCSV() {
-        List<String> record = new ArrayList<>();
-        for (MedicalRecord indivRecord : medicalRecordList) {
-            String ID = indivRecord.patientID;
-            for (Record soloRecord : indivRecord.recordList) {
-                String input =
-                    ID +
-                    "," +
-                    soloRecord.diagnosis +
-                    "," +
-                    soloRecord.medication +
-                    "," +
-                    soloRecord.treatment;
-                record.add(input);
+        try {
+            // First verify the medicalRecordList is not null
+            if (medicalRecordList == null) {
+                System.err.println("Medical record list is not initialized");
+                return 0;
             }
+    
+            String[] headers = {"ID", "Diagnosis", "Medication", "Treatment"};
+            List<String> records = new ArrayList<>();
+    
+            // Create formatted records
+            for (MedicalRecord indivRecord : medicalRecordList) {
+                if (indivRecord != null && indivRecord.recordList != null) {
+                    String ID = indivRecord.patientID;
+                    for (Record soloRecord : indivRecord.recordList) {
+                        if (soloRecord != null) {
+                            // Ensure no null values and proper formatting
+                            String diagnosis = soloRecord.diagnosis != null ? soloRecord.diagnosis.trim() : "";
+                            String medication = soloRecord.medication != null ? soloRecord.medication.trim() : "";
+                            String treatment = soloRecord.treatment != null ? soloRecord.treatment.trim() : "";
+                            
+                            String record = String.format("%s,%s,%s,%s",
+                                ID,
+                                diagnosis,
+                                medication,
+                                treatment
+                            );
+                            records.add(record);
+                        }
+                    }
+                }
+            }
+    
+            // Convert list to array for CSVHandler
+            String[] lines = records.toArray(new String[0]);
+    
+            // Write to CSV using absolute path
+            CSVHandler.writeCSVLines(
+                headers,
+                lines,
+                "data/MedicalRecord_List.csv"
+            );
+    
+            // Verify the file was updated
+            List<List<String>> verification = CSVHandler.readCSVLines("data/MedicalRecord_List.csv");
+            if (verification == null || verification.size() <= 1) { // Only headers or empty
+                System.err.println("Failed to verify CSV update");
+                return 0;
+            }
+    
+            System.out.println("Medical records CSV updated successfully");
+            return 1;
+        } catch (Exception e) {
+            System.err.println("Error in updateCSV: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
         }
-
-        String[] headers = { "ID", "Diagnosis", "Medication", "Treatment" };
-        CSVHandler.writeCSVLines(
-            headers,
-            record.toArray(new String[0]),
-            "data/MedicalRecord_List.csv"
-        );
-        return 0;
     }
+    
 
     /**
      * Creates a new medical record for a patient with the given patient ID.
@@ -120,6 +155,9 @@ public class MedicalRecordManager implements MedicalRecordInterface {
      * @return The newly created {@link MedicalRecord} object for the patient.
      */
     public static MedicalRecord createMedicalRecord(String patientID) {
+        if (medicalRecordList == null) {
+            medicalRecordList = new ArrayList<>();
+        }
         MedicalRecord newRecord = new MedicalRecord(patientID);
         medicalRecordList.add(newRecord);
         updateCSV(); 
@@ -209,17 +247,35 @@ public class MedicalRecordManager implements MedicalRecordInterface {
         String medication,
         String treatment
     ) {
+        if (medicalRecordList == null) {
+            medicalRecordList = new ArrayList<>();
+        }
+
+        MedicalRecord recordToUpdate = null;
+        
+        // Find existing record or create new one
         for (MedicalRecord record : medicalRecordList) {
             if (record.patientID.equals(patientID)) {
-                record.addRecord(record, diagnosis, medication, treatment);
-                updateCSV();
-                return record;
+                recordToUpdate = record;
+                break;
             }
         }
-        MedicalRecord newRecord = createMedicalRecord(patientID);
-        newRecord.addRecord(newRecord, diagnosis, medication, treatment);
-        updateCSV();
-        return newRecord;
+
+        if (recordToUpdate == null) {
+            recordToUpdate = new MedicalRecord(patientID);
+            medicalRecordList.add(recordToUpdate);
+        }
+
+        // Add new record entry
+        recordToUpdate.addRecord(recordToUpdate, diagnosis, medication, treatment);
+        
+        // Force save to CSV
+        int saveResult = updateCSV();
+        if (saveResult == 0) {
+            System.err.println("Warning: Changes may not have been saved to CSV");
+        }
+
+        return recordToUpdate;
     }
 
     /**

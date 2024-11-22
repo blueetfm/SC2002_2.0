@@ -7,6 +7,7 @@ import Views.UserMenu;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manages the patient profiles in the system.
@@ -34,9 +35,12 @@ public class PatientManager implements PatientInterface {
      *
      * @return the singleton instance of PatientManager
      */
-    public static PatientManager getInstance(){
-        if (instance == null){
+    public static PatientManager getInstance() {
+        if (instance == null) {
             instance = new PatientManager();
+            if (patientList == null) {
+                patientList = initializeObjects();
+            }
         }
         return instance;
     }
@@ -48,9 +52,49 @@ public class PatientManager implements PatientInterface {
      * @return a list of all patients
      */
     public static List<Patient> getAllPatients() {
-        PatientManager.patientList = PatientManager.initializeObjects();
-        System.out.println(patientList);
-        return PatientManager.patientList;
+        try {
+            // Always read from CSV to get current list
+            List<List<String>> allLines = CSVHandler.readCSVLines("data/Patient_List.csv");
+            patientList = new ArrayList<>();
+            
+            if (allLines == null || allLines.size() <= 1) {
+                System.out.println("No patients found in system.");
+                return patientList;
+            }
+        
+            // Skip header (index 0) and process records
+            for (int i = 1; i < allLines.size(); i++) {
+                List<String> row = allLines.get(i);
+                try {
+                    if (row.size() >= 6) {  // Ensure row has required fields
+                        String patientID = row.get(0).trim();
+                        String name = row.get(1).trim();
+                        LocalDate dateOfBirth = LocalDate.parse(row.get(2).trim());
+                        String gender = row.get(3).trim();
+                        String bloodType = row.get(4).trim();
+                        String phoneNum = row.get(5).trim();
+                        
+                        Patient patient = new Patient(
+                            patientID,      // hospitalID
+                            name,           // name
+                            dateOfBirth,    // birthDate
+                            gender,         // gender
+                            bloodType,      // bloodType
+                            "",            // email (not in CSV)
+                            phoneNum        // phoneNum
+                        );
+                        patientList.add(patient);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error parsing patient record at line " + i + ": " + e.getMessage());
+                }
+            }
+            
+            return patientList;
+        } catch (Exception e) {
+            System.err.println("Error reading patient data: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     /**
@@ -101,40 +145,80 @@ public class PatientManager implements PatientInterface {
      * @param bloodType the blood type of the new patient
      * @return 1 if the patient was created successfully, 0 if the patient already exists
      */
-    public static int createPatient(String hospitalID, String password, String role, String name, LocalDate birthDate, String gender, String phoneNum, String email, String bloodType) {
-        List<Patient> patientList = getAllPatients();
-        String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
-        List<String> allLines = new ArrayList<>();
-        for (Patient patient : patientList) {
-            if (patient.getPatientID().equals(hospitalID)) {
-                System.out.println("Patient profile already exists.");
-                return 0;
-            }
-            String line = String.format("%s,%s,%s,%s,%s,%s",
-                patient.getPatientID(),
-                patient.getName(),
-                patient.getDateOfBirth(),
-                patient.getGender(),
-                patient.getBloodType(),
-                patient.getPhoneNum()
-            );
-            allLines.add(line);
+
+    public static int createPatient(String hospitalID, String password, String role, String name, 
+                                LocalDate birthDate, String gender, String phoneNum, String email, String bloodType) {
+        if (patientList == null) {
+            patientList = initializeObjects();
         }
-        Patient newPatient = new Patient(hospitalID, password, role, name, birthDate, gender, phoneNum, email, bloodType);
-        patientList.add(newPatient);
-        String newLine = String.format("%s,%s,%s,%s,%s,%s",
-           newPatient.getPatientID(),
-           newPatient.getName(),
-           newPatient.getDateOfBirth(),
-           newPatient.getGender(),
-           newPatient.getBloodType(),
-           newPatient.getPhoneNum()
-        );
-        allLines.add(newLine);
-        String[] lines = allLines.toArray(new String[0]);
-        CSVHandler.writeCSVLines(headers, lines, "../../data/Patient_List.csv"); 
-        System.out.println("Patient successfully created!");
-        return 1;
+
+        try {
+            // Check for existing patient
+            for (Patient patient : patientList) {
+                if (patient.getPatientID().equals(hospitalID)) {
+                    System.out.println("Patient profile already exists.");
+                    return 0;
+                }
+            }
+
+            // Get current patients from CSV
+            List<List<String>> existingPatients = CSVHandler.readCSVLines("data/Patient_List.csv");
+            List<String> patientLines = new ArrayList<>();
+            
+            // Add existing patients (skip header)
+            for (int i = 1; i < existingPatients.size(); i++) {
+                List<String> row = existingPatients.get(i);
+                // Keep existing lines as they are to maintain format
+                patientLines.add(String.join(",", row));
+            }
+
+            // Format new patient line to match existing format
+            // Format: Patient ID, Name, Date of Birth, Gender, Blood Type, Contact Information
+            String newPatientLine = String.format("%s,%s,%s,%s,%s,%s",
+                hospitalID,
+                name,
+                birthDate.toString(),
+                gender,
+                bloodType,
+                phoneNum  // Contact information at the end
+            );
+            patientLines.add(newPatientLine);
+
+            // Write back to Patient_List.csv
+            String[] patientHeaders = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
+            CSVHandler.writeCSVLines(patientHeaders, patientLines.toArray(new String[0]), "data/Patient_List.csv");
+
+            // Update User_List.csv
+            List<List<String>> existingUsers = CSVHandler.readCSVLines("data/User_List.csv");
+            List<String> userLines = new ArrayList<>();
+            
+            // Add existing users (skip header)
+            for (int i = 1; i < existingUsers.size(); i++) {
+                List<String> row = existingUsers.get(i);
+                userLines.add(String.join(",", row));
+            }
+            
+            // Add new user credentials
+            userLines.add(String.format("%s,%s", hospitalID, "password"));
+            
+            // Write back to User_List.csv
+            String[] userHeaders = {"Hospital ID", "Password"};
+            CSVHandler.writeCSVLines(userHeaders, userLines.toArray(new String[0]), "data/User_List.csv");
+
+            // Add to patientList in memory
+            Patient newPatient = new Patient(hospitalID, password, role, name, birthDate, gender, phoneNum, email, bloodType);
+            patientList.add(newPatient);
+
+            System.out.println("\nPatient successfully registered!");
+            System.out.println("Default password set to: 'password'");
+            System.out.println("Please inform the patient to change their password upon first login.");
+            
+            return 1;
+        } catch (Exception e) {
+            System.err.println("Error creating patient: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     /**
@@ -176,39 +260,41 @@ public class PatientManager implements PatientInterface {
     public static List<Patient> initializeObjects() {
         List<Patient> patients = new ArrayList<>();
         
-        List<List<String>> allLines = CSVHandler.readCSVLines("data/Patient_List.csv");
-    
-        if (allLines.isEmpty()) {
-            System.out.println("No records found in Patient_List.csv.");
-            return patients;
-        }
-    
-        for (int i = 1; i < allLines.size(); i++) {
-            List<String> row = allLines.get(i);
-    
-            try {
-                if (row.size() < 7) {
-                    System.err.println("Skipping incomplete record at line " + (i + 1) + ": " + String.join(",", row));
-                    continue;
-                }
-    
-                String patientID = row.get(0).trim().toUpperCase();
-                String name = row.get(1).trim();
-                LocalDate dateOfBirth = LocalDate.parse(row.get(2).trim());
-                String gender = row.get(3).trim();
-                String bloodType = row.get(4).trim();
-                String email = row.get(5).trim();
-                String phoneNum = row.get(6).trim();
-    
-                Patient patient = new Patient(patientID, name, dateOfBirth, gender, bloodType, email, phoneNum);
-                patients.add(patient);
-    
-            } catch (Exception e) {
-                System.err.println("Error parsing record at line " + (i + 1) + ": " + e.getMessage());
-                System.err.println("Record content: " + String.join(",", row));
+        try {
+            List<List<String>> allLines = CSVHandler.readCSVLines("data/Patient_List.csv");
+            
+            if (allLines == null || allLines.isEmpty()) {
+                // Create new file with headers if it doesn't exist
+                String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Email", "Contact Information"};
+                CSVHandler.writeCSVLines(headers, new String[]{}, "data/Patient_List.csv");
+                return patients;
             }
+        
+            // Skip header and process records
+            for (int i = 1; i < allLines.size(); i++) {
+                List<String> row = allLines.get(i);
+        
+                try {
+                    if (row.size() >= 7) {
+                        String patientID = row.get(0).trim().toUpperCase();
+                        String name = row.get(1).trim();
+                        LocalDate dateOfBirth = LocalDate.parse(row.get(2).trim());
+                        String gender = row.get(3).trim();
+                        String bloodType = row.get(4).trim();
+                        String email = row.get(5).trim();
+                        String phoneNum = row.get(6).trim();
+        
+                        Patient patient = new Patient(patientID, name, dateOfBirth, gender, bloodType, email, phoneNum);
+                        patients.add(patient);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error parsing patient record: " + e.getMessage());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error reading patient data: " + e.getMessage());
         }
-    
+        
         return patients;
     }
 
@@ -281,34 +367,74 @@ public class PatientManager implements PatientInterface {
     *         0 if no matching patient profile was found.
     */
     public static int deletePatient(String hospitalID) {
-        String[] headers = {"Patient ID", "Name", "Date of Birth", "Gender", "Blood Type", "Contact Information"};
-
-        List<String> remainingLines = new ArrayList<>();
-        boolean found = false;
-        
-        for (Patient patient : patientList) {
-            if (!patient.getPatientID().equals(hospitalID)) {
-                String line = String.format("%s,%s,%s,%s,%s,%s",
-                    patient.getPatientID(),
-                    patient.getName(),
-                    patient.getDateOfBirth(),
-                    patient.getGender(),
-                    patient.getBloodType(),
-                    patient.getPhoneNum()
-                );
-                remainingLines.add(line);
-            } else {
-                found = true;
-                patientList.remove(patient);
+        try {
+            // First validate if patient exists
+            boolean found = false;
+            for (Patient patient : patientList) {
+                if (patient.getPatientID().equals(hospitalID)) {
+                    found = true;
+                    break;
+                }
             }
-        }
-    
-        if (found) {
-            String[] lines = remainingLines.toArray(new String[0]);
-            CSVHandler.writeCSVLines(headers, lines, "data/Patient_List.csv"); 
+
+            if (!found) {
+                System.out.println("No matching patient profile ID.");
+                return 0;
+            }
+
+            // Update Patient_List.csv
+            List<List<String>> existingPatients = CSVHandler.readCSVLines("data/Patient_List.csv");
+            List<String> remainingLines = new ArrayList<>();
+            
+            // Add header
+            if (!existingPatients.isEmpty()) {
+                remainingLines.add(String.join(",", existingPatients.get(0)));
+            }
+
+            // Add all patients except the one to be deleted
+            for (int i = 1; i < existingPatients.size(); i++) {
+                List<String> row = existingPatients.get(i);
+                if (!row.get(0).equals(hospitalID)) {
+                    remainingLines.add(String.join(",", row));
+                }
+            }
+
+            // Write back to Patient_List.csv
+            String[] patientLines = remainingLines.toArray(new String[0]);
+            CSVHandler.writeCSVLines(new String[0], patientLines, "data/Patient_List.csv");
+
+            // Update User_List.csv
+            List<List<String>> existingUsers = CSVHandler.readCSVLines("data/User_List.csv");
+            List<String> updatedUserLines = new ArrayList<>();
+            
+            // Add header
+            if (!existingUsers.isEmpty()) {
+                updatedUserLines.add(String.join(",", existingUsers.get(0)));
+            }
+            
+            // Add all users except the deleted patient
+            for (int i = 1; i < existingUsers.size(); i++) {
+                List<String> row = existingUsers.get(i);
+                if (!row.get(0).equals(hospitalID)) {
+                    updatedUserLines.add(String.join(",", row));
+                }
+            }
+
+            // Write back to User_List.csv
+            String[] userLines = updatedUserLines.toArray(new String[0]);
+            CSVHandler.writeCSVLines(new String[0], userLines, "data/User_List.csv");
+
+            // Update in-memory list without using iterator
+            patientList = patientList.stream()
+                .filter(p -> !p.getPatientID().equals(hospitalID))
+                .collect(Collectors.toList());
+
             System.out.println("Successfully deleted patient profile.");
-            return 1;}
-        System.out.println("No matching patient profile ID.");
-        return 0;
+            return 1;
+        } catch (Exception e) {
+            System.err.println("Error deleting patient: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        }
     }
 }
