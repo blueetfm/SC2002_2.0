@@ -228,6 +228,7 @@ public class UserMenu implements Menu {
      */
     private void handleExit() {
         System.out.println("Exiting system...");
+        loggedInHospitalID = null;  
         isSystemRunning = false;
         sc.close();
     }
