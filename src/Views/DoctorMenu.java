@@ -15,18 +15,61 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-
+/**
+ * The DoctorMenu class represents the interface for a doctor to interact with various functionalities of the hospital management system.
+ * It provides options for viewing and updating patient records, managing appointments, setting availability, and more.
+ * 
+ * <p>Dependencies:</p>
+ * This class relies on several other classes and interfaces:
+ * - Enums.AppointmentStatus
+ * - Models.Appointment
+ * - Models.Doctor
+ * - Models.TimeSlot
+ * - Services.AppointmentInterface
+ * - Services.TimeSlotInterface
+ * - Utils.DateTimeFormatUtils
+ * 
+ * <p>Features:</p>
+ * - Provides a menu-driven interface for the doctor.
+ * - Allows viewing, updating, and managing patient medical records and appointments.
+ * - Supports managing doctor's personal schedule and availability.
+ * 
+ * <p>File Reading:</p>
+ * Reads doctor information from a CSV file (`Staff_List.csv`) during initialization.
+ * 
+ * <p>Error Handling:</p>
+ * Includes basic error handling for file I/O and user input validation.
+ * 
+ * <p>Usage:</p>
+ * Create an instance of DoctorMenu and invoke the showMenu method to start the interaction.
+ * 
+ * @see Enums.AppointmentStatus
+ * @see Models.Appointment
+ * @see Models.Doctor
+ * @see Models.TimeSlot
+ * @see Services.AppointmentInterface
+ * @see Services.TimeSlotInterface
+ * @see Utils.DateTimeFormatUtils
+ * @author SCSCGroup4
+ * @version 1.0
+ * @since 2024-11-21
+ */
 public class DoctorMenu implements Menu {
 	private Scanner scanner;
     private Doctor currentDoctor;
     private boolean isRunning;
-	
+	 /**
+     * Constructor initializes the scanner and the current doctor based on logged-in user information.
+     */
 	public DoctorMenu() {
 		this.scanner = new Scanner(System.in);
 		isRunning = true;
 		initializeDoctor();
 	}
-	
+	 /**
+     * Initializes the current doctor based on the logged-in hospital ID.
+     * Reads doctor details from the Staff_List.csv file.
+     */
 	private void initializeDoctor() {
 		String loggedInID = UserMenu.getLoggedInHospitalID();
         
@@ -48,7 +91,9 @@ public class DoctorMenu implements Menu {
 			System.err.println("Error reading staff data: " + e.getMessage());
 		}
 	}
-	
+	 /**
+     * Displays the main menu and handles user interactions.
+     */
 	public void showMenu() {
         scanner = new Scanner(System.in);
         int choice;
@@ -134,7 +179,9 @@ public class DoctorMenu implements Menu {
 		scanner.close();
 	    return;
 	}
-
+	 /**
+     * Displays the doctor's personal schedule.
+     */
 	private void handleViewPersonalSchedule() {
 		TimeSlotInterface.initializeObjects();
 		List<TimeSlot> slots = currentDoctor.getPersonalSchedule();
@@ -165,7 +212,9 @@ public class DoctorMenu implements Menu {
 			System.out.println("----------------------------------------");
 		}
 	}	
-
+	/**
+     * Sets availability for appointments by creating time slots.
+     */
 	private void handleSetAvailability() {
 		System.out.println("\nSet Appointment Availability");
 		
@@ -270,7 +319,9 @@ public class DoctorMenu implements Menu {
             System.out.println("----------------------------------------");
         }
     }
-
+	/**
+     * Allows the doctor to see what future appointments have been scheduled by patients.
+     */
     private void handleViewUpcomingAppointments() {
 		TimeSlotInterface.initializeObjects();
 		AppointmentInterface.initializeObjects();
@@ -302,7 +353,11 @@ public class DoctorMenu implements Menu {
 			}
 		}
 	}
-
+	/**
+     * Prompts the user to enter a valid date.
+     * 
+     * @return A valid LocalDate, or null if the user cancels the operation.
+     */
 	private LocalDate getValidDate() {
     while (true) {
         System.out.println("Enter date for slots (YYYY-MM-DD): ");

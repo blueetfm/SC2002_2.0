@@ -191,7 +191,7 @@ public class Patient extends User {
             }
             
             // Schedule new appointment
-            return scheduleAppointment(oldApt.getDoctorID(), newTimeSlotID);
+            return scheduleAppointment(oldApt.getDoctorID(), newTimeSlotID, Service.CONSULTATION);
         } catch (Exception e) {
             System.err.println("Error rescheduling appointment: " + e.getMessage());
             return false;
