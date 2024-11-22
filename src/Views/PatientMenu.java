@@ -180,9 +180,9 @@ public class PatientMenu implements Menu {
 			case 1: 
 				String newPhoneNumber = null;
 				while (newPhoneNumber == null) {
-					System.out.println("Enter your new phone number:");
+					System.out.println("Enter your new phone number (format: 9xxx xxxx or 8xxx xxxx):");
 					String input = sc.nextLine();
-					if (input.matches("\\d+")) { 
+					if (input.matches("^[98]\\d{3} \\d{4}$")) {
 						newPhoneNumber = input;
 					} else {
 						System.out.println("Invalid phone number. Please enter digits only.");
