@@ -198,27 +198,26 @@ public class MedicalRecordManager implements MedicalRecordInterface {
             return -1; 
         }
     
-        int found = 0; // Counter to track the number of records found
+        int found = 0; // Counter to track if record exists
     
         for (MedicalRecord record : medicalRecordList) {
             if (patientID.equals(record.getPatientID())) {
-                    System.out.println("\n=========== Patient Profile ===========");
-                    System.out.println("         Patient ID: " + patient.getPatientID());
-                    System.out.println("               Name: " + patient.getName());
-                    System.out.println("      Date of Birth: " + patient.getDateOfBirth());
-                    System.out.println("             Gender: " + patient.getGender());
-                    System.out.println("         Blood Type: " + patient.getBloodType());
-                    System.out.println("Contact Information: " + patient.getPhoneNum());
+                    // System.out.println("\n=========== Patient Profile ===========");
+                    // System.out.println("         Patient ID: " + patient.getPatientID());
+                    // System.out.println("               Name: " + patient.getName());
+                    // System.out.println("      Date of Birth: " + patient.getDateOfBirth());
+                    // System.out.println("             Gender: " + patient.getGender());
+                    // System.out.println("         Blood Type: " + patient.getBloodType());
+                    // System.out.println("Contact Information: " + patient.getPhoneNum());
                 
                         for (Record obj : record.recordList) {
                             System.out.println("          Diagnosis:" + obj.getDiagnosis());
                             System.out.println("         Medication:" + obj.getMedication());
                             System.out.println("          Treatment:" + obj.getTreatment());
+                            found++;
                         }
-                    }                     
-                    System.out.println("=======================================\n");
-    
-                    found++;
+            }                     
+            // System.out.println("=======================================\n");
         }
     
         if (found == 0) {
