@@ -175,9 +175,9 @@ public class MedicalRecordManager implements MedicalRecordInterface {
                     System.out.println("Contact Information: " + patient.getPhoneNum());
                 
                         for (Record obj : record.recordList) {
-                            System.out.printf("  Diagnosis: %s", obj.getDiagnosis());
-                            System.out.printf("  Medication: %s", obj.getMedication());
-                            System.out.printf("  Treatment: %s", obj.getTreatment());
+                            System.out.println("  Diagnosis: %s" + obj.getDiagnosis());
+                            System.out.println("  Medication: %s" + obj.getMedication());
+                            System.out.println("  Treatment: %s" + obj.getTreatment());
                         }
                     }                     
                     System.out.println("===========================\n");
