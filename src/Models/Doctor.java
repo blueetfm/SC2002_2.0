@@ -75,7 +75,6 @@ public class Doctor extends User {
         Scanner scanner = new Scanner(System.in);
         String patientID;
         
-        // Get list of patients first
         System.out.println("\nCurrent Patients:");
         System.out.println("----------------------------------------");
         List<Patient> patients = PatientInterface.getAllPatients();
@@ -93,13 +92,12 @@ public class Doctor extends User {
             return 0;
         }
 
-        Patient patient = PatientInterface.getPatient(patientID);
+        Patient patient = PatientInterface.getPatient(patientID.toUpperCase());
         if (patient == null) {
             System.out.println("Patient not found.");
             return 0;
         }
 
-        // Show current medical record if exists
         System.out.println("\nCurrent Medical Record:");
         MedicalRecordInterface.readMedicalRecordsByPatientID(patientID);
         System.out.println();

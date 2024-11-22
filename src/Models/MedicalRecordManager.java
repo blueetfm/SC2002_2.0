@@ -88,7 +88,6 @@ public class MedicalRecordManager implements MedicalRecordInterface {
      */
     public static int updateCSV() {
         try {
-            // First verify the medicalRecordList is not null
             if (medicalRecordList == null) {
                 System.err.println("Medical record list is not initialized");
                 return 0;
@@ -97,7 +96,6 @@ public class MedicalRecordManager implements MedicalRecordInterface {
             String[] headers = {"ID", "Diagnosis", "Medication", "Treatment"};
             List<String> records = new ArrayList<>();
     
-            // Create formatted records
             for (MedicalRecord indivRecord : medicalRecordList) {
                 if (indivRecord != null && indivRecord.recordList != null) {
                     String ID = indivRecord.patientID;
